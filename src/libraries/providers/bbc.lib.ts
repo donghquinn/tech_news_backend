@@ -29,6 +29,8 @@ export class BbcNewsProvider {
         },
       });
 
+      await this.prisma.onModuleDestroy();
+
       return result;
     } catch (error) {
       Logger.error('Bring BBC News Error: %o', error instanceof Error ? error : new Error(JSON.stringify(error)));
@@ -46,6 +48,8 @@ export class BbcNewsProvider {
       const count = await this.prisma.bbcTechNews.count({ select: { uuid: true } });
 
       Logger.log(`BBC News Count: ${ count.uuid }`);
+
+      await this.prisma.onModuleDestroy();
 
       return count;
     } catch (error) {

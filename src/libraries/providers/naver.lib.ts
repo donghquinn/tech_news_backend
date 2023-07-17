@@ -35,6 +35,8 @@ export class NaverProvider {
         orderBy: { founded: 'desc' },
       });
 
+      await this.prisma.onModuleDestroy();
+
       return result;
     } catch (error) {
       Logger.error('Bring Naver Today News Error: %o', {

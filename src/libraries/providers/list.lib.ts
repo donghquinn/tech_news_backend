@@ -20,6 +20,8 @@ export class GetList {
 
             Logger.debug("Date List: %o", { dateLists });
 
+            await this.prisma.onModuleDestroy();
+
             return dateLists;
         } catch (error) {
             throw new ListError(

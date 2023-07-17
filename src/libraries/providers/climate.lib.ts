@@ -43,6 +43,8 @@ export class ClimateProvider {
         orderBy: { dataTime: 'desc' },
       });
 
+      await this.prisma.onModuleDestroy();
+
       return result;
     } catch (error) {
       Logger.error('Bring Korean Climate Data Error: %o', {

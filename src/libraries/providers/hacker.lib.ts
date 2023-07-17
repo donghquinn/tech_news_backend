@@ -48,6 +48,8 @@ export class HackersNewsProvider {
         orderBy: { rank: 'desc' },
       });
 
+      await this.prisma.onModuleDestroy();
+
       return result;
     } catch (error) {
       Logger.error('Bring Hacker News Error: %o', error instanceof Error ? error : new Error(JSON.stringify(error)));
