@@ -1,6 +1,6 @@
 import { Body, Controller, Logger, Post } from '@nestjs/common';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
-import { NaverProvider } from 'libraries/providers/naver.lib';
+import { NaverProvider } from 'libraries/providers/news/naver.lib';
 import { MatchingDataRequest } from 'types/list.type';
 import { dataRequestValidator } from 'validators/list.validator';
 

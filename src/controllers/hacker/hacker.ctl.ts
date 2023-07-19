@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
-import { HackersNewsProvider } from 'libraries/providers/hacker.lib';
+import { HackersNewsProvider } from 'libraries/providers/news/hacker.lib';
 import { MatchingDataRequest } from 'types/list.type';
 import { dataRequestValidator } from 'validators/list.validator';
 

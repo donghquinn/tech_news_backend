@@ -37,6 +37,14 @@ model NaverNews {
   founded      DateTime
 }
 
+model MachineNews {
+  uuid     String   @id @default(uuid())
+  category String
+  title    String
+  link     String
+  founded  DateTime
+}
+
 model Climate {
   uuid       String   @id @default(uuid())
   dataTime   String
@@ -66,4 +74,16 @@ model Climate {
   khaiGrade  String?
   khaiStatus String   @default("normal")
   founded    DateTime
+}
+
+model ForeCast {
+  uuid           String   @id @default(uuid())
+  date           String   @unique()
+  rain           String   @default("0")
+  temperature    String
+  humidity       String
+  cloud          String
+  visibility     String
+  solarRadiation String   @default("0")
+  founded        DateTime
 }
