@@ -29,7 +29,6 @@ export class ForeCastProvider {
                     },
                 }});
 
-
             await this.prisma.onModuleDestroy();
 
             return result;
