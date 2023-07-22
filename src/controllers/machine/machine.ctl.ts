@@ -13,7 +13,7 @@ export class MachineLearningController {
         try {
             const {today} = await machineLearningValidator(request);
 
-            const result = this.mlNews.bringLatestMachineLearningNews(today);
+            const result = await this.mlNews.bringLatestMachineLearningNews(today);
 
             return new SetResponse(200, {result});
         } catch (error) {

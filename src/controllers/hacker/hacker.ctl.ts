@@ -24,8 +24,6 @@ export class HackerController {
     try {
       const {today} = await dataRequestValidator(request);
 
-      Logger.log(today);
-
       const result = await this.hacker.bringTodayHackerPosts(today);
 
       return new SetResponse(200, { result });
