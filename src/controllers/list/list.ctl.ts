@@ -8,6 +8,7 @@ import { listRequestValidator } from "validators/list.validator";
 export class ScrapedList {
     constructor(private readonly list: GetList) { }
     
+    // 사용할 수  있는 일자 리스트 조회
     @Get("/get")
     async getListController() {
         try {
@@ -19,6 +20,7 @@ export class ScrapedList {
         }
     }
 
+    // 조회하기 원하는 일자의 데이터 조회 요청
     @Post("/data")
     async getMatchingData(request: ListRequest) {
         try {
