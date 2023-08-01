@@ -19,7 +19,7 @@ export class BbcNewsProvider {
       });
 
       const result = await this.prisma.bbcTechNews.findMany({
-        select: { post: true, link: true, founded: true },
+        select: { uuid: true, post: true, link: true, founded: true },
         orderBy: { rank: 'desc' },
         where: {
           founded: {
@@ -65,12 +65,37 @@ export class BbcNewsProvider {
     }
   }
 
-  async bringStarredNews(today: string) {
+  async giveStar(uuid: string) {
     try {
-      Logger.log("Bring Starred News: %o", {
-        today
+      Logger.debug("Give Star Request: %o", {
+        uuid
       });
 
+      await this.prisma.bbcTechNews.update({
+        data: {
+          starred: "1"
+        },
+        where: {
+          uuid
+        }
+      });
+
+      Logger.log("Starred Updated");
+
+      return true;
+    } catch (error) {
+      throw new BbcError(
+        "Give Star on the news",
+        "Failed to vie star news",
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      )
+    }
+  }
+
+  async bringStarredNews() {
+    try {
+      Logger.log("Request to get Starred News");
+      
       const starredNews = await this.prisma.bbcTechNews.findMany({
         select: {
           post: true, link: true, founded: true
