@@ -64,4 +64,35 @@ export class BbcNewsProvider {
       );
     }
   }
+
+  async bringStarredNews(today: string) {
+    try {
+      Logger.log("Bring Starred News: %o", {
+        today
+      });
+
+      const starredNews = await this.prisma.bbcTechNews.findMany({
+        select: {
+          post: true, link: true, founded: true
+        },
+        orderBy: {
+          founded: "desc"
+        },
+        where: {
+          starred: "1"
+        }
+      });
+
+      Logger.log("Founded Starred News");
+
+      return starredNews;
+    } catch (error) {
+      throw new BbcError(
+        "Bring Starred BBC News",
+        "Failed to Bring Starred BBC News",
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      )
+    }
+
+  }
 }

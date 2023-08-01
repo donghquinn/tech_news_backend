@@ -31,4 +31,19 @@ export class BbcController {
       return new SetErrorResponse(500, {error});
     }
   }
+  @Post("/star")
+  async giveStarNews(@Body()) {
+    
+  }
+
+  @Post("/starred")
+  async getStarredBbc(@Body() request: MatchingDataRequest) {
+    try {
+      const {today} = await dataRequestValidator(request);
+
+
+    } catch (error) {
+      return new SetErrorResponse(500, {error})
+    }
+  }
 }

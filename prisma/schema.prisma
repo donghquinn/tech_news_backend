@@ -15,6 +15,7 @@ model Hackers {
   rank    String
   post    String
   link    String
+  starred String   @default("0")
   founded DateTime
 }
 
@@ -23,6 +24,7 @@ model BbcTechNews {
   rank    String
   post    String
   link    String
+  starred String   @default("0")
   founded DateTime
 }
 
@@ -34,6 +36,7 @@ model NaverNews {
   originallink String
   url          String
   postedTime   String
+  starred      String   @default("0")
   founded      DateTime
 }
 
@@ -42,6 +45,7 @@ model MachineNews {
   category String
   title    String
   link     String
+  starred  String   @default("0")
   founded  DateTime
 }
 
@@ -85,5 +89,6 @@ model ForeCast {
   cloud          String
   visibility     String
   solarRadiation String   @default("0")
+  starred        String   @default("0")
   founded        DateTime
 }
