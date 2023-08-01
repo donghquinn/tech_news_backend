@@ -25,7 +25,9 @@ export class BbcController {
   async getBbcNews(@Body() request: MatchingDataRequest) {
     try {
       const { today } = await dataRequestValidator(request);
+
       Logger.log(today);
+
       const result = await this.bbc.bringTodayBbcNews(today);
 
       return new SetResponse(200, { result });
@@ -33,6 +35,18 @@ export class BbcController {
       return new SetErrorResponse(500, {error});
     }
   }
+
+  @Post("/date/list")
+  async getDateList() {
+    try {
+      const result = await this.bbc.getDateList();
+
+      return new SetResponse(200, {result});
+    } catch (error) {
+      return new SetErrorResponse(500, {error})
+    }
+  }
+
 
   @Post("/star")
   async giveStarNews(@Body() request: StarRequest) {
