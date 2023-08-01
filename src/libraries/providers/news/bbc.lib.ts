@@ -150,13 +150,42 @@ export class BbcNewsProvider {
     }
   }
 
+  async unStar(uuid: string) {
+    try {
+      Logger.debug("Give Star Request: %o", {
+        uuid
+      });
+
+      await this.prisma.bbcTechNews.update({
+        data: {
+          starred: "0"
+        },
+        where: {
+          uuid
+        }
+      });
+
+      await this.prisma.onModuleDestroy();
+
+      Logger.log("Starred Updated");
+
+      return true;
+    } catch (error) {
+      throw new BbcError(
+        "unStar on the news",
+        "Failed to vie star news",
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      )
+    }
+  }
+
   async bringStarredNews() {
     try {
       Logger.log("Request to get Starred News");
       
       const starredNews = await this.prisma.bbcTechNews.findMany({
         select: {
-          post: true, link: true, founded: true
+          uuid: true, post: true, link: true, founded: true
         },
         orderBy: {
           founded: "desc"
