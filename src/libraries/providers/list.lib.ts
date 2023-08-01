@@ -60,7 +60,9 @@ export class GetList {
                     gte: startOfDay(new Date(date)),
                     lte: endOfDay(new Date(date))
                   },
-                }, });
+                }, 
+              });
+
             const climateData = await this.prisma.climate.findMany({ where: { founded: date } });
 
             const hackerData = await this.prisma.hackers.findMany({ select: { post: true, link: true, founded: true },
@@ -70,13 +72,27 @@ export class GetList {
                     gte: startOfDay(new Date(date)),
                     lte: endOfDay(new Date(date))
                   },
-                }, });
+                }, 
+              });
+            
+            const machineNewsData = await this.prisma.machineNews.findMany({
+              select: {
+                category: true, title: true, link: true, founded: true
+              },
+              where: {
+                founded: {
+                  gte: startOfDay(new Date(date)),
+                  lte: endOfDay(new Date(date))
+                }
+              }
+            })
 
             return {
                 naverData,
                 bbcData,
                 climateData, 
                 hackerData,
+                machineNewsData
             }
         } catch (error) {
             throw new ListError(
