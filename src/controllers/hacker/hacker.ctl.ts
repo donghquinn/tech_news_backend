@@ -59,4 +59,15 @@ export class HackerController {
       return new SetErrorResponse(500, {error});
     }
   }
+
+  @Post("/starred")
+  async getStarredBbc() {
+    try {
+      const result = await this.hacker.bringStarredNews();
+
+      return new SetResponse(200, {result});
+    } catch (error) {
+      return new SetErrorResponse(500, {error});
+    }
+  }
 }
