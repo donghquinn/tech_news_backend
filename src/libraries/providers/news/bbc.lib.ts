@@ -94,7 +94,7 @@ export class BbcNewsProvider {
   async getMatchingData(today: string) {
     try {
       const date = moment(today).toString();
-      
+
       Logger.log("Requested Date: %o", {
         date
       });
@@ -109,11 +109,14 @@ export class BbcNewsProvider {
         }, 
       });
 
+      await this.prisma.onModuleDestroy();
+
       return bbcData;
     } catch (error) {
       throw new BbcError(
         "Get BBC Date Matching Data",
-        "Failed to get Matching Data"
+        "Failed to get Matching Data",
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
       )
     }
   }
@@ -132,6 +135,8 @@ export class BbcNewsProvider {
           uuid
         }
       });
+
+      await this.prisma.onModuleDestroy();
 
       Logger.log("Starred Updated");
 
@@ -160,6 +165,8 @@ export class BbcNewsProvider {
           starred: "1"
         }
       });
+
+      await this.prisma.onModuleDestroy();
 
       Logger.log("Founded Starred News");
 
