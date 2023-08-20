@@ -48,7 +48,3 @@ export interface NaverNewsResultReturn {
   url: string;
   postedTime: string;
 }
-
-export interface NaverNewsStarRequest{
-  uuid: string;
-}

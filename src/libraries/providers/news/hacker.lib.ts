@@ -64,7 +64,7 @@ export class HackersNewsProvider {
 
   async giveStar(uuid: string) {
     try {
-      Logger.debug("Give Star Request: %o", {
+      Logger.debug("Give Hacker News Star Request: %o", {
         uuid
       });
 
@@ -93,7 +93,7 @@ export class HackersNewsProvider {
 
   async unStar(uuid: string) {
     try {
-      Logger.debug("Give Star Request: %o", {
+      Logger.debug("Give Hacker News unStar Request: %o", {
         uuid
       });
 
@@ -122,7 +122,7 @@ export class HackersNewsProvider {
 
   async bringStarredNews() {
     try {
-      Logger.log("Request to get Starred News");
+      Logger.log("Request to get Starred Hacker News");
       
       const starredNews = await this.prisma.hackers.findMany({
         select: {
@@ -143,8 +143,8 @@ export class HackersNewsProvider {
       return starredNews;
     } catch (error) {
       throw new HackerError(
-        "Bring Starred BBC News",
-        "Failed to Bring Starred BBC News",
+        "Bring Starred Hacker News",
+        "Failed to Bring Starred Hacker News",
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       )
     }

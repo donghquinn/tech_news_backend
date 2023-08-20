@@ -2,7 +2,9 @@ import { Body, Controller, Logger, Post } from '@nestjs/common';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { NaverProvider } from 'libraries/providers/news/naver.lib';
 import { MatchingDataRequest } from 'types/list.type';
+import { StarRequest } from 'types/request.type';
 import { dataRequestValidator } from 'validators/list.validator';
+import { starValidator } from 'validators/start.validator';
 
 @Controller('naver')
 export class NaverController {
@@ -18,6 +20,43 @@ export class NaverController {
       const result = await this.naver.getNaverNews(today);
 
       return new SetResponse(200, { result });
+    } catch (error) {
+      return new SetErrorResponse(500, {error});
+    }
+  }
+
+  @Post("/star")
+  async giveStarNews(@Body() request: StarRequest) {
+    try {
+      const { uuid }  = await starValidator(request);
+
+      const result = await this.naver.giveStar(uuid);
+
+      return new SetResponse(200, {result});
+    } catch (error) {
+      return new SetErrorResponse(500, {error});
+    }
+  }
+
+  @Post("/unstar")
+  async unStarNews(@Body() request: StarRequest) {
+    try {
+      const {uuid} = await starValidator(request);
+
+      const result = await this.naver.unStar(uuid);
+
+      return new SetResponse(200, {result});
+    } catch (error) {
+      return new SetErrorResponse(500, {error});
+    }
+  }
+
+  @Post("/starred")
+  async getStarredBbc() {
+    try {
+      const result = await this.hacker.bringStarredNews();
+
+      return new SetResponse(200, {result});
     } catch (error) {
       return new SetErrorResponse(500, {error});
     }

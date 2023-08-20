@@ -3,7 +3,3 @@ export interface HackersNewsArrayType {
   post: string;
   link: string;
 }
-
-export interface HackerNewsStarRequest{
-  uuid: string;
-}

@@ -207,6 +207,5 @@ export class BbcNewsProvider {
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       )
     }
-
   }
 }
