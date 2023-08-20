@@ -38,7 +38,7 @@ export class HackersNewsProvider {
       });
 
       const result = await this.prisma.hackers.findMany({
-        select: { post: true, link: true, founded: true },
+        select: { uuid: true, post: true, link: true, founded: true },
         where: {
           founded: {
             gte: startOfDay(new Date(yesterday)),
@@ -59,6 +59,94 @@ export class HackersNewsProvider {
         'Hacker News Bringing Error',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
+    }
+  }
+
+  async giveStar(uuid: string) {
+    try {
+      Logger.debug("Give Hacker News Star Request: %o", {
+        uuid
+      });
+
+      await this.prisma.hackers.update({
+        data: {
+          starred: "1"
+        },
+        where: {
+          uuid
+        }
+      });
+
+      await this.prisma.onModuleDestroy();
+
+      Logger.log("Starred Updated");
+
+      return true;
+    } catch (error) {
+      throw new HackerError(
+        "Give Star on the news",
+        "Failed to vie star news",
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      )
+    }
+  }
+
+  async unStar(uuid: string) {
+    try {
+      Logger.debug("Give Hacker News unStar Request: %o", {
+        uuid
+      });
+
+      await this.prisma.hackers.update({
+        data: {
+          starred: "0"
+        },
+        where: {
+          uuid
+        }
+      });
+
+      await this.prisma.onModuleDestroy();
+
+      Logger.log("Starred Updated");
+
+      return true;
+    } catch (error) {
+      throw new HackerError(
+        "unStar on the news",
+        "Failed to vie star news",
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      )
+    }
+  }
+
+  async bringStarredNews() {
+    try {
+      Logger.log("Request to get Starred Hacker News");
+      
+      const starredNews = await this.prisma.hackers.findMany({
+        select: {
+          uuid: true, post: true, link: true, founded: true
+        },
+        orderBy: {
+          founded: "desc"
+        },
+        where: {
+          starred: "1"
+        }
+      });
+
+      await this.prisma.onModuleDestroy();
+
+      Logger.log("Founded Starred News");
+
+      return starredNews;
+    } catch (error) {
+      throw new HackerError(
+        "Bring Starred Hacker News",
+        "Failed to Bring Starred Hacker News",
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      )
     }
   }
 }

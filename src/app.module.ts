@@ -2,7 +2,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { HeadersMiddleware } from 'middlewares/header.middleware';
 import { ForecastModule } from 'modules/forecast.module';
-import { ListModule } from 'modules/list.module';
 import { MachineLearningNewsModule } from 'modules/machine.module';
 import { BbcModule } from './modules/bbc.module';
 import { ClimateModule } from './modules/climate.module';
@@ -16,8 +15,7 @@ import { PrismaModule } from './modules/prisma.module';
     BbcModule, 
     PrismaModule, 
     ClimateModule, 
-    NaverModule, 
-    ListModule, 
+    NaverModule,
     ForecastModule,
     MachineLearningNewsModule,
    ],
