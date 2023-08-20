@@ -23,4 +23,7 @@ export class ClimateController {
       return new SetErrorResponse(500, {error});
     }
   }
+
+  @Post("/star")
+  async giveStar(@Body() request){}
 }

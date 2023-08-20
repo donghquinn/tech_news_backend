@@ -1,8 +1,8 @@
 import { ValidatorError } from "errors/validator.error";
-import { StarRequest } from "types/bbc.type";
+import { BbcNewsStarRequest } from "types/bbc.type";
 import { z } from "zod";
 
-export const starValidator = async(request: StarRequest) => {
+export const starValidator = async(request: BbcNewsStarRequest) => {
     try {
         const scheme = z.object({uuid: z.string()});
 

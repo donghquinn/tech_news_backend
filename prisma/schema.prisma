@@ -89,6 +89,5 @@ model ForeCast {
   cloud          String
   visibility     String
   solarRadiation String   @default("0")
-  starred        String   @default("0")
   founded        DateTime
 }

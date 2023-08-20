@@ -19,6 +19,7 @@ export class MachineLearningProvider {
             
             const result = await this.prisma.machineNews.findMany({
                 select: { 
+                    uuid: true,
                     category: true,
                     title: true, 
                     link: true, 

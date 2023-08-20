@@ -9,6 +9,6 @@ export interface NewsResponse {
   link: string;
 }
 
-export interface StarRequest {
+export interface BbcNewsStarRequest {
   uuid: string
 }

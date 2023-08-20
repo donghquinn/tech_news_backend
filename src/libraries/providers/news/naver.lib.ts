@@ -19,6 +19,7 @@ export class NaverProvider {
 
       const result = await this.prisma.naverNews.findMany({
         select: {
+          uuid: true,
           keyWord: true,
           title: true,
           description: true,

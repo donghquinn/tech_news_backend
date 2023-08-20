@@ -38,7 +38,7 @@ export class HackersNewsProvider {
       });
 
       const result = await this.prisma.hackers.findMany({
-        select: { post: true, link: true, founded: true },
+        select: { uuid: true, post: true, link: true, founded: true },
         where: {
           founded: {
             gte: startOfDay(new Date(yesterday)),
