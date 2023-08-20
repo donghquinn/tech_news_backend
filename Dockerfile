@@ -1,6 +1,6 @@
 #
 # --- base image ---
-FROM node:20.3-alpine3.17 as base
+FROM node:20.2-alpine3.17 as base
 
 # install curl/timezone
 RUN apk --no-cache add curl tzdata && \
@@ -11,31 +11,16 @@ RUN apk --no-cache add curl tzdata && \
 WORKDIR /home/node
 
 # copy package.json, package-lock.json into image
-COPY yarn.lock package.json ./
+COPY yarn.lock ./
 
 
-
-# package.json에 작성한 그대로 설치
-RUN yarn install
-
-
-# --- builder ---
-FROM base AS builder
-
-WORKDIR /home/node
-
-COPY --from=base /home/node/node_modules ./node_modules
+# --- release ---
+FROM base AS release
 
 COPY . .
 
-RUN yarn  build
+RUN yarn install
 
+RUN yarn run build
 
-
-FROM builder as runner
-
-WORKDIR /home/node
-
-COPY --from=builder /home/node/dist .
-
-CMD ["node", "main.js"]
+ENTRYPOINT ["yarn", "start"]
