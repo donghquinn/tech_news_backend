@@ -1,4 +1,4 @@
-import { Body, Controller, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { NaverProvider } from 'libraries/providers/news/naver.lib';
 import { MatchingDataRequest } from 'types/list.type';
@@ -51,10 +51,10 @@ export class NaverController {
     }
   }
 
-  @Post("/starred")
+  @Get("/starred")
   async getStarredBbc() {
     try {
-      const result = await this.hacker.bringStarredNews();
+      const result = await this.naver.bringStarredNews();
 
       return new SetResponse(200, {result});
     } catch (error) {

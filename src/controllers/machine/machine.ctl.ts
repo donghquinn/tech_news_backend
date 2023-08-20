@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post } from "@nestjs/common";
 import { SetErrorResponse, SetResponse } from "dto/response.dto";
 import { MachineLearningProvider } from "libraries/providers/news/machine.lib";
 import { ScrapeRequest, StarRequest } from "types/request.type";
@@ -40,7 +40,7 @@ export class MachineLearningController {
       try {
         const {uuid} = await starValidator(request);
   
-        const result = await this.hacker.unStar(uuid);
+        const result = await this.mlNews.unStar(uuid);
   
         return new SetResponse(200, {result});
       } catch (error) {
@@ -48,10 +48,10 @@ export class MachineLearningController {
       }
     }
   
-    @Post("/starred")
+    @Get("/starred")
     async getStarredBbc() {
       try {
-        const result = await this.hacker.bringStarredNews();
+        const result = await this.mlNews.bringStarredNews();
   
         return new SetResponse(200, {result});
       } catch (error) {

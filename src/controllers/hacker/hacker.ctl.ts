@@ -60,7 +60,7 @@ export class HackerController {
     }
   }
 
-  @Post("/starred")
+  @Get("/starred")
   async getStarredBbc() {
     try {
       const result = await this.hacker.bringStarredNews();

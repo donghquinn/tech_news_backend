@@ -74,7 +74,7 @@ export class BbcController {
     }
   }
 
-  @Post("/starred")
+  @Get("/starred")
   async getStarredBbc() {
     try {
       const result = await this.bbc.bringStarredNews();
