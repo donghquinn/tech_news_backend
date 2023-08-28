@@ -18,14 +18,15 @@
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "baseUrl": "src",
-    "inlineSourceMap": true,
+    // "inlineSourceMap": true,
     "paths": {
       "@types/*": ["types/*"],
       "@libraries/*": ["libraries/*"],
       "@utils/*": ["utils/*"],
       "@validators/*": ["validators/*"],
       "@modules/*": ["modules/*"],
-      "@controllers/*": ["controllers/*"]
+      "@controllers/*": ["controllers/*"],
+      "@errors/*": ["errors/*"]
     }
   },
   "include": ["src/**/*"],

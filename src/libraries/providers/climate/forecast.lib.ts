@@ -1,7 +1,7 @@
+import { ForecastError } from "@errors/forecast.error";
+import { PrismaLibrary } from "@libraries/common/prisma.lib";
 import { Injectable } from "@nestjs/common";
 import { endOfDay, startOfDay } from "date-fns";
-import { ForecastError } from "errors/forecast.error";
-import { PrismaLibrary } from "libraries/common/prisma.lib";
 import moment from "moment-timezone";
 
 @Injectable()

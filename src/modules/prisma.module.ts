@@ -1,5 +1,5 @@
+import { PrismaLibrary } from '@libraries/common/prisma.lib';
 import { Global, Module } from '@nestjs/common';
-import { PrismaLibrary } from 'libraries/common/prisma.lib';
 
 @Global()
 @Module({

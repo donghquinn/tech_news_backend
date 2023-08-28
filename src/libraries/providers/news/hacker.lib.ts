@@ -1,6 +1,6 @@
+import { HackerError } from '@errors/hacker.error';
+import { PrismaLibrary } from '@libraries/common/prisma.lib';
 import { Injectable, Logger } from '@nestjs/common';
-import { HackerError } from 'errors/hacker.error';
-import { PrismaLibrary } from 'libraries/common/prisma.lib';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
 

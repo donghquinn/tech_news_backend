@@ -1,8 +1,8 @@
+import { HackerController } from "@controllers/hacker/hacker.ctl";
+import { PrismaLibrary } from "@libraries/common/prisma.lib";
+import { HackersNewsProvider } from "@libraries/providers/news/hacker.lib";
 import { Module } from "@nestjs/common";
-import { HackerController } from "controllers/hacker/hacker.ctl";
-import { PrismaLibrary } from "libraries/common/prisma.lib";
-import { HackersNewsProvider } from "libraries/providers/news/hacker.lib";
-import { LoggerProvider } from "utils/logger.util";
+import { LoggerProvider } from "@utils/logger.util";
 
 @Module({
   controllers: [ HackerController ],

@@ -1,7 +1,8 @@
-import { BbcError } from 'errors/bbc.error';
-import { HackerError } from 'errors/hacker.error';
-import { MelonError } from 'errors/melon.error';
-import { NaverError } from 'errors/naver.error';
+import { BbcError } from "@errors/bbc.error";
+import { HackerError } from "@errors/hacker.error";
+import { MelonError } from "@errors/melon.error";
+import { NaverError } from "@errors/naver.error";
+
 
 interface ResponseObject {
   resCode: string;
