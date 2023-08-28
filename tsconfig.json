@@ -7,10 +7,10 @@
       "./src/types",
     ],
     "lib": ["ESNext"],
-    "allowJs": true,
+    "allowJs": false,
     "strict": true, 
     "target": "ESNext",
-    "module": "esnext",
+    "module": "ESNext",
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
@@ -18,7 +18,15 @@
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "baseUrl": "src",
-    "inlineSourceMap": true
+    "inlineSourceMap": true,
+    "paths": {
+      "@types/*": ["types/*"],
+      "@libraries/*": ["libraries/*"],
+      "@utils/*": ["utils/*"],
+      "@validators/*": ["validators/*"],
+      "@modules/*": ["modules/*"],
+      "@controllers/*": ["controllers/*"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"],
