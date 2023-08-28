@@ -1,5 +1,5 @@
+import { ValidatorError } from "@errors/validator.error";
 import { Logger } from "@nestjs/common";
-import { ValidatorError } from "errors/validator.error";
 import { ListRequest, MatchingDataRequest } from "types/list.type";
 import { z } from "zod";
 
@@ -13,7 +13,11 @@ export const listRequestValidator = async (request: ListRequest) => {
     } catch (error) {
         Logger.error(error);
 
-        throw new ValidatorError("List Request Validator", "Validation Error")
+        throw new ValidatorError(
+            "List Request Validator", 
+            "Validation Error",
+            error instanceof Error ? error : new Error(JSON.stringify(error))
+        )
     }
 }
 
@@ -27,7 +31,11 @@ export const dataRequestValidator = async (request: MatchingDataRequest) => {
     } catch (error) {
         Logger.error(error);
 
-        throw new ValidatorError("List Request Validator", "Validation Error")
+        throw new ValidatorError(
+            "List Request Validator", 
+            "Validation Error",
+            error instanceof Error ? error : new Error(JSON.stringify(error))
+        )
     }
 }
 
@@ -41,6 +49,10 @@ export const listValidator = async(request: MatchingDataRequest) => {
     } catch (error) {
         Logger.error(error);
 
-        throw new ValidatorError("List Request Validator", "Validation Error")
+        throw new ValidatorError(
+            "List Request Validator", 
+            "Validation Error",
+            error instanceof Error ? error : new Error(JSON.stringify(error))
+        )
     }
 }

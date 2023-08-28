@@ -1,4 +1,4 @@
-import { ForecastError } from "errors/forecast.error";
+import { ForecastError } from "@errors/forecast.error";
 import { ForecastRequest } from "types/forecast.type";
 import { z } from "zod";
 

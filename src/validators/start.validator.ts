@@ -1,4 +1,4 @@
-import { ValidatorError } from "errors/validator.error";
+import { ValidatorError } from "@errors/validator.error";
 import { StarRequest } from "types/request.type";
 import { z } from "zod";
 

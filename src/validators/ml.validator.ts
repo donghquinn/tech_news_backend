@@ -1,6 +1,5 @@
-import { MachineLearningError } from "errors/machine.error";
+import { MachineLearningError } from "@errors/machine.error";
 import { ScrapeRequest } from "types/request.type";
-
 import { z } from "zod";
 
 export const machineLearningValidator = async(request: ScrapeRequest) => {
