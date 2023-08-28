@@ -1,14 +1,13 @@
 export class ForecastError extends Error {
-    type: string;
-  
-    constructor(type: string, message: string, cause?: Error) {
-      super(message);
-  
-      this.type = type;
-  
-      this.name = '[Forecast ERROR]';
-  
-      this.cause = cause;
-    }
+  type: string;
+
+  constructor(type: string, message: string, cause?: Error) {
+    super(message);
+
+    this.type = type;
+
+    this.name = '[Forecast ERROR]';
+
+    this.cause = cause;
   }
-  
+}

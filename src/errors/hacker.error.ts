@@ -6,7 +6,7 @@ export class HackerError extends Error {
 
     this.type = type;
 
-    this.name = "[Hacker News Error]";
+    this.name = '[Hacker News Error]';
 
     this.cause = cause;
   }

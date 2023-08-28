@@ -8,7 +8,7 @@ import { starValidator } from 'validators/start.validator';
 
 @Controller('bbc')
 export class BbcController {
-  constructor(private readonly bbc: BbcNewsProvider) { }
+  constructor(private readonly bbc: BbcNewsProvider) {}
 
   @Get('/count')
   async getBbcCount() {
@@ -17,7 +17,7 @@ export class BbcController {
 
       return new SetResponse(200, { count });
     } catch (error) {
-      return new SetErrorResponse(500, {error});
+      return new SetErrorResponse(500, { error });
     }
   }
 
@@ -32,56 +32,55 @@ export class BbcController {
 
       return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, {error});
+      return new SetErrorResponse(500, { error });
     }
   }
 
-  @Post("/date/list")
+  @Post('/date/list')
   async getDateList() {
     try {
       const result = await this.bbc.getDateList();
 
-      return new SetResponse(200, {result});
+      return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, {error})
+      return new SetErrorResponse(500, { error });
     }
   }
 
-
-  @Post("/star")
+  @Post('/star')
   async giveStarNews(@Body() request: StarRequest) {
     try {
-      const {uuid} = await starValidator(request);
+      const { uuid } = await starValidator(request);
 
       const result = await this.bbc.giveStar(uuid);
 
-      return new SetResponse(200, {result});
+      return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, {error});
+      return new SetErrorResponse(500, { error });
     }
   }
 
-  @Post("/unstar")
+  @Post('/unstar')
   async unStarNews(@Body() request: StarRequest) {
     try {
-      const {uuid} = await starValidator(request);
+      const { uuid } = await starValidator(request);
 
       const result = await this.bbc.unStar(uuid);
 
-      return new SetResponse(200, {result});
+      return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, {error});
+      return new SetErrorResponse(500, { error });
     }
   }
 
-  @Get("/starred")
+  @Get('/starred')
   async getStarredBbc() {
     try {
       const result = await this.bbc.bringStarredNews();
 
-      return new SetResponse(200, {result});
+      return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, {error});
+      return new SetErrorResponse(500, { error });
     }
   }
 }

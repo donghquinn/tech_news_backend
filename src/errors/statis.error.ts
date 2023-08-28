@@ -1,13 +1,13 @@
 export class StatisticsError extends Error {
-    type: string;
+  type: string;
 
-    constructor(type: string, message: string, cause?: Error) {
-        super(message);
+  constructor(type: string, message: string, cause?: Error) {
+    super(message);
 
-        this.type = type;
+    this.type = type;
 
-        this.name = "[Statistics Error]";
+    this.name = '[Statistics Error]';
 
-        this.cause = cause;
-    }
+    this.cause = cause;
+  }
 }

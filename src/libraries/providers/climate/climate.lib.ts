@@ -6,13 +6,13 @@ import moment from 'moment-timezone';
 
 @Injectable()
 export class ClimateProvider {
-  constructor(private prisma: PrismaLibrary) { }
+  constructor(private prisma: PrismaLibrary) {}
 
   async getDailyClimateData(today: string) {
     try {
       const yesterday = moment(today).subtract(1, 'day').toString();
 
-      Logger.debug("Hacker YesterDay: %o", { 
+      Logger.debug('Hacker YesterDay: %o', {
         start: startOfDay(new Date(yesterday)),
         end: endOfDay(new Date(yesterday)),
       });
@@ -37,7 +37,7 @@ export class ClimateProvider {
         where: {
           founded: {
             gte: startOfDay(new Date(yesterday)),
-            lte: endOfDay(new Date(yesterday))
+            lte: endOfDay(new Date(yesterday)),
           },
         },
         orderBy: { dataTime: 'desc' },

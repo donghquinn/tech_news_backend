@@ -5,7 +5,7 @@ import { Module } from '@nestjs/common';
 import { LoggerProvider } from '@utils/logger.util';
 
 @Module({
-  controllers: [ ClimateController ],
-  providers: [ ClimateProvider, PrismaLibrary, LoggerProvider ],
+  controllers: [ClimateController],
+  providers: [ClimateProvider, PrismaLibrary, LoggerProvider],
 })
-export class ClimateModule { }
+export class ClimateModule {}

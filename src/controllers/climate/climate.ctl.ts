@@ -4,11 +4,9 @@ import { dataRequestValidator } from '@validators/list.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { MatchingDataRequest } from 'types/list.type';
 
-
-
 @Controller('climate')
 export class ClimateController {
-  constructor(private readonly climate: ClimateProvider) { }
+  constructor(private readonly climate: ClimateProvider) {}
 
   @Post('/today')
   async getClimate(@Body() request: MatchingDataRequest) {
@@ -21,7 +19,7 @@ export class ClimateController {
 
       return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, {error});
+      return new SetErrorResponse(500, { error });
     }
   }
 }

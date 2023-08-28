@@ -1,7 +1,7 @@
 export interface ScrapeRequest {
-    today: string;
+  today: string;
 }
 
 export interface StarRequest {
-    uuid: string
-  }
+  uuid: string;
+}

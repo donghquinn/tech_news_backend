@@ -12,7 +12,7 @@ const dirSaveName = path.join(dirName, '..', '..', 'logs');
 const { combine, timestamp: defaultTimestamp, printf, splat, json } = Winston.format;
 
 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-const formatted = printf(({ level, message, timestamp }) => `${ timestamp } ${ level }: ${ message }`);
+const formatted = printf(({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`);
 
 @Injectable()
 export class LoggerProvider implements LoggerService {

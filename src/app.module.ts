@@ -10,15 +10,15 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { HeadersMiddleware } from 'middlewares/header.middleware';
 
 @Module({
-  imports: [ 
-    HackerModule, 
-    BbcModule, 
-    PrismaModule, 
-    ClimateModule, 
+  imports: [
+    HackerModule,
+    BbcModule,
+    PrismaModule,
+    ClimateModule,
     NaverModule,
     ForecastModule,
     MachineLearningNewsModule,
-   ],
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -5,7 +5,8 @@
   "license": "ISC",
   "packageManager": "yarn@3.6.0",
   "type": "module",
-  "scripts": {
+  "scripts": {    
+    "format": "prettier --write \"**/*.{ts,json,md}\" \"!package*.json\" \"!tsconfig.json\" \"!.eslintrc.json\"",
     "start": "NODE_ENV=production node --max-old-space-size=700 -r ts-node/register -r dotenv/config --loader ts-paths-esm-loader --experimental-specifier-resolution=node  ./src/main.ts",
     "build": "NODE_ENV=production tsc --project tsconfig.json --diagnostics  -p tsconfig.json",
     "dev": "NODE_ENV=development node --max-old-space-size=700 -r ts-node/register -r dotenv/config --loader ts-paths-esm-loader --experimental-specifier-resolution=node  ./src/main.ts",

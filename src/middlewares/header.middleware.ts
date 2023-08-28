@@ -12,7 +12,7 @@ export class HeadersMiddleware implements NestMiddleware {
       Logger.debug(request.ip);
 
       if (authKey === process.env.AUTH_KEY) {
-        Logger.debug("Auth Key Detected");
+        Logger.debug('Auth Key Detected');
 
         next();
       } else {
