@@ -6,7 +6,7 @@ export class BbcError extends Error {
 
     this.type = type;
 
-    this.name = "[BBC Error]";
+    this.name = '[BBC Error]';
 
     this.cause = cause;
   }

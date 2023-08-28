@@ -1,3 +1,3 @@
 export interface ForecastRequest {
-    today: string;
+  today: string;
 }

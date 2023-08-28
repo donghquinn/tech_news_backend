@@ -6,7 +6,7 @@ export class MelonError extends Error {
 
     this.type = type;
 
-    this.name = "[Melon Error]";
+    this.name = '[Melon Error]';
 
     this.cause = cause;
   }

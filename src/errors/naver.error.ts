@@ -6,7 +6,7 @@ export class NaverError extends Error {
 
     this.type = type;
 
-    this.name = "[Naver Error]";
+    this.name = '[Naver Error]';
 
     this.cause = cause;
   }

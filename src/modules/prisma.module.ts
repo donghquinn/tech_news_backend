@@ -1,10 +1,10 @@
+import { PrismaLibrary } from '@libraries/common/prisma.lib';
 import { Global, Module } from '@nestjs/common';
-import { PrismaLibrary } from 'libraries/common/prisma.lib';
 
 @Global()
 @Module({
-  providers: [ PrismaLibrary ],
+  providers: [PrismaLibrary],
   // 재사용 가능하도록 해당 모듈 노출
-  exports: [ PrismaLibrary ],
+  exports: [PrismaLibrary],
 })
-export class PrismaModule { }
+export class PrismaModule {}

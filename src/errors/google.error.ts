@@ -6,7 +6,7 @@ export class GoogleError extends Error {
 
     this.type = type;
 
-    this.name = "[Google Error]";
+    this.name = '[Google Error]';
 
     this.cause = cause;
   }
