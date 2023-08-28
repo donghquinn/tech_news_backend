@@ -1,8 +1,8 @@
+import { ForeCastProvider } from "@libraries/providers/climate/forecast.lib";
 import { Body, Controller, Post } from "@nestjs/common";
+import { forecastValidator } from "@validators/forecast.validators";
 import { SetErrorResponse, SetResponse } from "dto/response.dto";
-import { ForeCastProvider } from "libraries/providers/climate/forecast.lib";
 import { ForecastRequest } from "types/forecast.type";
-import { forecastValidator } from "validators/forecast.validators";
 
 @Controller("forecast")
 export class ForeCastController {

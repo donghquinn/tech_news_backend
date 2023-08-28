@@ -1,10 +1,10 @@
 import { NaverProvider } from '@libraries/providers/news/naver.lib';
 import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
-import { MatchingDataRequest } from '@types/list.type';
-import { StarRequest } from '@types/request.type';
 import { dataRequestValidator } from '@validators/list.validator';
 import { starValidator } from '@validators/start.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
+import { MatchingDataRequest } from 'types/list.type';
+import { StarRequest } from 'types/request.type';
 
 
 @Controller('naver')

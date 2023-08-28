@@ -1,9 +1,10 @@
+import { MachineLearningProvider } from "@libraries/providers/news/machine.lib";
 import { Body, Controller, Get, Post } from "@nestjs/common";
+import { machineLearningValidator } from "@validators/ml.validator";
+import { starValidator } from "@validators/start.validator";
 import { SetErrorResponse, SetResponse } from "dto/response.dto";
-import { MachineLearningProvider } from "libraries/providers/news/machine.lib";
 import { ScrapeRequest, StarRequest } from "types/request.type";
-import { machineLearningValidator } from "validators/ml.validator";
-import { starValidator } from "validators/start.validator";
+
 
 @Controller("ml")
 export class MachineLearningController {

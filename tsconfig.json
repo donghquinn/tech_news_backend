@@ -20,7 +20,6 @@
     "baseUrl": "src",
     // "inlineSourceMap": true,
     "paths": {
-      "@types/*": ["types/*"],
       "@libraries/*": ["libraries/*"],
       "@utils/*": ["utils/*"],
       "@validators/*": ["validators/*"],

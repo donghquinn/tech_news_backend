@@ -11,7 +11,7 @@ export class HackersNewsProvider {
   async getHackerNewsCount() {
     try {
       const count = await this.prisma.hackers.count();
-
+      
       Logger.log('Hacker News Total Count: %o', { count });
 
       return count;
