@@ -2,6 +2,7 @@ import { Logger } from '@nestjs/common';
 import { SetErrorResponse } from 'dto/response.dto';
 import { NextFunction, Request, Response } from 'express';
 
+// eslint-disable-next-line consistent-return
 export const HeaderAuthMiddleware = (request: Request, response: Response, next: NextFunction) => {
   try {
     const authKey = request.headers?.key;
@@ -19,7 +20,7 @@ export const HeaderAuthMiddleware = (request: Request, response: Response, next:
     return new SetErrorResponse(500, { response: 'Middleware Error' });
   }
 
-  return new SetErrorResponse(500, { response: 'Something Else Error' });
+  // return new SetErrorResponse(500, { response: 'Something Else Error' });
 };
 
 // @Injectable()
