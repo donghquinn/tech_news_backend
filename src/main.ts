@@ -2,6 +2,7 @@ import { Logger } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from 'app.module';
 import helmet from 'helmet';
+import { HeaderAuthMiddleware } from 'middlewares/header.middleware';
 import { shutdown } from 'utils/shutdown.utils';
 
 export const bootstrap = async () => {
@@ -20,6 +21,7 @@ export const bootstrap = async () => {
   const port = Number(process.env.APP_PORT);
 
   app.use(helmet());
+  app.use(HeaderAuthMiddleware);
   app.enableCors();
   app.enableVersioning();
   app.useBodyParser('json');

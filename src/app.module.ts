@@ -6,8 +6,7 @@ import { HackerModule } from '@modules/hacker.module';
 import { MachineLearningNewsModule } from '@modules/machine.module';
 import { NaverModule } from '@modules/naver.module';
 import { PrismaModule } from '@modules/prisma.module';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { HeadersMiddleware } from 'middlewares/header.middleware';
+import { Module } from '@nestjs/common';
 
 @Module({
   imports: [
@@ -20,8 +19,8 @@ import { HeadersMiddleware } from 'middlewares/header.middleware';
     MachineLearningNewsModule,
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(HeadersMiddleware).forRoutes('*');
-  }
+export class AppModule {
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer.apply(HeadersMiddleware).forRoutes('*');
+  // }
 }
