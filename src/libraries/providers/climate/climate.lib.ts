@@ -1,6 +1,7 @@
 import { ClimateError } from '@errors/climate.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { ClimateLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
 
@@ -12,7 +13,7 @@ export class ClimateProvider {
     try {
       const yesterday = moment(today).subtract(1, 'day').toString();
 
-      Logger.debug('Hacker YesterDay: %o', {
+      ClimateLogger.debug('[Climate] YesterDay: %o', {
         start: startOfDay(new Date(yesterday)),
         end: endOfDay(new Date(yesterday)),
       });
@@ -47,7 +48,7 @@ export class ClimateProvider {
 
       return result;
     } catch (error) {
-      Logger.error('Bring Korean Climate Data Error: %o', {
+      ClimateLogger.error('[Climate] Bring Korean Climate Data Error: %o', {
         error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
