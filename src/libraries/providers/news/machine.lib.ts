@@ -1,6 +1,7 @@
 import { MachineLearningError } from '@errors/machine.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
 
@@ -12,7 +13,7 @@ export class MachineLearningProvider {
     try {
       const yesterday = moment(today).subtract(1, 'day').toString();
 
-      Logger.debug('Latest Machine Learning News: %o', {
+      NewsLogger.info('[ML] Latest Machine Learning News: %o', {
         start: startOfDay(new Date(yesterday)),
         end: endOfDay(new Date(yesterday)),
       });
@@ -37,6 +38,10 @@ export class MachineLearningProvider {
 
       return result;
     } catch (error) {
+      NewsLogger.error("[ML] Get Latest Machine Learning News Error: %o", {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
       throw new MachineLearningError(
         'Get Latest Machine Learning News',
         'Failed to Get Latest Machine Learning News',
@@ -47,7 +52,7 @@ export class MachineLearningProvider {
 
   async giveStar(uuid: string) {
     try {
-      Logger.debug('Give ML News Star Request: %o', {
+      NewsLogger.info('[ML] Give ML News Star Request: %o', {
         uuid,
       });
 
@@ -62,10 +67,14 @@ export class MachineLearningProvider {
 
       await this.prisma.onModuleDestroy();
 
-      Logger.log('Starred Updated');
+      NewsLogger.info('[ML] Starred Updated');
 
       return true;
     } catch (error) {
+      NewsLogger.error("[ML] Give Star on the ML News Error: %o", {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
       throw new MachineLearningError(
         'Give Star on the ML news',
         'Failed to vie star ML news',
@@ -76,7 +85,7 @@ export class MachineLearningProvider {
 
   async unStar(uuid: string) {
     try {
-      Logger.debug('Give ML News Star Request: %o', {
+      NewsLogger.info('[ML] Give ML News Star Request: %o', {
         uuid,
       });
 
@@ -91,10 +100,14 @@ export class MachineLearningProvider {
 
       await this.prisma.onModuleDestroy();
 
-      Logger.log('Starred Updated');
+      NewsLogger.info('[ML] Starred Updated');
 
       return true;
     } catch (error) {
+      NewsLogger.error("[ML] unStar on the News Error: %o", {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
       throw new MachineLearningError(
         'unStar on the news',
         'Failed to vie star news',
@@ -105,7 +118,7 @@ export class MachineLearningProvider {
 
   async bringStarredNews() {
     try {
-      Logger.log('Request to get Starred ML News');
+      NewsLogger.info('[ML] Request to get Starred ML News');
 
       const starredNews = await this.prisma.machineNews.findMany({
         select: {
@@ -124,13 +137,17 @@ export class MachineLearningProvider {
 
       await this.prisma.onModuleDestroy();
 
-      Logger.log('Founded Starred News');
+      NewsLogger.info('[ML] Founded Starred News');
 
       return starredNews;
     } catch (error) {
+      NewsLogger.error("[ML] Bring Starred ML News Error: %o", {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
       throw new MachineLearningError(
-        'Bring Starred BBC News',
-        'Failed to Bring Starred BBC News',
+        'Bring Starred ML News',
+        'Failed to Bring Starred ML News',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }

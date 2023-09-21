@@ -1,7 +1,8 @@
 import { BbcError } from '@errors/bbc.error';
 import { StatisticsError } from '@errors/statis.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
 
@@ -13,7 +14,7 @@ export class BbcNewsProvider {
     try {
       const yesterday = moment(today).subtract(1, 'day').toString();
 
-      Logger.debug('BBC YesterDay: %o', {
+      NewsLogger.info('[BBC] BBC YesterDay: %o', {
         start: startOfDay(new Date(yesterday)),
         end: endOfDay(new Date(yesterday)),
       });
@@ -33,10 +34,10 @@ export class BbcNewsProvider {
 
       return result;
     } catch (error) {
-      Logger.error('Bring BBC News Error: %o', error instanceof Error ? error : new Error(JSON.stringify(error)));
+      NewsLogger.error('[BBC] Bring News Error: %o', error instanceof Error ? error : new Error(JSON.stringify(error)));
 
       throw new BbcError(
-        'BBC Error',
+        '[BBC] BBC Error',
         'BBC News Error',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
@@ -47,13 +48,13 @@ export class BbcNewsProvider {
     try {
       const count = await this.prisma.bbcTechNews.count({ select: { uuid: true } });
 
-      Logger.log(`BBC News Count: ${count.uuid}`);
+      NewsLogger.info(`BBC News Count: ${count.uuid}`);
 
       await this.prisma.onModuleDestroy();
 
       return count;
     } catch (error) {
-      Logger.error('Get BBC Total News Count Error: %o', {
+      NewsLogger.error('Get BBC Total News Count Error: %o', {
         error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
@@ -75,12 +76,17 @@ export class BbcNewsProvider {
         distinct: ['founded'],
       });
 
-      Logger.debug('Date List: %o', { dateLists });
+      NewsLogger.debug('[BBC] Date List: %o', { dateLists });
 
       await this.prisma.onModuleDestroy();
 
       return dateLists;
     } catch (error) {
+      NewsLogger.error(
+        '[BBC] Get Date List Error: %o',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+
       throw new BbcError(
         'BBC Get Date List',
         'Failed To Get List',
@@ -93,7 +99,7 @@ export class BbcNewsProvider {
     try {
       const date = moment(today).toString();
 
-      Logger.log('Requested Date: %o', {
+      NewsLogger.info('[BBC] Requested Date: %o', {
         date,
       });
 
@@ -112,8 +118,13 @@ export class BbcNewsProvider {
 
       return bbcData;
     } catch (error) {
+      NewsLogger.error(
+        '[BBC] Get Date Matching Data Error: %o',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+
       throw new BbcError(
-        'Get BBC Date Matching Data',
+        '[BBC] Get BBC Date Matching Data',
         'Failed to get Matching Data',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
@@ -122,7 +133,7 @@ export class BbcNewsProvider {
 
   async giveStar(uuid: string) {
     try {
-      Logger.debug('Give Star Request: %o', {
+      NewsLogger.debug('[BBC] Give Star Request: %o', {
         uuid,
       });
 
@@ -137,12 +148,17 @@ export class BbcNewsProvider {
 
       await this.prisma.onModuleDestroy();
 
-      Logger.log('Starred Updated');
+      NewsLogger.info('[BBC] Starred Updated');
 
       return true;
     } catch (error) {
+      NewsLogger.error(
+        '[BBC] Give Star on the news Error: %o',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+
       throw new BbcError(
-        'Give Star on the news',
+        '[BBC] Give Star on the news',
         'Failed to vie star news',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
@@ -151,7 +167,7 @@ export class BbcNewsProvider {
 
   async unStar(uuid: string) {
     try {
-      Logger.debug('Give Star Request: %o', {
+      NewsLogger.info('[BBC] Give Star Request: %o', {
         uuid,
       });
 
@@ -166,12 +182,17 @@ export class BbcNewsProvider {
 
       await this.prisma.onModuleDestroy();
 
-      Logger.log('Starred Updated');
+      NewsLogger.info('[BBC] Starred Updated');
 
       return true;
     } catch (error) {
+      NewsLogger.error(
+        '[BBC] unStar on the News Error: %o',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+
       throw new BbcError(
-        'unStar on the news',
+        '[BBC] unStar on the news',
         'Failed to vie star news',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
@@ -180,7 +201,7 @@ export class BbcNewsProvider {
 
   async bringStarredNews() {
     try {
-      Logger.log('Request to get Starred News');
+      NewsLogger.info('[BBC] Request to get Starred News');
 
       const starredNews = await this.prisma.bbcTechNews.findMany({
         select: {
@@ -199,12 +220,17 @@ export class BbcNewsProvider {
 
       await this.prisma.onModuleDestroy();
 
-      Logger.log('Founded Starred News');
+      NewsLogger.info('[BBC] Founded Starred News');
 
       return starredNews;
     } catch (error) {
+      NewsLogger.error(
+        '[BBC] Bring Starred BBC News Error: %o',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+
       throw new BbcError(
-        'Bring Starred BBC News',
+        '[BBC] Bring Starred BBC News',
         'Failed to Bring Starred BBC News',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
