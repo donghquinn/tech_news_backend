@@ -1,6 +1,7 @@
 import { NaverError } from '@errors/naver.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
 
@@ -12,7 +13,7 @@ export class NaverProvider {
     try {
       const yesterday = moment(today).subtract(1, 'day').toString();
 
-      Logger.debug('Naver YesterDay: %o', {
+      NewsLogger.info('[NAVER] YesterDay: %o', {
         start: startOfDay(new Date(yesterday)),
         end: endOfDay(new Date(yesterday)),
       });
@@ -40,12 +41,12 @@ export class NaverProvider {
 
       return result;
     } catch (error) {
-      Logger.error('Bring Naver Today News Error: %o', {
+      NewsLogger.error('[NAVER] Bring Today News Error: %o', {
         error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
       throw new NaverError(
-        'Get Today Naver News',
+        '[NAVER] Get Today Naver News',
         'Get Naver News Error',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
@@ -54,7 +55,7 @@ export class NaverProvider {
 
   async giveStar(uuid: string) {
     try {
-      Logger.debug('Give Star Naver News Request: %o', {
+      NewsLogger.info('[NAVER] Give Star Naver News Request: %o', {
         uuid,
       });
 
@@ -69,10 +70,14 @@ export class NaverProvider {
 
       await this.prisma.onModuleDestroy();
 
-      Logger.log('Starred Updated');
+      NewsLogger.info('[NAVER] Starred Updated');
 
       return true;
     } catch (error) {
+      NewsLogger.error('[NAVER] Give Star on the Naver News Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
       throw new NaverError(
         'Give Star on the Naver news',
         'Failed to vie star news',
@@ -83,7 +88,7 @@ export class NaverProvider {
 
   async unStar(uuid: string) {
     try {
-      Logger.debug('Give Star Naver news Request: %o', {
+      NewsLogger.debug('[ML] Give Star Naver news Request: %o', {
         uuid,
       });
 
@@ -98,10 +103,14 @@ export class NaverProvider {
 
       await this.prisma.onModuleDestroy();
 
-      Logger.log('Starred Updated');
+      NewsLogger.info('[ML] Starred Updated');
 
       return true;
     } catch (error) {
+      NewsLogger.error('[NAVER] unStar on the Naver News Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
       throw new NaverError(
         'unStar on the Naver News',
         'Failed to vie star news',
@@ -112,7 +121,7 @@ export class NaverProvider {
 
   async bringStarredNews() {
     try {
-      Logger.log('Request to get Starred Naver News');
+      NewsLogger.info('[ML] Request to get Starred Naver News');
 
       const starredNews = await this.prisma.naverNews.findMany({
         select: {
@@ -131,10 +140,14 @@ export class NaverProvider {
 
       await this.prisma.onModuleDestroy();
 
-      Logger.log('Founded Starred News');
+      NewsLogger.info('[ML] Founded Starred News');
 
       return starredNews;
     } catch (error) {
+      NewsLogger.error('[NAVER] Bring Starred News Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
       throw new NaverError(
         'Bring Starred Naver News',
         'Failed to Bring Starred Naver News',

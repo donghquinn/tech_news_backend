@@ -1,6 +1,7 @@
 import { HackerError } from '@errors/hacker.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
 
@@ -12,16 +13,16 @@ export class HackersNewsProvider {
     try {
       const count = await this.prisma.hackers.count();
 
-      Logger.log('Hacker News Total Count: %o', { count });
+      NewsLogger.info('[Hackers] News Total Count: %o', { count });
 
       return count;
     } catch (error) {
-      Logger.error('Get Hacker News Count Error: %o', {
+      NewsLogger.error('[Hackers] Get Hacker News Count Error: %o', {
         error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
       throw new HackerError(
-        'Hacker News',
+        '[Hackers] Hacker News',
         'Hacker News Count Error',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
@@ -32,7 +33,7 @@ export class HackersNewsProvider {
     try {
       const yesterday = moment(today).subtract(1, 'day').toString();
 
-      Logger.debug('Hacker YesterDay: %o', {
+      NewsLogger.info('[Hackers] YesterDay: %o', {
         start: startOfDay(new Date(yesterday)),
         end: endOfDay(new Date(yesterday)),
       });
@@ -52,10 +53,13 @@ export class HackersNewsProvider {
 
       return result;
     } catch (error) {
-      Logger.error('Bring Hacker News Error: %o', error instanceof Error ? error : new Error(JSON.stringify(error)));
+      NewsLogger.error(
+        '[Hackers] Bring Hacker News Error: %o',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
 
       throw new HackerError(
-        'Hacker News',
+        '[Hackers] Hacker News',
         'Hacker News Bringing Error',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
@@ -64,7 +68,7 @@ export class HackersNewsProvider {
 
   async giveStar(uuid: string) {
     try {
-      Logger.debug('Give Hacker News Star Request: %o', {
+      NewsLogger.info('[Hackers] Give Hacker News Star Request: %o', {
         uuid,
       });
 
@@ -79,7 +83,7 @@ export class HackersNewsProvider {
 
       await this.prisma.onModuleDestroy();
 
-      Logger.log('Starred Updated');
+      NewsLogger.info('[Hackers] Starred Updated');
 
       return true;
     } catch (error) {
@@ -93,7 +97,7 @@ export class HackersNewsProvider {
 
   async unStar(uuid: string) {
     try {
-      Logger.debug('Give Hacker News unStar Request: %o', {
+      NewsLogger.info('Give Hacker News unStar Request: %o', {
         uuid,
       });
 
@@ -108,12 +112,12 @@ export class HackersNewsProvider {
 
       await this.prisma.onModuleDestroy();
 
-      Logger.log('Starred Updated');
+      NewsLogger.info('[Hackers] Starred Updated');
 
       return true;
     } catch (error) {
       throw new HackerError(
-        'unStar on the news',
+        '[Hackers] unStar on the news',
         'Failed to vie star news',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
@@ -122,7 +126,7 @@ export class HackersNewsProvider {
 
   async bringStarredNews() {
     try {
-      Logger.log('Request to get Starred Hacker News');
+      NewsLogger.info('[Hackers] Request to get Starred Hacker News');
 
       const starredNews = await this.prisma.hackers.findMany({
         select: {
@@ -141,12 +145,12 @@ export class HackersNewsProvider {
 
       await this.prisma.onModuleDestroy();
 
-      Logger.log('Founded Starred News');
+      NewsLogger.info('[Hackers] Founded Starred News');
 
       return starredNews;
     } catch (error) {
       throw new HackerError(
-        'Bring Starred Hacker News',
+        '[Hackers] Bring Starred Hacker News',
         'Failed to Bring Starred Hacker News',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );

@@ -2,7 +2,6 @@ import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 import { SetErrorResponse } from 'dto/response.dto';
 import { NextFunction, Request, Response } from 'express';
 
-
 @Injectable()
 export class HeadersMiddleware implements NestMiddleware {
   // eslint-disable-next-line @typescript-eslint/require-await, class-methods-use-this, consistent-return
