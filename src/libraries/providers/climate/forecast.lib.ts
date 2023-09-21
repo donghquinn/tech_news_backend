@@ -1,6 +1,7 @@
 import { ForecastError } from '@errors/forecast.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
 import { Injectable } from '@nestjs/common';
+import { ClimateLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
 
@@ -34,6 +35,10 @@ export class ForeCastProvider {
 
       return result;
     } catch (error) {
+      ClimateLogger.error('[Forecast] Bring Today News Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+      
       throw new ForecastError(
         'Short Forecast Provider',
         'Short Forecast Provider Error',
