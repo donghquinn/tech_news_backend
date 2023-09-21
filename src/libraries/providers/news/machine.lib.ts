@@ -38,7 +38,7 @@ export class MachineLearningProvider {
 
       return result;
     } catch (error) {
-      NewsLogger.error("[ML] Get Latest Machine Learning News Error: %o", {
+      NewsLogger.error('[ML] Get Latest Machine Learning News Error: %o', {
         error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
@@ -71,7 +71,7 @@ export class MachineLearningProvider {
 
       return true;
     } catch (error) {
-      NewsLogger.error("[ML] Give Star on the ML News Error: %o", {
+      NewsLogger.error('[ML] Give Star on the ML News Error: %o', {
         error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
@@ -104,7 +104,7 @@ export class MachineLearningProvider {
 
       return true;
     } catch (error) {
-      NewsLogger.error("[ML] unStar on the News Error: %o", {
+      NewsLogger.error('[ML] unStar on the News Error: %o', {
         error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
@@ -141,7 +141,7 @@ export class MachineLearningProvider {
 
       return starredNews;
     } catch (error) {
-      NewsLogger.error("[ML] Bring Starred ML News Error: %o", {
+      NewsLogger.error('[ML] Bring Starred ML News Error: %o', {
         error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
