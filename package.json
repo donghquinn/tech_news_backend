@@ -9,7 +9,7 @@
     "format": "prettier --write \"**/*.{ts,json,md}\" \"!package*.json\" \"!tsconfig.json\" \"!.eslintrc.json\"",
     "start": "NODE_ENV=production node --max-old-space-size=700 -r ts-node/register --loader ts-paths-esm-loader --experimental-specifier-resolution=node  ./dist/main.js",
     "build": "NODE_ENV=production tsc --project tsconfig.json --diagnostics  -p tsconfig.json",
-    "dev": "NODE_ENV=development node --max-old-space-size=700 -r ts-node/register -r dotenv/config --loader ts-paths-esm-loader --experimental-specifier-resolution=node  ./src/main.ts",
+    "dev": "NODE_ENV=development node --max-old-space-size=700 -r ts-node/register --loader ts-paths-esm-loader --experimental-specifier-resolution=node  ./src/main.ts",
     "schema": "prisma generate",
     "migrate": "prisma migrate dev --name added_melon",
     "db:update": "prisma db push"
@@ -19,7 +19,7 @@
     "@nestjs/core": "^10.2.7",
     "@nestjs/platform-express": "^10.2.7",
     "@prisma/client": "^5.4.2",
-    "dotenv": "^16.3.1",
+    "date-fns": "^2.30.0",
     "helmet": "^7.0.0",
     "moment-timezone": "^0.5.43",
     "node-fetch": "^3.3.2",

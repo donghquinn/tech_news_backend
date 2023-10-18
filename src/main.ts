@@ -7,9 +7,6 @@ import { shutdown } from 'utils/shutdown.utils';
 export const bootstrap = async () => {
   const { NestFactory } = await import('@nestjs/core');
   // const source = await import('source-map-support');
-  const { config } = await import('dotenv');
-
-  config();
 
   const date = new Date().toLocaleTimeString();
 
