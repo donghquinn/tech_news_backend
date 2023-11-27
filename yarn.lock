@@ -153,9 +153,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/common@npm:^10.2.7":
-  version: 10.2.7
-  resolution: "@nestjs/common@npm:10.2.7"
+"@nestjs/common@npm:^10.2.10":
+  version: 10.2.10
+  resolution: "@nestjs/common@npm:10.2.10"
   dependencies:
     iterare: 1.2.1
     tslib: 2.6.2
@@ -170,13 +170,13 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: b0a498eae3bc5c84659064830eab57583caaddef15ed1137768d73e986dabe2e1a04f61d8c0181b1c538e8c5f4ea3342a1f342e7a19a59e46d306ea3b53f3342
+  checksum: 120b55eaa06780461bf9ba96c7a753c373e63889120ad5fffe3337603748164bd0177a67dfd90c8421fd0ca18a3e0dfe49f12dd5a204cc33c8efb52072aa86b4
   languageName: node
   linkType: hard
 
-"@nestjs/core@npm:^10.2.7":
-  version: 10.2.7
-  resolution: "@nestjs/core@npm:10.2.7"
+"@nestjs/core@npm:^10.2.10":
+  version: 10.2.10
+  resolution: "@nestjs/core@npm:10.2.10"
   dependencies:
     "@nuxtjs/opencollective": 0.3.2
     fast-safe-stringify: 2.1.1
@@ -198,13 +198,13 @@ __metadata:
       optional: true
     "@nestjs/websockets":
       optional: true
-  checksum: 7e180d9eb014bb5867ef9476e414ab497a145f3966871155eac08da6b6a75709cae1bbf43bd74bc855316f565396457ccef224ad173a5c5614e4032c59cb9e3c
+  checksum: e771f0a4c347b1bf12834acb373b4abc57f7fc6dee75afda94690d074d5d0de7715eccfc136c5343fbf3fc9e74c921cbb7009ed7190d08e8655d2f08724131cb
   languageName: node
   linkType: hard
 
-"@nestjs/platform-express@npm:^10.2.7":
-  version: 10.2.7
-  resolution: "@nestjs/platform-express@npm:10.2.7"
+"@nestjs/platform-express@npm:^10.2.10":
+  version: 10.2.10
+  resolution: "@nestjs/platform-express@npm:10.2.10"
   dependencies:
     body-parser: 1.20.2
     cors: 2.8.5
@@ -214,7 +214,7 @@ __metadata:
   peerDependencies:
     "@nestjs/common": ^10.0.0
     "@nestjs/core": ^10.0.0
-  checksum: 34b912591642e86dc666c74c8b3ff10771251d9aa3f3c392525cbdff9b14f770c46e704eb2d9c9e790399a8d2416d25a6bc6fd3577e9ee22caac67acf608a32b
+  checksum: 44c1c9e4f25e16e214ff218bd1dab79b1a50dac5a53177dfadbae55cc9740eb554caaa2da7c021e13efda3d79bfbb76fcb74a7d1f39d5e6ee0c1b5ad63438238
   languageName: node
   linkType: hard
 
@@ -258,31 +258,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/client@npm:^5.4.2":
-  version: 5.4.2
-  resolution: "@prisma/client@npm:5.4.2"
+"@prisma/client@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "@prisma/client@npm:5.6.0"
   dependencies:
-    "@prisma/engines-version": 5.4.1-2.ac9d7041ed77bcc8a8dbd2ab6616b39013829574
+    "@prisma/engines-version": 5.6.0-32.e95e739751f42d8ca026f6b910f5a2dc5adeaeee
   peerDependencies:
     prisma: "*"
   peerDependenciesMeta:
     prisma:
       optional: true
-  checksum: e01aebad95a6168668a214784e036ba4d6c6ac2c7eff35c7c3b1b729d2fc70b7f1addfce8a8550b24ffadf9be45538f2bd8a2257dfac9ec18d1d900437bf6660
+  checksum: 51abfba1c066ff6a79d5c6aad5eed6bdde6fbafa5a1d6e17f3aa2b0f8ed55541079b2526bc0372158953d1146c8dd9c6fbcd137cf7fb2ace1022b02cc55675ab
   languageName: node
   linkType: hard
 
-"@prisma/engines-version@npm:5.4.1-2.ac9d7041ed77bcc8a8dbd2ab6616b39013829574":
-  version: 5.4.1-2.ac9d7041ed77bcc8a8dbd2ab6616b39013829574
-  resolution: "@prisma/engines-version@npm:5.4.1-2.ac9d7041ed77bcc8a8dbd2ab6616b39013829574"
-  checksum: 493f84e8856bf214c64177f879f7009740156492a3e1b42cd02e91eec273a5d290bfdde9ca32c361cd8a0616a33d903163582a51e44a79a6b6b318f72130517f
+"@prisma/engines-version@npm:5.6.0-32.e95e739751f42d8ca026f6b910f5a2dc5adeaeee":
+  version: 5.6.0-32.e95e739751f42d8ca026f6b910f5a2dc5adeaeee
+  resolution: "@prisma/engines-version@npm:5.6.0-32.e95e739751f42d8ca026f6b910f5a2dc5adeaeee"
+  checksum: 197f63539999e50e66577d70b3167d9bdb5810a66fde60ee3f69cd58cf47516a43221092ce82303ad3d9dde2f2700c7f76b4383093d33793fbfbb1b0a4f144ee
   languageName: node
   linkType: hard
 
-"@prisma/engines@npm:5.4.2":
-  version: 5.4.2
-  resolution: "@prisma/engines@npm:5.4.2"
-  checksum: 90bec53c85e800291a3cf9f02f4979bd8177225077178fb292ea100b47af0e6d5c9a31bf3630f1dcfd23829299fe7685e386fc57a3d7ff3bf0c25c3704ce971f
+"@prisma/engines@npm:5.6.0":
+  version: 5.6.0
+  resolution: "@prisma/engines@npm:5.6.0"
+  checksum: 52688e2f59715479f8d531b1ce755578b069f05b0e3735a564f487a2cb8fa19b5f10a21b22e3fbba206190ece0f5a033952b3c78da6545ee798a186daa5b2e73
   languageName: node
   linkType: hard
 
@@ -345,15 +345,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express@npm:^4.17.20":
-  version: 4.17.20
-  resolution: "@types/express@npm:4.17.20"
+"@types/express@npm:^4.17.21":
+  version: 4.17.21
+  resolution: "@types/express@npm:4.17.21"
   dependencies:
     "@types/body-parser": "*"
     "@types/express-serve-static-core": ^4.17.33
     "@types/qs": "*"
     "@types/serve-static": "*"
-  checksum: bf8a97d283128e5129f9ccabbeef728ff3f0484465e0ae74a304bd0588fa6cb715ae68845650caba9a641944b7791ba125d02ddbd47a7e62aaefdd036570c6c5
+  checksum: fb238298630370a7392c7abdc80f495ae6c716723e114705d7e3fb67e3850b3859bbfd29391463a3fb8c0b32051847935933d99e719c0478710f8098ee7091c5
   languageName: node
   linkType: hard
 
@@ -2761,14 +2761,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prisma@npm:^5.4.2":
-  version: 5.4.2
-  resolution: "prisma@npm:5.4.2"
+"prisma@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "prisma@npm:5.6.0"
   dependencies:
-    "@prisma/engines": 5.4.2
+    "@prisma/engines": 5.6.0
   bin:
     prisma: build/index.js
-  checksum: 863b34fb16960b533a3ec0e8d1e32f6a9caf99849ade9157beea74ef708695281b318b9d2afac0a12953b1ff27df111a8fdb37324a6e6b060d255ae51a53c8c5
+  checksum: 77b80b89a771c6c218172cfc5b692e65755ba76ec5b6487ea3ac5b5fa05aea47c48a11cb9449517c4bc4770c3737d02fe3db576bd54c6e32fcf39f08607b546e
   languageName: node
   linkType: hard
 
@@ -3232,11 +3232,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "tech_news_scrape_back@workspace:."
   dependencies:
-    "@nestjs/common": ^10.2.7
-    "@nestjs/core": ^10.2.7
-    "@nestjs/platform-express": ^10.2.7
-    "@prisma/client": ^5.4.2
-    "@types/express": ^4.17.20
+    "@nestjs/common": ^10.2.10
+    "@nestjs/core": ^10.2.10
+    "@nestjs/platform-express": ^10.2.10
+    "@prisma/client": ^5.6.0
+    "@types/express": ^4.17.21
     "@types/node": ^20.8.7
     "@typescript-eslint/eslint-plugin": ^6.7.2
     "@typescript-eslint/parser": ^6.7.2
@@ -3250,13 +3250,13 @@ __metadata:
     moment-timezone: ^0.5.43
     node-fetch: ^3.3.2
     prettier: ^3.0.3
-    prisma: ^5.4.2
+    prisma: ^5.6.0
     reflect-metadata: ^0.1.13
     rxjs: ^7.8.1
     ts-node: ^10.9.1
     ts-paths-esm-loader: ^1.4.3
     tsconfig-paths: ^4.2.0
-    typescript: ^5.2.2
+    typescript: ^5.3.2
     winston: ^3.10.0
     winston-daily-rotate-file: ^4.7.1
     zod: ^3.22.4
@@ -3481,23 +3481,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.2.2":
-  version: 5.2.2
-  resolution: "typescript@npm:5.2.2"
+"typescript@npm:^5.3.2":
+  version: 5.3.2
+  resolution: "typescript@npm:5.3.2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 7912821dac4d962d315c36800fe387cdc0a6298dba7ec171b350b4a6e988b51d7b8f051317786db1094bd7431d526b648aba7da8236607febb26cf5b871d2d3c
+  checksum: d92534dda639eb825db013203404c1fabca8ac630564283c9e7dc9e64fd9c9346c2de95ecebdf3e6e8c1c32941bca1cfe0da37877611feb9daf8feeaea58d230
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
-  version: 5.2.2
-  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"
+"typescript@patch:typescript@^5.3.2#~builtin<compat/typescript>":
+  version: 5.3.2
+  resolution: "typescript@patch:typescript@npm%3A5.3.2#~builtin<compat/typescript>::version=5.3.2&hash=29ae49"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 0f4da2f15e6f1245e49db15801dbee52f2bbfb267e1c39225afdab5afee1a72839cd86000e65ee9d7e4dfaff12239d28beaf5ee431357fcced15fb08583d72ca
+  checksum: c034461079fbfde3cb584ddee52afccb15b6e32a0ce186d0b2719968786f7ca73e1b07f71fac4163088790b16811c6ccf79680de190664ef66ff0ba9c1fe4a23
   languageName: node
   linkType: hard
 
