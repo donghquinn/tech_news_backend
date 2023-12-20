@@ -84,11 +84,10 @@ export class HackersNewsProvider {
       NewsLogger.info('[Hackers] Starred Updated');
 
       return true;
-    } catch ( error )
-    {
-      NewsLogger.error( "[Hackers] Star Update Error: %o", {
-        error: error instanceof Error ? error : new Error( JSON.stringify( error ) ),
-      } );
+    } catch (error) {
+      NewsLogger.error('[Hackers] Star Update Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
 
       throw new HackerError(
         'Give Star on the news',
@@ -104,7 +103,7 @@ export class HackersNewsProvider {
         uuid,
       });
 
-      await this.prisma.hackers.update( {
+      await this.prisma.hackers.update({
         data: {
           liked: '0',
         },
@@ -116,12 +115,11 @@ export class HackersNewsProvider {
       NewsLogger.info('[Hackers] Starred Updated');
 
       return true;
-    } catch ( error )
-    {
-            NewsLogger.error( "[Hackers] Unstar Update Error: %o", {
-        error: error instanceof Error ? error : new Error( JSON.stringify( error ) ),
-      } );
-      
+    } catch (error) {
+      NewsLogger.error('[Hackers] Unstar Update Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
       throw new HackerError(
         '[Hackers] unStar on the news',
         'Failed to vie star news',
@@ -152,12 +150,11 @@ export class HackersNewsProvider {
       NewsLogger.info('[Hackers] Founded Starred News');
 
       return starredNews;
-    } catch ( error )
-    {
-            NewsLogger.error( "[Hackers] Get Starred Update Error: %o", {
-        error: error instanceof Error ? error : new Error( JSON.stringify( error ) ),
-      } );
-      
+    } catch (error) {
+      NewsLogger.error('[Hackers] Get Starred Update Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
       throw new HackerError(
         '[Hackers] Bring Starred Hacker News',
         'Failed to Bring Starred Hacker News',
