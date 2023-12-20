@@ -66,22 +66,39 @@ export class HackersNewsProvider {
     }
   }
 
-  async giveStar(uuid: string) {
+  async giveStar(uuid: string, isStarred: boolean) {
     try {
-      NewsLogger.info('[Hackers] Give Hacker News Star Request: %o', {
-        uuid,
-      });
-
-      await this.prisma.hackers.update({
-        data: {
-          liked: '1',
-        },
-        where: {
+      if (!isStarred) {
+        NewsLogger.info('Give Hacker News unStar Request: %o', {
           uuid,
-        },
-      });
+        });
 
-      NewsLogger.info('[Hackers] Starred Updated');
+        await this.prisma.hackers.update({
+          data: {
+            liked: '0',
+          },
+          where: {
+            uuid,
+          },
+        });
+
+        NewsLogger.info('[Hackers] Unstarred Updated');
+      } else {
+        NewsLogger.info('[Hackers] Give Hacker News Star Request: %o', {
+          uuid,
+        });
+
+        await this.prisma.hackers.update({
+          data: {
+            liked: '1',
+          },
+          where: {
+            uuid,
+          },
+        });
+
+        NewsLogger.info('[Hackers] Starred Updated');
+      }
 
       return true;
     } catch (error) {
@@ -91,37 +108,6 @@ export class HackersNewsProvider {
 
       throw new HackerError(
         'Give Star on the news',
-        'Failed to vie star news',
-        error instanceof Error ? error : new Error(JSON.stringify(error)),
-      );
-    }
-  }
-
-  async unStar(uuid: string) {
-    try {
-      NewsLogger.info('Give Hacker News unStar Request: %o', {
-        uuid,
-      });
-
-      await this.prisma.hackers.update({
-        data: {
-          liked: '0',
-        },
-        where: {
-          uuid,
-        },
-      });
-
-      NewsLogger.info('[Hackers] Starred Updated');
-
-      return true;
-    } catch (error) {
-      NewsLogger.error('[Hackers] Unstar Update Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
-      });
-
-      throw new HackerError(
-        '[Hackers] unStar on the news',
         'Failed to vie star news',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
