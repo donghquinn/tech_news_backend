@@ -13,18 +13,18 @@ export class ForeCastProvider {
     try {
       const yesterday = moment(today).subtract(1, 'day').toString();
 
-      const result = await this.prisma.foreCast.findMany({
+      const result = await this.prisma.forecast.findMany({
         select: {
           date: true,
           rain: true,
           temperature: true,
           visibility: true,
           humidity: true,
-          cloud: true,
+          totalCloud: true,
           solarRadiation: true,
         },
         where: {
-          founded: {
+          created: {
             gte: startOfDay(new Date(yesterday)),
             lte: endOfDay(new Date(yesterday)),
           },
