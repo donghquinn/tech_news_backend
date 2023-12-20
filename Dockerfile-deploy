@@ -2,7 +2,8 @@ FROM node:20.2-alpine3.17 AS base
 
 WORKDIR /usr/src/app
 
-ADD package.json yarn.lock .yarn .yarnrc.yml  /usr/src/app/
+COPY package.json yarn.lock .yarnrc.yml  /usr/src/app/
+COPY .yarn /usr/src/app/.yarn
 
 RUN yarn install
 
