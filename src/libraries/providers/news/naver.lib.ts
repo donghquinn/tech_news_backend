@@ -61,14 +61,12 @@ export class NaverProvider {
 
       await this.prisma.naverNews.update({
         data: {
-          starred: '1',
+          liked: '1',
         },
         where: {
           uuid,
         },
       });
-
-      await this.prisma.onModuleDestroy();
 
       NewsLogger.info('[NAVER] Starred Updated');
 
@@ -94,7 +92,7 @@ export class NaverProvider {
 
       await this.prisma.naverNews.update({
         data: {
-          starred: '0',
+          liked: '0',
         },
         where: {
           uuid,
@@ -134,11 +132,9 @@ export class NaverProvider {
           founded: 'desc',
         },
         where: {
-          starred: '1',
+          liked: '1',
         },
       });
-
-      await this.prisma.onModuleDestroy();
 
       NewsLogger.info('[ML] Founded Starred News');
 

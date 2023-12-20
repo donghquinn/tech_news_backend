@@ -58,14 +58,12 @@ export class MachineLearningProvider {
 
       await this.prisma.machineNews.update({
         data: {
-          starred: '1',
+          liked: '1',
         },
         where: {
           uuid,
         },
       });
-
-      await this.prisma.onModuleDestroy();
 
       NewsLogger.info('[ML] Starred Updated');
 
@@ -91,14 +89,12 @@ export class MachineLearningProvider {
 
       await this.prisma.machineNews.update({
         data: {
-          starred: '0',
+          liked: '0',
         },
         where: {
           uuid,
         },
       });
-
-      await this.prisma.onModuleDestroy();
 
       NewsLogger.info('[ML] Starred Updated');
 
@@ -131,11 +127,9 @@ export class MachineLearningProvider {
           founded: 'desc',
         },
         where: {
-          starred: '1',
+          liked: '1',
         },
       });
-
-      await this.prisma.onModuleDestroy();
 
       NewsLogger.info('[ML] Founded Starred News');
 

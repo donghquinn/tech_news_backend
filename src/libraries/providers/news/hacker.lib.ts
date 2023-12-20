@@ -74,7 +74,7 @@ export class HackersNewsProvider {
 
       await this.prisma.hackers.update({
         data: {
-          starred: '1',
+          liked: '1',
         },
         where: {
           uuid,
@@ -84,7 +84,12 @@ export class HackersNewsProvider {
       NewsLogger.info('[Hackers] Starred Updated');
 
       return true;
-    } catch (error) {
+    } catch ( error )
+    {
+      NewsLogger.error( "[Hackers] Star Update Error: %o", {
+        error: error instanceof Error ? error : new Error( JSON.stringify( error ) ),
+      } );
+
       throw new HackerError(
         'Give Star on the news',
         'Failed to vie star news',
@@ -99,9 +104,9 @@ export class HackersNewsProvider {
         uuid,
       });
 
-      await this.prisma.hackers.update({
+      await this.prisma.hackers.update( {
         data: {
-          starred: '0',
+          liked: '0',
         },
         where: {
           uuid,
@@ -111,7 +116,12 @@ export class HackersNewsProvider {
       NewsLogger.info('[Hackers] Starred Updated');
 
       return true;
-    } catch (error) {
+    } catch ( error )
+    {
+            NewsLogger.error( "[Hackers] Unstar Update Error: %o", {
+        error: error instanceof Error ? error : new Error( JSON.stringify( error ) ),
+      } );
+      
       throw new HackerError(
         '[Hackers] unStar on the news',
         'Failed to vie star news',
@@ -135,16 +145,19 @@ export class HackersNewsProvider {
           founded: 'desc',
         },
         where: {
-          starred: '1',
+          liked: '1',
         },
       });
-
-      await this.prisma.onModuleDestroy();
 
       NewsLogger.info('[Hackers] Founded Starred News');
 
       return starredNews;
-    } catch (error) {
+    } catch ( error )
+    {
+            NewsLogger.error( "[Hackers] Get Starred Update Error: %o", {
+        error: error instanceof Error ? error : new Error( JSON.stringify( error ) ),
+      } );
+      
       throw new HackerError(
         '[Hackers] Bring Starred Hacker News',
         'Failed to Bring Starred Hacker News',
