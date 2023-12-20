@@ -1,4 +1,4 @@
-import { MachineLearningProvider } from '@libraries/providers/news/machine.lib';
+import { MachineLearningProvider } from '@libraries/providers/news/machine.pvd';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { machineLearningValidator } from '@validators/ml.validator';
 import { starValidator } from '@validators/start.validator';

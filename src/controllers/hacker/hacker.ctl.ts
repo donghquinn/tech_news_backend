@@ -1,4 +1,4 @@
-import { HackersNewsProvider } from '@libraries/providers/news/hacker.lib';
+import { HackersNewsProvider } from '@libraries/providers/news/hacker.pvd';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { dataRequestValidator } from '@validators/list.validator';
 import { starValidator } from '@validators/start.validator';

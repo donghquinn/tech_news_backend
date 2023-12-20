@@ -1,6 +1,6 @@
 import { MachineLearningController } from '@controllers/machine/machine.ctl';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import { MachineLearningProvider } from '@libraries/providers/news/machine.lib';
+import { MachineLearningProvider } from '@libraries/providers/news/machine.pvd';
 import { Module } from '@nestjs/common';
 
 @Module({

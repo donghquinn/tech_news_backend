@@ -31,8 +31,6 @@ export class ForeCastProvider {
         },
       });
 
-      await this.prisma.onModuleDestroy();
-
       return result;
     } catch (error) {
       ClimateLogger.error('[Forecast] Bring Today News Error: %o', {
