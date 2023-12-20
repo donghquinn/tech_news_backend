@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
-import { BbcNewsProvider } from 'libraries/providers/news/bbc.lib';
+import { BbcNewsProvider } from '@libraries/providers/news/bbc.pvd';
 import { MatchingDataRequest } from 'types/list.type';
 import { StarRequest } from 'types/request.type';
 import { dataRequestValidator } from 'validators/list.validator';

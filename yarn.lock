@@ -153,9 +153,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/common@npm:^10.2.10":
-  version: 10.2.10
-  resolution: "@nestjs/common@npm:10.2.10"
+"@nestjs/common@npm:^10.3.0":
+  version: 10.3.0
+  resolution: "@nestjs/common@npm:10.3.0"
   dependencies:
     iterare: 1.2.1
     tslib: 2.6.2
@@ -170,13 +170,13 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 120b55eaa06780461bf9ba96c7a753c373e63889120ad5fffe3337603748164bd0177a67dfd90c8421fd0ca18a3e0dfe49f12dd5a204cc33c8efb52072aa86b4
+  checksum: c5444cb46bd4f4a4d28b5031f7c28a0cf9863bc2d5518910bfed6a49734f59e1ea08dd4651e2117ae82df81c933ef84f0963c5cdeee5ef1608cf1bd36ee291c5
   languageName: node
   linkType: hard
 
-"@nestjs/core@npm:^10.2.10":
-  version: 10.2.10
-  resolution: "@nestjs/core@npm:10.2.10"
+"@nestjs/core@npm:^10.3.0":
+  version: 10.3.0
+  resolution: "@nestjs/core@npm:10.3.0"
   dependencies:
     "@nuxtjs/opencollective": 0.3.2
     fast-safe-stringify: 2.1.1
@@ -198,13 +198,13 @@ __metadata:
       optional: true
     "@nestjs/websockets":
       optional: true
-  checksum: e771f0a4c347b1bf12834acb373b4abc57f7fc6dee75afda94690d074d5d0de7715eccfc136c5343fbf3fc9e74c921cbb7009ed7190d08e8655d2f08724131cb
+  checksum: 7677b9fb97c8dec512c2a736c273ef08698b377af8c046bc5aad442ba3d35acbc17d177e76bf44a66678cae2ced2d265183e85be4190c501a195f16496df6396
   languageName: node
   linkType: hard
 
-"@nestjs/platform-express@npm:^10.2.10":
-  version: 10.2.10
-  resolution: "@nestjs/platform-express@npm:10.2.10"
+"@nestjs/platform-express@npm:^10.3.0":
+  version: 10.3.0
+  resolution: "@nestjs/platform-express@npm:10.3.0"
   dependencies:
     body-parser: 1.20.2
     cors: 2.8.5
@@ -214,7 +214,7 @@ __metadata:
   peerDependencies:
     "@nestjs/common": ^10.0.0
     "@nestjs/core": ^10.0.0
-  checksum: 44c1c9e4f25e16e214ff218bd1dab79b1a50dac5a53177dfadbae55cc9740eb554caaa2da7c021e13efda3d79bfbb76fcb74a7d1f39d5e6ee0c1b5ad63438238
+  checksum: fef9ce58f62f16d76216fbf389e903f3fe5f7c6a27a5f4f134841ac13b50a0c5b72674a6c4e8105f3b4769ab1a3a1101b81a03b61da5f43519d86417ab00b86b
   languageName: node
   linkType: hard
 
@@ -258,31 +258,61 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/client@npm:^5.6.0":
-  version: 5.6.0
-  resolution: "@prisma/client@npm:5.6.0"
-  dependencies:
-    "@prisma/engines-version": 5.6.0-32.e95e739751f42d8ca026f6b910f5a2dc5adeaeee
+"@prisma/client@npm:^5.7.1":
+  version: 5.7.1
+  resolution: "@prisma/client@npm:5.7.1"
   peerDependencies:
     prisma: "*"
   peerDependenciesMeta:
     prisma:
       optional: true
-  checksum: 51abfba1c066ff6a79d5c6aad5eed6bdde6fbafa5a1d6e17f3aa2b0f8ed55541079b2526bc0372158953d1146c8dd9c6fbcd137cf7fb2ace1022b02cc55675ab
+  checksum: c2976208ef43e88eaf7ea6b4b9775625f8a9c83cb990869e07568997e5af00e57a393f8f21807fd1716fcb826d5f70502c24123f0628d71a0182765ab37b69f8
   languageName: node
   linkType: hard
 
-"@prisma/engines-version@npm:5.6.0-32.e95e739751f42d8ca026f6b910f5a2dc5adeaeee":
-  version: 5.6.0-32.e95e739751f42d8ca026f6b910f5a2dc5adeaeee
-  resolution: "@prisma/engines-version@npm:5.6.0-32.e95e739751f42d8ca026f6b910f5a2dc5adeaeee"
-  checksum: 197f63539999e50e66577d70b3167d9bdb5810a66fde60ee3f69cd58cf47516a43221092ce82303ad3d9dde2f2700c7f76b4383093d33793fbfbb1b0a4f144ee
+"@prisma/debug@npm:5.7.1":
+  version: 5.7.1
+  resolution: "@prisma/debug@npm:5.7.1"
+  checksum: 7c3134416836ff8a2d1172a71a1d063d7520cbed445d967f495cdb62295730ec8e779157b744e1afac423b6cf36cba11a643c32b85a975119c78e52f977a80db
   languageName: node
   linkType: hard
 
-"@prisma/engines@npm:5.6.0":
-  version: 5.6.0
-  resolution: "@prisma/engines@npm:5.6.0"
-  checksum: 52688e2f59715479f8d531b1ce755578b069f05b0e3735a564f487a2cb8fa19b5f10a21b22e3fbba206190ece0f5a033952b3c78da6545ee798a186daa5b2e73
+"@prisma/engines-version@npm:5.7.1-1.0ca5ccbcfa6bdc81c003cf549abe4269f59c41e5":
+  version: 5.7.1-1.0ca5ccbcfa6bdc81c003cf549abe4269f59c41e5
+  resolution: "@prisma/engines-version@npm:5.7.1-1.0ca5ccbcfa6bdc81c003cf549abe4269f59c41e5"
+  checksum: 8a6b3d48976cd7a3db4e05012054f2a0693ee08c56a398020b326760d2edb6a2211c316ee7d10e827126f25451238775780a83645ab3a402fc0aa9b40fe4827d
+  languageName: node
+  linkType: hard
+
+"@prisma/engines@npm:5.7.1":
+  version: 5.7.1
+  resolution: "@prisma/engines@npm:5.7.1"
+  dependencies:
+    "@prisma/debug": 5.7.1
+    "@prisma/engines-version": 5.7.1-1.0ca5ccbcfa6bdc81c003cf549abe4269f59c41e5
+    "@prisma/fetch-engine": 5.7.1
+    "@prisma/get-platform": 5.7.1
+  checksum: 54e237554581296dd5838c8d59e54ca9e993760e5f78ac8ebe4af148c11b717838095d8bc75d63ce78bd064b974e2bfea23e01543ffb83e0853da9fdfdb94c38
+  languageName: node
+  linkType: hard
+
+"@prisma/fetch-engine@npm:5.7.1":
+  version: 5.7.1
+  resolution: "@prisma/fetch-engine@npm:5.7.1"
+  dependencies:
+    "@prisma/debug": 5.7.1
+    "@prisma/engines-version": 5.7.1-1.0ca5ccbcfa6bdc81c003cf549abe4269f59c41e5
+    "@prisma/get-platform": 5.7.1
+  checksum: 47ac298759ed3088452ac9b0da853c63a2ac72bbc37bdbd5a2c669974c88983349bc66a4afd44c415d175d7780799f0f8cb757cb25e8b298cb6b5bcd764d6f10
+  languageName: node
+  linkType: hard
+
+"@prisma/get-platform@npm:5.7.1":
+  version: 5.7.1
+  resolution: "@prisma/get-platform@npm:5.7.1"
+  dependencies:
+    "@prisma/debug": 5.7.1
+  checksum: 8cc2c08d165a3843acdec25884e51432151b5a6c8787d0434f6d4e539c95ff3d2feed5cf691d440627a803d119d8600979287e0ee6b43145351d572cbef62c20
   languageName: node
   linkType: hard
 
@@ -2761,14 +2791,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prisma@npm:^5.6.0":
-  version: 5.6.0
-  resolution: "prisma@npm:5.6.0"
+"prisma@npm:^5.7.1":
+  version: 5.7.1
+  resolution: "prisma@npm:5.7.1"
   dependencies:
-    "@prisma/engines": 5.6.0
+    "@prisma/engines": 5.7.1
   bin:
     prisma: build/index.js
-  checksum: 77b80b89a771c6c218172cfc5b692e65755ba76ec5b6487ea3ac5b5fa05aea47c48a11cb9449517c4bc4770c3737d02fe3db576bd54c6e32fcf39f08607b546e
+  checksum: 4a6a89b32c3747d79a9d90b5761687ce33f8b99a86ab9e0fe4e76aff86104187a771facf665702a7d1e047dbe17d2627c4d01ed02a117067e1189e5447e1e230
   languageName: node
   linkType: hard
 
@@ -3232,10 +3262,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "tech_news_scrape_back@workspace:."
   dependencies:
-    "@nestjs/common": ^10.2.10
-    "@nestjs/core": ^10.2.10
-    "@nestjs/platform-express": ^10.2.10
-    "@prisma/client": ^5.6.0
+    "@nestjs/common": ^10.3.0
+    "@nestjs/core": ^10.3.0
+    "@nestjs/platform-express": ^10.3.0
+    "@prisma/client": ^5.7.1
     "@types/express": ^4.17.21
     "@types/node": ^20.8.7
     "@typescript-eslint/eslint-plugin": ^6.7.2
@@ -3250,7 +3280,7 @@ __metadata:
     moment-timezone: ^0.5.43
     node-fetch: ^3.3.2
     prettier: ^3.0.3
-    prisma: ^5.6.0
+    prisma: ^5.7.1
     reflect-metadata: ^0.1.13
     rxjs: ^7.8.1
     ts-node: ^10.9.1

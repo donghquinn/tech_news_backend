@@ -1,0 +1,37 @@
+FROM node:20.2-alpine3.17 AS base
+
+WORKDIR /usr/src/app
+
+COPY package.json yarn.lock .yarnrc.yml  /usr/src/app/
+COPY .yarn /usr/src/app/.yarn
+
+RUN yarn install
+
+# --- build ---
+FROM base as build
+
+WORKDIR /usr/src/app
+
+# COPY --from=base /usr/src/app/node_modules /usr/src/app/node_modules
+COPY src /usr/src/app/src
+COPY prisma /usr/src/app/prisma
+COPY tsconfig.json /usr/src/app/tsconfig.json
+
+RUN yarn run schema
+
+RUN yarn run build
+
+
+# --- release ---
+FROM base AS release
+
+WORKDIR /home/node
+
+COPY package.json /home/node/package.json
+COPY --from=build /usr/src/app/node_modules /home/node/node_modules
+COPY --from=build /usr/src/app/dist /home/node/src
+COPY tsconfig.json /home/node/tsconfig.json
+
+ENV NODE_ENV=production
+
+ENTRYPOINT ["node", "src/main.js"]

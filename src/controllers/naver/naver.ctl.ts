@@ -1,4 +1,4 @@
-import { NaverProvider } from '@libraries/providers/news/naver.lib';
+import { NaverProvider } from '@libraries/providers/news/naver.pvd';
 import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
 import { dataRequestValidator } from '@validators/list.validator';
 import { starValidator } from '@validators/start.validator';
