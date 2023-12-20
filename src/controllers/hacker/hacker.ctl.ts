@@ -47,18 +47,18 @@ export class HackerController {
     }
   }
 
-  @Post('/unstar')
-  async unStarNews(@Body() request: StarRequest) {
-    try {
-      const { uuid } = await starValidator(request);
+  // @Post('/unstar')
+  // async unStarNews(@Body() request: StarRequest) {
+  //   try {
+  //     const { uuid } = await starValidator(request);
 
-      const result = await this.hacker.unStar(uuid);
+  //     const result = await this.hacker.unStar(uuid);
 
-      return new SetResponse(200, { result });
-    } catch (error) {
-      return new SetErrorResponse(500, { error });
-    }
-  }
+  //     return new SetResponse(200, { result });
+  //   } catch (error) {
+  //     return new SetErrorResponse(500, { error });
+  //   }
+  // }
 
   @Get('/starred')
   async getStarredBbc() {
