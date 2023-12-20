@@ -14,7 +14,6 @@ example.env
 
 *.test.*
 
-schema.prisma
 migrations
 .eslintrc.json
 
