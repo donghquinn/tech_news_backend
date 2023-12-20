@@ -36,7 +36,7 @@ export class ForeCastProvider {
       ClimateLogger.error('[Forecast] Bring Today News Error: %o', {
         error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
-      
+
       throw new ForecastError(
         'Short Forecast Provider',
         'Short Forecast Provider Error',
