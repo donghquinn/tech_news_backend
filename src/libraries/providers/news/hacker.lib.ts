@@ -81,8 +81,6 @@ export class HackersNewsProvider {
         },
       });
 
-      await this.prisma.onModuleDestroy();
-
       NewsLogger.info('[Hackers] Starred Updated');
 
       return true;
@@ -109,8 +107,6 @@ export class HackersNewsProvider {
           uuid,
         },
       });
-
-      await this.prisma.onModuleDestroy();
 
       NewsLogger.info('[Hackers] Starred Updated');
 
