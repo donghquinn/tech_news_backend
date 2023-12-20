@@ -25,22 +25,9 @@ export class MachineLearningController {
   @Post('/star')
   async giveStarNews(@Body() request: StarRequest) {
     try {
-      const { uuid } = await starValidator(request);
+      const { uuid, isStarred } = await starValidator(request);
 
-      const result = await this.mlNews.giveStar(uuid);
-
-      return new SetResponse(200, { result });
-    } catch (error) {
-      return new SetErrorResponse(500, { error });
-    }
-  }
-
-  @Post('/unstar')
-  async unStarNews(@Body() request: StarRequest) {
-    try {
-      const { uuid } = await starValidator(request);
-
-      const result = await this.mlNews.unStar(uuid);
+      const result = await this.mlNews.giveStar(uuid, isStarred);
 
       return new SetResponse(200, { result });
     } catch (error) {

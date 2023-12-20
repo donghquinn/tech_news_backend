@@ -50,9 +50,28 @@ export class MachineLearningProvider {
     }
   }
 
-  async giveStar(uuid: string) {
-    try {
-      NewsLogger.info('[ML] Give ML News Star Request: %o', {
+  async giveStar(uuid: string, isStarred: boolean) {
+    try
+    {
+      if ( !isStarred )
+      {
+        NewsLogger.info('[ML] Give ML News Star Request: %o', {
+        uuid,
+      });
+
+      await this.prisma.machineNews.update({
+        data: {
+          liked: '0',
+        },
+        where: {
+          uuid,
+        },
+      });
+
+      NewsLogger.info('[ML] Starred Updated');
+      } else
+      {
+         NewsLogger.info('[ML] Give ML News Star Request: %o', {
         uuid,
       });
 
@@ -67,6 +86,8 @@ export class MachineLearningProvider {
 
       NewsLogger.info('[ML] Starred Updated');
 
+      }
+     
       return true;
     } catch (error) {
       NewsLogger.error('[ML] Give Star on the ML News Error: %o', {
@@ -76,37 +97,6 @@ export class MachineLearningProvider {
       throw new MachineLearningError(
         'Give Star on the ML news',
         'Failed to vie star ML news',
-        error instanceof Error ? error : new Error(JSON.stringify(error)),
-      );
-    }
-  }
-
-  async unStar(uuid: string) {
-    try {
-      NewsLogger.info('[ML] Give ML News Star Request: %o', {
-        uuid,
-      });
-
-      await this.prisma.machineNews.update({
-        data: {
-          liked: '0',
-        },
-        where: {
-          uuid,
-        },
-      });
-
-      NewsLogger.info('[ML] Starred Updated');
-
-      return true;
-    } catch (error) {
-      NewsLogger.error('[ML] unStar on the News Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
-      });
-
-      throw new MachineLearningError(
-        'unStar on the news',
-        'Failed to vie star news',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
