@@ -51,43 +51,39 @@ export class MachineLearningProvider {
   }
 
   async giveStar(uuid: string, isStarred: boolean) {
-    try
-    {
-      if ( !isStarred )
-      {
+    try {
+      if (!isStarred) {
         NewsLogger.info('[ML] Give ML News Star Request: %o', {
-        uuid,
-      });
-
-      await this.prisma.machineNews.update({
-        data: {
-          liked: '0',
-        },
-        where: {
           uuid,
-        },
-      });
+        });
 
-      NewsLogger.info('[ML] Starred Updated');
-      } else
-      {
-         NewsLogger.info('[ML] Give ML News Star Request: %o', {
-        uuid,
-      });
+        await this.prisma.machineNews.update({
+          data: {
+            liked: '0',
+          },
+          where: {
+            uuid,
+          },
+        });
 
-      await this.prisma.machineNews.update({
-        data: {
-          liked: '1',
-        },
-        where: {
+        NewsLogger.info('[ML] Starred Updated');
+      } else {
+        NewsLogger.info('[ML] Give ML News Star Request: %o', {
           uuid,
-        },
-      });
+        });
 
-      NewsLogger.info('[ML] Starred Updated');
+        await this.prisma.machineNews.update({
+          data: {
+            liked: '1',
+          },
+          where: {
+            uuid,
+          },
+        });
 
+        NewsLogger.info('[ML] Starred Updated');
       }
-     
+
       return true;
     } catch (error) {
       NewsLogger.error('[ML] Give Star on the ML News Error: %o', {

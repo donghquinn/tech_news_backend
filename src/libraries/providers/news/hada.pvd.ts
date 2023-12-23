@@ -1,4 +1,4 @@
-import { HackerError } from '@errors/hacker.error';
+import { HadaError } from '@errors/hada.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
@@ -6,39 +6,19 @@ import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
 
 @Injectable()
-export class HackersNewsProvider {
-  constructor(private prisma: PrismaLibrary) {}
+export class HadaProvider {
+  constructor(private readonly prisma: PrismaLibrary) {}
 
-  async getHackerNewsCount() {
-    try {
-      const count = await this.prisma.hackers.count();
-
-      NewsLogger.info('[Hackers] News Total Count: %o', { count });
-
-      return count;
-    } catch (error) {
-      NewsLogger.error('[Hackers] Get Hacker News Count Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
-      });
-
-      throw new HackerError(
-        '[Hackers] Hacker News',
-        'Hacker News Count Error',
-        error instanceof Error ? error : new Error(JSON.stringify(error)),
-      );
-    }
-  }
-
-  async bringTodayHackerPosts(today: string) {
+  async getNews(today: string) {
     try {
       const yesterday = moment(today).subtract(1, 'day').toString();
 
-      NewsLogger.info('[Hackers] YesterDay: %o', {
+      NewsLogger.info('[HadaNews] YesterDay: %o', {
         start: startOfDay(new Date(yesterday)),
         end: endOfDay(new Date(yesterday)),
       });
 
-      const result = await this.prisma.hackers.findMany({
+      const result = await this.prisma.hada.findMany({
         select: { uuid: true, post: true, link: true, founded: true },
         where: {
           founded: {
@@ -52,13 +32,13 @@ export class HackersNewsProvider {
       return result;
     } catch (error) {
       NewsLogger.error(
-        '[Hackers] Bring Hacker News Error: %o',
+        '[Hada] Bring Hada News Error: %o',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
 
-      throw new HackerError(
-        '[Hackers] Hacker News',
-        'Hacker News Bringing Error',
+      throw new HadaError(
+        '[HADA] Bring news',
+        'Bring Hada News Error',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
@@ -67,11 +47,11 @@ export class HackersNewsProvider {
   async giveStar(uuid: string, isStarred: boolean) {
     try {
       if (!isStarred) {
-        NewsLogger.info('Give Hacker News unStar Request: %o', {
+        NewsLogger.info('[HADA] Give Hada News unStar Request: %o', {
           uuid,
         });
 
-        await this.prisma.hackers.update({
+        await this.prisma.hada.update({
           data: {
             liked: '0',
           },
@@ -80,13 +60,13 @@ export class HackersNewsProvider {
           },
         });
 
-        NewsLogger.info('[Hackers] Unstarred Updated');
+        NewsLogger.info('[HADA] Unstarred Updated');
       } else {
-        NewsLogger.info('[Hackers] Give Hacker News Star Request: %o', {
+        NewsLogger.info('[HADA] Give Hacker News Star Request: %o', {
           uuid,
         });
 
-        await this.prisma.hackers.update({
+        await this.prisma.hada.update({
           data: {
             liked: '1',
           },
@@ -95,17 +75,17 @@ export class HackersNewsProvider {
           },
         });
 
-        NewsLogger.info('[Hackers] Starred Updated');
+        NewsLogger.info('[HADA] Starred Updated');
       }
 
       return true;
     } catch (error) {
-      NewsLogger.error('[Hackers] Star Update Error: %o', {
+      NewsLogger.error('[HADA] Star Update Error: %o', {
         error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
-      throw new HackerError(
-        'Give Star on the news',
+      throw new HadaError(
+        '[HADA] Give Star on the news',
         'Failed to vie star news',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
@@ -114,9 +94,9 @@ export class HackersNewsProvider {
 
   async bringStarredNews() {
     try {
-      NewsLogger.info('[Hackers] Request to get Starred Hacker News');
+      NewsLogger.info('[HADA] Request to get Starred Hacker News');
 
-      const starredNews = await this.prisma.hackers.findMany({
+      const starredNews = await this.prisma.hada.findMany({
         select: {
           uuid: true,
           post: true,
@@ -131,16 +111,16 @@ export class HackersNewsProvider {
         },
       });
 
-      NewsLogger.info('[Hackers] Founded Starred News');
+      NewsLogger.info('[HADA] Founded Starred News');
 
       return starredNews;
     } catch (error) {
-      NewsLogger.error('[Hackers] Get Starred Update Error: %o', {
+      NewsLogger.error('[HADA] Get Starred Update Error: %o', {
         error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
-      throw new HackerError(
-        '[Hackers] Bring Starred Hacker News',
+      throw new HadaError(
+        '[HADA] Bring Starred Hacker News',
         'Failed to Bring Starred Hacker News',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );

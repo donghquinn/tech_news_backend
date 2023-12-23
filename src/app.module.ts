@@ -3,6 +3,7 @@ import { BbcModule } from '@modules/bbc.module';
 import { ClimateModule } from '@modules/climate.module';
 import { ForecastModule } from '@modules/forecast.module';
 import { HackerModule } from '@modules/hacker.module';
+import { HadaModule } from '@modules/hada.module';
 import { MachineLearningNewsModule } from '@modules/machine.module';
 import { NaverModule } from '@modules/naver.module';
 import { PrismaModule } from '@modules/prisma.module';
@@ -18,6 +19,7 @@ import { HeadersMiddleware } from 'middlewares/header.middleware';
     NaverModule,
     ForecastModule,
     MachineLearningNewsModule,
+    HadaModule,
   ],
 })
 export class AppModule implements NestModule {
