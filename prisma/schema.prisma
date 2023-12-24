@@ -21,8 +21,10 @@ model Hackers {
 
 model Hada {
   uuid    String   @id @default(uuid())
+  page String
   rank    String
   post    String
+  descLink String
   link    String
   liked   String   @default("0")
   founded DateTime
