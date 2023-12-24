@@ -19,7 +19,7 @@ services:
           cpus: '0.15'
           memory: 300M
     expose:
-      - 5500
+      - ${APP_PORT}
     env_file:
       - .env
     networks:
