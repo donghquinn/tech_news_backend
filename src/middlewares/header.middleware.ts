@@ -9,7 +9,10 @@ export class HeadersMiddleware implements NestMiddleware {
     try {
       const authKey = request.headers?.key;
 
-      Logger.debug(request.ip);
+      Logger.debug( "Request IP: %o", {
+        IpAddress: request.ip,
+        origin: request.ips
+      } );
 
       if (authKey === process.env.AUTH_KEY) {
         Logger.debug('Auth Key Detected');
