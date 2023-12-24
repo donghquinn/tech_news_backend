@@ -19,7 +19,7 @@ export class HadaProvider {
       });
 
       const result = await this.prisma.hada.findMany({
-        select: { uuid: true, post: true, link: true, founded: true },
+        select: { uuid: true, post: true, descLink: true, founded: true },
         where: {
           founded: {
             gte: startOfDay(new Date(yesterday)),
