@@ -1,18 +1,13 @@
 {
   "name": "tech_news_scrape_back",
   "version": "2.0.0",
-  "main": "main.ts",
+  "main": "main.js",
   "license": "ISC",
   "packageManager": "yarn@4.0.2",
   "type": "module",
   "scripts": {
-    "format": "prettier --write \"**/*.{ts,json,md}\" \"!package*.json\" \"!tsconfig.json\" \"!.eslintrc.json\"",
     "start": "NODE_ENV=production node --max-old-space-size=700 -r ts-node/register --loader ts-paths-esm-loader --experimental-specifier-resolution=node  ./src/main.js",
-    "build": "NODE_ENV=production tsc --project tsconfig.json --diagnostics  -p tsconfig.json",
-    "dev": "NODE_ENV=development node --max-old-space-size=700 -r ts-node/register --loader ts-paths-esm-loader --experimental-specifier-resolution=node  ./src/main.ts",
-    "schema": "prisma generate",
-    "migrate": "prisma migrate dev --name added_melon",
-    "db:update": "prisma db push"
+    "schema": "prisma generate"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.0",
