@@ -1,7 +1,10 @@
 import { NaverProvider } from '@libraries/providers/news/naver.pvd';
 import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
-import { naverNewsStarValidator, naverNewsValidator } from '@validators/naver.validator copy 2';
-import { starValidator } from '@validators/start.validator';
+import {
+  naverNewsStarValidator,
+  naverNewsUnStarValidator,
+  naverNewsValidator,
+} from '@validators/naver.validator copy 2';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { MatchingDataRequest } from 'types/list.type';
 import { StarRequest } from 'types/request.type';
@@ -41,7 +44,7 @@ export class NaverController {
   @Post('/unstar')
   async unStarNews(@Body() request: StarRequest) {
     try {
-      const { uuid } = await starValidator(request);
+      const { uuid } = await naverNewsUnStarValidator(request);
 
       const result = await this.naver.unStar(uuid);
 

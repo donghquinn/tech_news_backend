@@ -39,7 +39,6 @@ export const dataRequestValidator = async (request: MatchingDataRequest) => {
   }
 };
 
-
 export const listValidator = async (request: MatchingDataRequest) => {
   try {
     const scheme = z.object({ today: z.string() }).strict();

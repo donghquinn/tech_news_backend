@@ -10,11 +10,10 @@ export const hackerNewsValidator = async (request: ScrapeRequest) => {
     const validated = await scheme.parseAsync(request);
 
     return validated;
-  } catch ( error )
-  {
-    Logger.error( "[Hacker] Hacker News Request Validation Error: %o", {
-      error: error instanceof Error ? error : new Error( JSON.stringify( error ) ),
-    } );
+  } catch (error) {
+    Logger.error('[Hacker] Hacker News Request Validation Error: %o', {
+      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+    });
 
     throw new ValidatorError(
       '[Hacker] Hacker News Request Validator',
@@ -39,6 +38,26 @@ export const hackerNewsStarValidator = async (request: StarRequest) => {
     throw new ValidatorError(
       '[Hacker] Star Request Validator',
       'Failed to Star. Please Check the request Body.',
+      error instanceof Error ? error : new Error(JSON.stringify(error)),
+    );
+  }
+};
+
+export const hackerNewsUnStarValidator = async (request: StarRequest) => {
+  try {
+    const scheme = z.object({ uuid: z.string(), isStarred: z.boolean() });
+
+    const validated = await scheme.parseAsync(request);
+
+    return validated;
+  } catch (error) {
+    Logger.error('[Hacker] Unstar Request Validator Error: %o', {
+      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+    });
+
+    throw new ValidatorError(
+      '[Hacker] Unstar Request Validator',
+      'Failed to Unstar. Please Check the request Body.',
       error instanceof Error ? error : new Error(JSON.stringify(error)),
     );
   }

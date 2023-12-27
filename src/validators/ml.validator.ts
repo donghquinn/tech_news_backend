@@ -10,11 +10,10 @@ export const machineLearningValidator = async (request: ScrapeRequest) => {
     const validated = await scheme.parseAsync(request);
 
     return validated;
-  } catch ( error )
-  {
-    Logger.error( "[ML] MachineLearning News Request Validation Error: %o", {
-      error: error instanceof Error ? error : new Error( JSON.stringify( error ) ),
-    } );
+  } catch (error) {
+    Logger.error('[ML] MachineLearning News Request Validation Error: %o', {
+      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+    });
 
     throw new ValidatorError(
       'MachineLearning News Request Validator',
@@ -39,6 +38,26 @@ export const mlNewsStarValidator = async (request: StarRequest) => {
     throw new ValidatorError(
       '[ML] Star Request Validator',
       'Failed to Star. Please Check the request Body.',
+      error instanceof Error ? error : new Error(JSON.stringify(error)),
+    );
+  }
+};
+
+export const mlNewsUnStarValidator = async (request: StarRequest) => {
+  try {
+    const scheme = z.object({ uuid: z.string(), isStarred: z.boolean() });
+
+    const validated = await scheme.parseAsync(request);
+
+    return validated;
+  } catch (error) {
+    Logger.error('[ML] Unstar Request Validator Error: %o', {
+      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+    });
+
+    throw new ValidatorError(
+      '[ML] Unstar Request Validator',
+      'Failed to Unstar. Please Check the request Body.',
       error instanceof Error ? error : new Error(JSON.stringify(error)),
     );
   }
