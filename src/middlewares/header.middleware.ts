@@ -19,10 +19,10 @@ export class HeadersMiddleware implements NestMiddleware {
 
         next();
       } else {
-        return new SetErrorResponse(500, { response: 'No Auth Key Detected' });
+        return new SetErrorResponse('No Auth Key Detected');
       }
     } catch (error) {
-      return new SetErrorResponse(500, { response: 'Middleware Error' });
+      return new SetErrorResponse('Middleware Error');
     }
   }
 }

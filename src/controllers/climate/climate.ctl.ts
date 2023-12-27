@@ -19,7 +19,7 @@ export class ClimateController {
 
       return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, { error });
+      return new SetErrorResponse(error);
     }
   }
 }

@@ -32,7 +32,7 @@ export const dataRequestValidator = async (request: MatchingDataRequest) => {
     Logger.error(error);
 
     throw new ValidatorError(
-      'List Request Validator',
+      '[News] Get Latest News Request Validator',
       'Validation Error',
       error instanceof Error ? error : new Error(JSON.stringify(error)),
     );

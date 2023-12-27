@@ -38,7 +38,7 @@ export class HadaProvider {
 
       throw new HadaError(
         '[HADA] Bring news',
-        'Bring Hada News Error',
+        'Bring Hada News Error. Please Try Again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
@@ -121,7 +121,7 @@ export class HadaProvider {
 
       throw new HadaError(
         '[HADA] Bring Starred Hacker News',
-        'Failed to Bring Starred Hacker News',
+        'Failed to Bring Starred Hacker News. Please Try Again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }

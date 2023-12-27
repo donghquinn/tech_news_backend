@@ -1,7 +1,10 @@
 import { BbcError } from '@errors/bbc.error';
 import { HackerError } from '@errors/hacker.error';
-import { MelonError } from '@errors/melon.error';
+import { HadaError } from '@errors/hada.error';
+import { MachineLearningError } from '@errors/machine.error';
 import { NaverError } from '@errors/naver.error';
+import { PrismaError } from '@errors/prisma.error';
+import { ValidatorError } from '@errors/validator.error';
 
 interface ResponseObject {
   resCode: string;
@@ -30,33 +33,34 @@ export class SetResponse implements ResponseObject {
 }
 
 export class SetErrorResponse implements ResponseObject {
-  constructor(res: number, error: unknown) {
+  constructor(error: unknown) {
     const errorArray = [];
 
     if (error instanceof BbcError) {
+      this.resCode = '401';
       errorArray.push(error.type, error.message);
-    }
-
-    if (error instanceof HackerError) {
+    } else if (error instanceof HackerError) {
+      this.resCode = '402';
       errorArray.push(error.type, error.message);
-    }
-
-    if (error instanceof MelonError) {
+    } else if (error instanceof HadaError) {
+      this.resCode = '403';
       errorArray.push(error.type, error.message);
-    }
-
-    if (error instanceof NaverError) {
+    } else if (error instanceof MachineLearningError) {
+      this.resCode = '404';
       errorArray.push(error.type, error.message);
+    } else if (error instanceof PrismaError) {
+      this.resCode = '405';
+      errorArray.push(error.type, error.message);
+    } else if (error instanceof ValidatorError) {
+      this.resCode = '406';
+      errorArray.push(error.type, error.message);
+    } else if (error instanceof NaverError) {
+      this.resCode = '407';
+      errorArray.push(error.type, error.message);
+    } else {
+      this.resCode = '500';
+      errorArray.push(String(error));
     }
-
-    if (typeof error === 'string') errorArray.push(error);
-
-    if (Array.isArray(error)) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      errorArray.push(...error);
-    }
-
-    this.resCode = res.toString();
 
     this.dataRes = null;
 
