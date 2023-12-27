@@ -1,6 +1,6 @@
 import { HadaProvider } from '@libraries/providers/news/hada.pvd';
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { hadaNewsStarValidator, hadaNewsValidator } from '@validators/hada.validator copy';
+import { hadaNewsStarValidator, hadaNewsValidator } from '@validators/hada.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { MatchingDataRequest } from 'types/list.type';
 import { StarRequest } from 'types/request.type';

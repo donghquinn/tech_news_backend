@@ -1,6 +1,6 @@
 import { HackersNewsProvider } from '@libraries/providers/news/hacker.pvd';
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { hackerNewsStarValidator, hackerNewsValidator } from '@validators/hacker.validator copy 3';
+import { hackerNewsStarValidator, hackerNewsValidator } from '@validators/hacker.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { MatchingDataRequest } from 'types/list.type';
 import { StarRequest } from 'types/request.type';

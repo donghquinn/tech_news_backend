@@ -4,7 +4,7 @@ import {
   naverNewsStarValidator,
   naverNewsUnStarValidator,
   naverNewsValidator,
-} from '@validators/naver.validator copy 2';
+} from '@validators/naver.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { MatchingDataRequest } from 'types/list.type';
 import { StarRequest } from 'types/request.type';
