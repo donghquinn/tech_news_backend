@@ -1,7 +1,6 @@
 import { HackersNewsProvider } from '@libraries/providers/news/hacker.pvd';
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { dataRequestValidator } from '@validators/list.validator';
-import { starValidator } from '@validators/start.validator';
+import { hackerNewsStarValidator, hackerNewsValidator } from '@validators/hacker.validator copy 3';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { MatchingDataRequest } from 'types/list.type';
 import { StarRequest } from 'types/request.type';
@@ -17,33 +16,33 @@ export class HackerController {
 
       return new SetResponse(200, { count });
     } catch (error) {
-      return new SetErrorResponse(500, { error });
+      return new SetErrorResponse(error);
     }
   }
 
   @Post('/news')
   async getHackerNews(@Body() request: MatchingDataRequest) {
     try {
-      const { today } = await dataRequestValidator(request);
+      const { today } = await hackerNewsValidator(request);
 
       const result = await this.hacker.bringTodayHackerPosts(today);
 
       return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, { error });
+      return new SetErrorResponse(error);
     }
   }
 
   @Post('/star')
   async giveStarNews(@Body() request: StarRequest) {
     try {
-      const { uuid, isStarred } = await starValidator(request);
+      const { uuid, isStarred } = await hackerNewsStarValidator(request);
 
       const result = await this.hacker.giveStar(uuid, isStarred);
 
       return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, { error });
+      return new SetErrorResponse(error);
     }
   }
 
@@ -67,7 +66,7 @@ export class HackerController {
 
       return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, { error });
+      return new SetErrorResponse(error);
     }
   }
 }

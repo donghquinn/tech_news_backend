@@ -1,6 +1,6 @@
 import { NaverProvider } from '@libraries/providers/news/naver.pvd';
 import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
-import { dataRequestValidator } from '@validators/list.validator';
+import { naverNewsStarValidator, naverNewsValidator } from '@validators/naver.validator copy 2';
 import { starValidator } from '@validators/start.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { MatchingDataRequest } from 'types/list.type';
@@ -13,7 +13,7 @@ export class NaverController {
   @Post('/today')
   async getTodayNewsController(@Body() request: MatchingDataRequest) {
     try {
-      const { today } = await dataRequestValidator(request);
+      const { today } = await naverNewsValidator(request);
 
       Logger.log(today);
 
@@ -21,20 +21,20 @@ export class NaverController {
 
       return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, { error });
+      return new SetErrorResponse(error);
     }
   }
 
   @Post('/star')
   async giveStarNews(@Body() request: StarRequest) {
     try {
-      const { uuid } = await starValidator(request);
+      const { uuid } = await naverNewsStarValidator(request);
 
       const result = await this.naver.giveStar(uuid);
 
       return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, { error });
+      return new SetErrorResponse(error);
     }
   }
 
@@ -47,7 +47,7 @@ export class NaverController {
 
       return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, { error });
+      return new SetErrorResponse(error);
     }
   }
 
@@ -58,7 +58,7 @@ export class NaverController {
 
       return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, { error });
+      return new SetErrorResponse(error);
     }
   }
 

@@ -58,7 +58,7 @@ export class HackersNewsProvider {
 
       throw new HackerError(
         '[Hackers] Hacker News',
-        'Hacker News Bringing Error',
+        'Hacker News Bringing Error. Please Try Again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
@@ -105,8 +105,8 @@ export class HackersNewsProvider {
       });
 
       throw new HackerError(
-        'Give Star on the news',
-        'Failed to vie star news',
+        '[Hackers] Give Star on the news',
+        'Failed to vie star news. Please Try Again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }

@@ -44,7 +44,7 @@ export class MachineLearningProvider {
 
       throw new MachineLearningError(
         'Get Latest Machine Learning News',
-        'Failed to Get Latest Machine Learning News',
+        'Failed to Get Latest Machine Learning News. Please Try Again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }

@@ -1,7 +1,6 @@
 import { MachineLearningProvider } from '@libraries/providers/news/machine.pvd';
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { machineLearningValidator } from '@validators/ml.validator';
-import { starValidator } from '@validators/start.validator';
+import { machineLearningValidator, mlNewsStarValidator } from '@validators/ml.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { ScrapeRequest, StarRequest } from 'types/request.type';
 
@@ -18,20 +17,20 @@ export class MachineLearningController {
 
       return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, { error });
+      return new SetErrorResponse(error);
     }
   }
 
   @Post('/star')
   async giveStarNews(@Body() request: StarRequest) {
     try {
-      const { uuid, isStarred } = await starValidator(request);
+      const { uuid, isStarred } = await mlNewsStarValidator(request);
 
       const result = await this.mlNews.giveStar(uuid, isStarred);
 
       return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, { error });
+      return new SetErrorResponse(error);
     }
   }
 
@@ -42,7 +41,7 @@ export class MachineLearningController {
 
       return new SetResponse(200, { result });
     } catch (error) {
-      return new SetErrorResponse(500, { error });
+      return new SetErrorResponse(error);
     }
   }
 }
