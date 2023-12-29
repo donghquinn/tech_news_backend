@@ -61,6 +61,13 @@ export class HadaProvider {
               title: result[i].post,
             });
           } else if (this.resultNewsArray[i].uuid === result[i].uuid) {
+            NewsLogger.info('[HADA] Put Original Link into return array: %o', {
+              post: result[i].post,
+              uuid: result[i].uuid,
+              desc: result[i].descLink,
+              originalLink: reSearched.link,
+            });
+
             this.resultNewsArray[i].descLink = reSearched.link;
           }
         }
