@@ -4,10 +4,15 @@ import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
+import { HadaNewsReturn } from 'types/hada.type';
 
 @Injectable()
 export class HadaProvider {
-  constructor(private readonly prisma: PrismaLibrary) {}
+  private resultNewsArray: Array<HadaNewsReturn>;
+
+  constructor(private readonly prisma: PrismaLibrary) {
+    this.resultNewsArray = [];
+  }
 
   async getNews(today: string) {
     try {
@@ -28,6 +33,39 @@ export class HadaProvider {
         },
         orderBy: { rank: 'desc' },
       });
+
+      this.resultNewsArray.push(...result);
+
+      for (let i = 0; i <= result.length - 1; i += 1) {
+        const isUrlUndefined = result[i].descLink.split('.io/')[1];
+
+        NewsLogger.info('[HADA] Found Undefiend Desc Card URL: %o', {
+          title: result[i].post,
+          descUrl: result[i].descLink,
+          uuid: result[ i ].uuid,
+          isUrlUndefined,
+        });
+
+        if (isUrlUndefined === 'undefined') {
+          const reSearched = await this.prisma.hada.findFirst({
+            select: {
+              link: true,
+            },
+            where: {
+              uuid: result[i].uuid,
+            },
+          });
+
+          if (reSearched === null) {
+            NewsLogger.info('[HADA] No Original Link Found: %o', {
+              uuid: result[i].uuid,
+              title: result[i].post,
+            });
+          } else if (this.resultNewsArray[i].uuid === result[i].uuid) {
+            this.resultNewsArray[i].descLink = reSearched.link;
+          }
+        }
+      }
 
       return result;
     } catch (error) {
