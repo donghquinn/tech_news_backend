@@ -39,14 +39,13 @@ export class HadaProvider {
       for (let i = 0; i <= result.length - 1; i += 1) {
         const isUrlUndefined = result[i].descLink.split('.io/')[1];
 
-        NewsLogger.info('[HADA] Found Undefiend Desc Card URL: %o', {
-          title: result[i].post,
-          descUrl: result[i].descLink,
-          uuid: result[ i ].uuid,
-          isUrlUndefined,
-        });
-
         if (isUrlUndefined === 'undefined') {
+          NewsLogger.info('[HADA] Found Undefiend Desc Card URL: %o', {
+            title: result[i].post,
+            descUrl: result[i].descLink,
+            uuid: result[i].uuid,
+            isUrlUndefined,
+          });
           const reSearched = await this.prisma.hada.findFirst({
             select: {
               link: true,
