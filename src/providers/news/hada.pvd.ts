@@ -1,6 +1,6 @@
 import { HadaError } from '@errors/hada.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import { checkHadaNewsIsLiked, updateLikedtoUnliked } from '@libraries/news/hada.lib';
+import { checkHadaNewsIsLiked, updateLikedtoUnliked, updateNewsLiked } from '@libraries/news/hada.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
@@ -96,21 +96,9 @@ export class HadaProvider {
       if (isLiked) {
         await updateLikedtoUnliked(this.prisma, uuid);
       }
+
       if (!isLiked) {
-        NewsLogger.info('[HADA] Give Hacker News Star Request: %o', {
-          uuid,
-        });
-
-        await this.prisma.hada.update({
-          data: {
-            liked: 1,
-          },
-          where: {
-            uuid,
-          },
-        });
-
-        NewsLogger.info('[HADA] Starred Updated');
+        await updateNewsLiked(this.prisma, uuid);
       }
 
       return true;

@@ -66,7 +66,7 @@ export const updateLikedtoUnliked = async (prisma: PrismaLibrary, uuid: string) 
 
 export const updateNewsLiked = async (prisma: PrismaLibrary, uuid: string) => {
   try {
-    NewsLogger.info('[HADA] Give Hada News Star Request: %o', {
+    NewsLogger.info('[HADA] Give Hacker News Star Request: %o', {
       uuid,
     });
 
