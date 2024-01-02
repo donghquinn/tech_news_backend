@@ -3,7 +3,7 @@ import { PrismaLibrary } from '@libraries/common/prisma.lib';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
-import { DailyHadaNewsReturn, HadaNewsReturn } from 'types/hada.type';
+import { DailyHadaNewsReturn } from 'types/hada.type';
 
 // 뉴스 가져오는 함수
 export const bringHadaNews = async (prisma: PrismaLibrary, today: string): Promise<Array<DailyHadaNewsReturn>> => {

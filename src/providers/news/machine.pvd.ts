@@ -1,10 +1,8 @@
 import { MachineLearningError } from '@errors/machine.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import { checkMlNewsIsLiked, updateMlNewsLiked, updateMlNewsLikedtoUnliked } from '@libraries/news/ml.lib';
+import { bringMlNews, checkMlNewsIsLiked, updateMlNewsLiked, updateMlNewsLikedtoUnliked } from '@libraries/news/ml.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
-import { endOfDay, startOfDay } from 'date-fns';
-import moment from 'moment-timezone';
 
 @Injectable()
 export class MachineLearningProvider {
@@ -12,30 +10,7 @@ export class MachineLearningProvider {
 
   async bringLatestMachineLearningNews(today: string) {
     try {
-      const yesterday = moment(today).subtract(1, 'day').toString();
-
-      NewsLogger.info('[ML] Latest Machine Learning News: %o', {
-        start: startOfDay(new Date(yesterday)),
-        end: endOfDay(new Date(yesterday)),
-      });
-
-      const result = await this.prisma.machineNews.findMany({
-        select: {
-          uuid: true,
-          category: true,
-          title: true,
-          link: true,
-          founded: true,
-        },
-        where: {
-          founded: {
-            gte: startOfDay(new Date(yesterday)),
-            lte: endOfDay(new Date(yesterday)),
-          },
-        },
-      });
-
-      await this.prisma.onModuleDestroy();
+      const result = await bringMlNews( this.prisma, today );
 
       return result;
     } catch (error) {
@@ -92,7 +67,7 @@ export class MachineLearningProvider {
           founded: 'desc',
         },
         where: {
-          liked: '1',
+          liked: 1,
         },
       });
 
