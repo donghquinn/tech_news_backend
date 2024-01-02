@@ -1,5 +1,6 @@
 import { HadaError } from '@errors/hada.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
+import { checkHadaNewsIsLiked, updateLikedtoUnliked } from '@libraries/news/hada.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
@@ -24,7 +25,7 @@ export class HadaProvider {
       });
 
       const result = await this.prisma.hada.findMany({
-        select: { uuid: true, post: true, descLink: true, founded: true },
+        select: { uuid: true, post: true, descLink: true, founded: true, liked: true },
         where: {
           founded: {
             gte: startOfDay(new Date(yesterday)),
@@ -88,31 +89,21 @@ export class HadaProvider {
     }
   }
 
-  async giveStar(uuid: string, isStarred: boolean) {
+  async giveStar(uuid: string) {
     try {
-      if (!isStarred) {
-        NewsLogger.info('[HADA] Give Hada News unStar Request: %o', {
-          uuid,
-        });
+      const isLiked = await checkHadaNewsIsLiked(this.prisma, uuid);
 
-        await this.prisma.hada.update({
-          data: {
-            liked: '0',
-          },
-          where: {
-            uuid,
-          },
-        });
-
-        NewsLogger.info('[HADA] Unstarred Updated');
-      } else {
+      if (isLiked) {
+        await updateLikedtoUnliked(this.prisma, uuid);
+      }
+      if (!isLiked) {
         NewsLogger.info('[HADA] Give Hacker News Star Request: %o', {
           uuid,
         });
 
         await this.prisma.hada.update({
           data: {
-            liked: '1',
+            liked: 1,
           },
           where: {
             uuid,
@@ -151,7 +142,7 @@ export class HadaProvider {
           founded: 'desc',
         },
         where: {
-          liked: '1',
+          liked: 1,
         },
       });
 

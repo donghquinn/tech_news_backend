@@ -1,4 +1,4 @@
-import { HadaProvider } from '@libraries/providers/news/hada.pvd';
+import { HadaProvider } from 'providers/news/hada.pvd';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { hadaNewsStarValidator, hadaNewsValidator } from '@validators/hada.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';

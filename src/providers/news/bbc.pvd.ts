@@ -20,7 +20,7 @@ export class BbcNewsProvider {
       });
 
       const result = await this.prisma.bbcTechNews.findMany({
-        select: { uuid: true, post: true, link: true, founded: true },
+        select: { uuid: true, post: true, link: true, founded: true, liked: true },
         orderBy: { rank: 'desc' },
         where: {
           founded: {

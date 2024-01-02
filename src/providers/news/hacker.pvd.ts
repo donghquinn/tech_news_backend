@@ -39,7 +39,7 @@ export class HackersNewsProvider {
       });
 
       const result = await this.prisma.hackers.findMany({
-        select: { uuid: true, post: true, link: true, founded: true },
+        select: { uuid: true, post: true, link: true, founded: true, liked: true },
         where: {
           founded: {
             gte: startOfDay(new Date(yesterday)),
@@ -77,14 +77,14 @@ export class HackersNewsProvider {
 
       if (isStarred === null) throw new HackerError('[Hacker] Get Star Info', 'No Star Info Found.');
 
-      if (!Number(isStarred.liked) || isStarred.liked === '1') {
+      if (isStarred.liked) {
         NewsLogger.info('Give Hacker News unStar Request: %o', {
           uuid,
         });
 
         await this.prisma.hackers.update({
           data: {
-            liked: '0',
+            liked: 0,
           },
           where: {
             uuid,
@@ -99,7 +99,7 @@ export class HackersNewsProvider {
 
         await this.prisma.hackers.update({
           data: {
-            liked: '1',
+            liked: 1,
           },
           where: {
             uuid,
@@ -138,7 +138,7 @@ export class HackersNewsProvider {
           founded: 'desc',
         },
         where: {
-          liked: '1',
+          liked: 1,
         },
       });
 

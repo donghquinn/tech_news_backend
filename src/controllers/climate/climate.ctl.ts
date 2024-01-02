@@ -1,4 +1,4 @@
-import { ClimateProvider } from '@libraries/providers/climate/climate.pvd';
+import { ClimateProvider } from 'providers/climate/climate.pvd';
 import { Body, Controller, Logger, Post } from '@nestjs/common';
 import { dataRequestValidator } from '@validators/list.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
