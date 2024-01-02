@@ -5,15 +5,21 @@
 - URL: https://news.ycombinator.com
 - Hacker News 1~30위
 
+<img src="hackerNews_sample.png"/>
+
 ## ML News
 
 - URL: https://allainews.com/?ref=mlnews
 - Machine Learning 관련 뉴스
 
+<img src="mlNews_sample.png"/>
+
 ## Geek News
 
 - URL: https://news.hada.io
 - Geek News
+
+<img src="geekNews_sample.png"/>
 
 ---
 
