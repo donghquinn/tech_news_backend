@@ -139,7 +139,7 @@ export class BbcNewsProvider {
 
       await this.prisma.bbcTechNews.update({
         data: {
-          liked: '1',
+          liked: 1,
         },
         where: {
           uuid,
@@ -173,7 +173,7 @@ export class BbcNewsProvider {
 
       await this.prisma.bbcTechNews.update({
         data: {
-          liked: '0',
+          liked: 0,
         },
         where: {
           uuid,
@@ -214,7 +214,7 @@ export class BbcNewsProvider {
           founded: 'desc',
         },
         where: {
-          liked: '1',
+          liked: 1,
         },
       });
 

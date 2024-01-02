@@ -61,7 +61,7 @@ export class NaverProvider {
 
       await this.prisma.naverNews.update({
         data: {
-          liked: '1',
+          liked: 1,
         },
         where: {
           uuid,
@@ -92,7 +92,7 @@ export class NaverProvider {
 
       await this.prisma.naverNews.update({
         data: {
-          liked: '0',
+          liked: 0,
         },
         where: {
           uuid,
@@ -132,7 +132,7 @@ export class NaverProvider {
           founded: 'desc',
         },
         where: {
-          liked: '1',
+          liked: 1,
         },
       });
 
