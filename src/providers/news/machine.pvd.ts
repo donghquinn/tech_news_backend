@@ -1,5 +1,6 @@
 import { MachineLearningError } from '@errors/machine.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
+import { checkMlNewsIsLiked, updateMlNewsLiked, updateMlNewsLikedtoUnliked } from '@libraries/news/ml.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
@@ -50,38 +51,15 @@ export class MachineLearningProvider {
     }
   }
 
-  async giveStar(uuid: string, isStarred: boolean) {
+  async giveStar(uuid: string) {
     try {
-      if (!isStarred) {
-        NewsLogger.info('[ML] Give ML News Star Request: %o', {
-          uuid,
-        });
+      const isLiked = await checkMlNewsIsLiked(this.prisma, uuid);
 
-        await this.prisma.machineNews.update({
-          data: {
-            liked: '0',
-          },
-          where: {
-            uuid,
-          },
-        });
-
-        NewsLogger.info('[ML] Starred Updated');
-      } else {
-        NewsLogger.info('[ML] Give ML News Star Request: %o', {
-          uuid,
-        });
-
-        await this.prisma.machineNews.update({
-          data: {
-            liked: '1',
-          },
-          where: {
-            uuid,
-          },
-        });
-
-        NewsLogger.info('[ML] Starred Updated');
+      if (!isLiked) {
+        await updateMlNewsLiked(this.prisma, uuid);
+      }
+      if (isLiked) {
+        await updateMlNewsLikedtoUnliked(this.prisma, uuid);
       }
 
       return true;

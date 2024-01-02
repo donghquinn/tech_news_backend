@@ -1,5 +1,10 @@
 import { HackerError } from '@errors/hacker.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
+import {
+  checkHackerNewsIsLiked,
+  updateHackerNewsLiked,
+  updateHackerNewsLikedtoUnliked,
+} from '@libraries/news/hacker.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
@@ -66,47 +71,14 @@ export class HackersNewsProvider {
 
   async giveStar(uuid: string) {
     try {
-      const isStarred = await this.prisma.hackers.findFirst({
-        select: {
-          liked: true,
-        },
-        where: {
-          uuid,
-        },
-      });
+      const isLiked = await checkHackerNewsIsLiked(this.prisma, uuid);
 
-      if (isStarred === null) throw new HackerError('[Hacker] Get Star Info', 'No Star Info Found.');
+      if (isLiked) {
+        await updateHackerNewsLikedtoUnliked(this.prisma, uuid);
+      }
 
-      if (isStarred.liked) {
-        NewsLogger.info('Give Hacker News unStar Request: %o', {
-          uuid,
-        });
-
-        await this.prisma.hackers.update({
-          data: {
-            liked: 0,
-          },
-          where: {
-            uuid,
-          },
-        });
-
-        NewsLogger.info('[Hackers] Unstarred Updated');
-      } else {
-        NewsLogger.info('[Hackers] Give Hacker News Star Request: %o', {
-          uuid,
-        });
-
-        await this.prisma.hackers.update({
-          data: {
-            liked: 1,
-          },
-          where: {
-            uuid,
-          },
-        });
-
-        NewsLogger.info('[Hackers] Starred Updated');
+      if (!isLiked) {
+        await updateHackerNewsLiked(this.prisma, uuid);
       }
 
       return true;

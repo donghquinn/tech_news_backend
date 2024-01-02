@@ -1,6 +1,6 @@
 import { HadaError } from '@errors/hada.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import { checkHadaNewsIsLiked, updateLikedtoUnliked, updateNewsLiked } from '@libraries/news/hada.lib';
+import { checkHadaNewsIsLiked, updateHadaNewsLiked, updateHadaNewsLikedtoUnliked } from '@libraries/news/hada.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
@@ -94,11 +94,11 @@ export class HadaProvider {
       const isLiked = await checkHadaNewsIsLiked(this.prisma, uuid);
 
       if (isLiked) {
-        await updateLikedtoUnliked(this.prisma, uuid);
+        await updateHadaNewsLikedtoUnliked(this.prisma, uuid);
       }
 
       if (!isLiked) {
-        await updateNewsLiked(this.prisma, uuid);
+        await updateHadaNewsLiked(this.prisma, uuid);
       }
 
       return true;
