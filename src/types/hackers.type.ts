@@ -8,6 +8,6 @@ export interface DailyHackerNewsReturn {
   uuid: string;
   post: string;
   link: string;
-  founded: string;
-  liked: string;
+  founded: Date;
+  liked: number;
 }
