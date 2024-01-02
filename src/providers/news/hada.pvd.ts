@@ -1,10 +1,13 @@
 import { HadaError } from '@errors/hada.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import { checkHadaNewsIsLiked, updateHadaNewsLiked, updateHadaNewsLikedtoUnliked } from '@libraries/news/hada.lib';
+import {
+  bringHadaNews,
+  checkHadaNewsIsLiked,
+  updateHadaNewsLiked,
+  updateHadaNewsLikedtoUnliked,
+} from '@libraries/news/hada.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
-import { endOfDay, startOfDay } from 'date-fns';
-import moment from 'moment-timezone';
 import { HadaNewsReturn } from 'types/hada.type';
 
 @Injectable()
@@ -17,23 +20,7 @@ export class HadaProvider {
 
   async getNews(today: string) {
     try {
-      const yesterday = moment(today).subtract(1, 'day').toString();
-
-      NewsLogger.info('[HadaNews] YesterDay: %o', {
-        start: startOfDay(new Date(yesterday)),
-        end: endOfDay(new Date(yesterday)),
-      });
-
-      const result = await this.prisma.hada.findMany({
-        select: { uuid: true, post: true, descLink: true, founded: true, liked: true },
-        where: {
-          founded: {
-            gte: startOfDay(new Date(yesterday)),
-            lte: endOfDay(new Date(yesterday)),
-          },
-        },
-        orderBy: { rank: 'desc' },
-      });
+      const result = await bringHadaNews(this.prisma, today);
 
       this.resultNewsArray.push(...result);
 
@@ -47,6 +34,7 @@ export class HadaProvider {
             uuid: result[i].uuid,
             isUrlUndefined,
           });
+
           const reSearched = await this.prisma.hada.findFirst({
             select: {
               link: true,

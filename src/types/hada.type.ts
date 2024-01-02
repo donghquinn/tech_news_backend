@@ -5,3 +5,11 @@ export interface HadaNewsReturn {
   founded: Date;
   originalLink?: string;
 }
+
+export interface DailyHadaNewsReturn {
+  uuid: string;
+  post: string;
+  descLink: string;
+  founded: Date;
+  liked: number;
+}

@@ -58,6 +58,7 @@ export class MachineLearningProvider {
       if (!isLiked) {
         await updateMlNewsLiked(this.prisma, uuid);
       }
+
       if (isLiked) {
         await updateMlNewsLikedtoUnliked(this.prisma, uuid);
       }
