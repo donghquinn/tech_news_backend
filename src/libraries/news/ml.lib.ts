@@ -9,26 +9,26 @@ export const bringMlNews = async (prisma: PrismaLibrary, today: string): Promise
   try {
     const yesterday = moment(today).subtract(1, 'day').toString();
 
-      NewsLogger.info('[ML] Latest Machine Learning News: %o', {
-        start: startOfDay(new Date(yesterday)),
-        end: endOfDay(new Date(yesterday)),
-      });
+    NewsLogger.info('[ML] Latest Machine Learning News: %o', {
+      start: startOfDay(new Date(yesterday)),
+      end: endOfDay(new Date(yesterday)),
+    });
 
-      const result = await prisma.machineNews.findMany({
-        select: {
-          uuid: true,
-          category: true,
-          title: true,
-          link: true,
-          founded: true,
+    const result = await prisma.machineNews.findMany({
+      select: {
+        uuid: true,
+        category: true,
+        title: true,
+        link: true,
+        founded: true,
+      },
+      where: {
+        founded: {
+          gte: startOfDay(new Date(yesterday)),
+          lte: endOfDay(new Date(yesterday)),
         },
-        where: {
-          founded: {
-            gte: startOfDay(new Date(yesterday)),
-            lte: endOfDay(new Date(yesterday)),
-          },
-        },
-      });
+      },
+    });
 
     return result;
   } catch (error) {

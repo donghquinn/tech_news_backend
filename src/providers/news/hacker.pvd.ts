@@ -1,14 +1,13 @@
 import { HackerError } from '@errors/hacker.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
 import {
+  bringHackerNews,
   checkHackerNewsIsLiked,
   updateHackerNewsLiked,
   updateHackerNewsLikedtoUnliked,
 } from '@libraries/news/hacker.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
-import { endOfDay, startOfDay } from 'date-fns';
-import moment from 'moment-timezone';
 
 @Injectable()
 export class HackersNewsProvider {
@@ -36,23 +35,7 @@ export class HackersNewsProvider {
 
   async bringTodayHackerPosts(today: string) {
     try {
-      const yesterday = moment(today).subtract(1, 'day').toString();
-
-      NewsLogger.info('[Hackers] YesterDay: %o', {
-        start: startOfDay(new Date(yesterday)),
-        end: endOfDay(new Date(yesterday)),
-      });
-
-      const result = await this.prisma.hackers.findMany({
-        select: { uuid: true, post: true, link: true, founded: true, liked: true },
-        where: {
-          founded: {
-            gte: startOfDay(new Date(yesterday)),
-            lte: endOfDay(new Date(yesterday)),
-          },
-        },
-        orderBy: { rank: 'desc' },
-      });
+      const result = await bringHackerNews(this.prisma, today);
 
       return result;
     } catch (error) {

@@ -10,7 +10,7 @@ export class MachineLearningProvider {
 
   async bringLatestMachineLearningNews(today: string) {
     try {
-      const result = await bringMlNews( this.prisma, today );
+      const result = await bringMlNews(this.prisma, today);
 
       return result;
     } catch (error) {
