@@ -25,7 +25,7 @@ export const machineLearningValidator = async (request: ScrapeRequest) => {
 
 export const mlNewsStarValidator = async (request: StarRequest) => {
   try {
-    const scheme = z.object({ uuid: z.string(), isStarred: z.boolean() });
+    const scheme = z.object({ uuid: z.string() });
 
     const validated = await scheme.parseAsync(request);
 

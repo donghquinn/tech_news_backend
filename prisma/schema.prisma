@@ -12,30 +12,30 @@ datasource db {
 
 model Hackers {
   uuid    String   @id @default(uuid())
-  rank    String
+  rank    Int
   post    String
   link    String
-  liked   String   @default("0")
+  liked   Int   @default(0)
   founded DateTime
 }
 
 model Hada {
   uuid    String   @id @default(uuid())
   page String
-  rank    String
+  rank    Int
   post    String
   descLink String
   link    String
-  liked   String   @default("0")
+  liked   Int   @default(0)
   founded DateTime
 }
 
 model BbcTechNews {
   uuid    String   @id @default(uuid())
-  rank    String
+  rank    Int
   post    String
   link    String
-  liked   String   @default("0")
+  liked   Int   @default(0)
   founded DateTime
 }
 
@@ -47,7 +47,7 @@ model NaverNews {
   originallink String
   url          String
   postedTime   String
-  liked        String   @default("0")
+  liked        Int   @default(0)
   founded      DateTime
 }
 
@@ -56,7 +56,7 @@ model MachineNews {
   category String
   title    String
   link     String
-  liked    String   @default("0")
+  liked    Int   @default(0)
   founded  DateTime
 }
 

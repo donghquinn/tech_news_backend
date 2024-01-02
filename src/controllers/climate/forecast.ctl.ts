@@ -1,4 +1,4 @@
-import { ForeCastProvider } from '@libraries/providers/climate/forecast.pvd';
+import { ForeCastProvider } from 'providers/climate/forecast.pvd';
 import { Body, Controller, Post } from '@nestjs/common';
 import { forecastValidator } from '@validators/forecast.validators';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';

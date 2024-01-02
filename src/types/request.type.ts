@@ -4,5 +4,4 @@ export interface ScrapeRequest {
 
 export interface StarRequest {
   uuid: string;
-  isStarred: boolean;
 }

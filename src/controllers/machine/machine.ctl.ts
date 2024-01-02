@@ -1,4 +1,4 @@
-import { MachineLearningProvider } from '@libraries/providers/news/machine.pvd';
+import { MachineLearningProvider } from 'providers/news/machine.pvd';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { machineLearningValidator, mlNewsStarValidator } from '@validators/ml.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
@@ -24,9 +24,9 @@ export class MachineLearningController {
   @Post('/star')
   async giveStarNews(@Body() request: StarRequest) {
     try {
-      const { uuid, isStarred } = await mlNewsStarValidator(request);
+      const { uuid } = await mlNewsStarValidator(request);
 
-      const result = await this.mlNews.giveStar(uuid, isStarred);
+      const result = await this.mlNews.giveStar(uuid);
 
       return new SetResponse(200, { result });
     } catch (error) {

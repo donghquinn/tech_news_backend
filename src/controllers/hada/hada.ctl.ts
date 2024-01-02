@@ -1,4 +1,4 @@
-import { HadaProvider } from '@libraries/providers/news/hada.pvd';
+import { HadaProvider } from 'providers/news/hada.pvd';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { hadaNewsStarValidator, hadaNewsValidator } from '@validators/hada.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
@@ -25,9 +25,9 @@ export class HadaController {
   @Post('/star')
   async giveStarNews(@Body() request: StarRequest) {
     try {
-      const { uuid, isStarred } = await hadaNewsStarValidator(request);
+      const { uuid } = await hadaNewsStarValidator(request);
 
-      const result = await this.hada.giveStar(uuid, isStarred);
+      const result = await this.hada.giveStar(uuid);
 
       return new SetResponse(200, { result });
     } catch (error) {
