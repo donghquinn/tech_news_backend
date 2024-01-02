@@ -64,9 +64,20 @@ export class HackersNewsProvider {
     }
   }
 
-  async giveStar(uuid: string, isStarred: boolean) {
+  async giveStar(uuid: string) {
     try {
-      if (!isStarred) {
+      const isStarred = await this.prisma.hackers.findFirst({
+        select: {
+          liked: true,
+        },
+        where: {
+          uuid,
+        },
+      });
+
+      if (isStarred === null) throw new HackerError('[Hacker] Get Star Info', 'No Star Info Found.');
+
+      if (!Number(isStarred.liked) || isStarred.liked === '1') {
         NewsLogger.info('Give Hacker News unStar Request: %o', {
           uuid,
         });

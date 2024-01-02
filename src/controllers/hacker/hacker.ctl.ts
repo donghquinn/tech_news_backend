@@ -36,9 +36,9 @@ export class HackerController {
   @Post('/star')
   async giveStarNews(@Body() request: StarRequest) {
     try {
-      const { uuid, isStarred } = await hackerNewsStarValidator(request);
+      const { uuid } = await hackerNewsStarValidator(request);
 
-      const result = await this.hacker.giveStar(uuid, isStarred);
+      const result = await this.hacker.giveStar(uuid);
 
       return new SetResponse(200, { result });
     } catch (error) {
