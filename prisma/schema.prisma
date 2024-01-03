@@ -16,6 +16,7 @@ model Client{
   password String
   password_token String
   userName String
+  isLogin Int @default(0)
   // hackers_liked Hackers[]
   // hada_liked Hada[]
   // ml_liked MachineNews[]

@@ -18,6 +18,9 @@ export const checkIsEmailExist = async (prisma: PrismaLibrary, email: string) =>
           email
       } );
 
+    
+    
+
     return true;
   } catch (error) {
     ClientLogger.error('[Signup] Check is existing email: %o', {
