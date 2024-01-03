@@ -14,7 +14,6 @@ export interface DailyHadaNewsReturn {
   liked: number;
 }
 
-export interface DailyHadaNewsRequest
-{
+export interface DailyHadaNewsRequest {
   today: string;
 }
