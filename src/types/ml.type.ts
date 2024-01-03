@@ -5,3 +5,7 @@ export interface DailyMlNewsReturn {
   link: string;
   founded: Date;
 }
+
+export interface DailyMlNewsRequest {
+  today: string;
+}

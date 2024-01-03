@@ -1,4 +1,4 @@
-export class ForecastError extends Error {
+export class AuthError extends Error {
   type: string;
 
   constructor(type: string, message: string, cause?: Error) {
@@ -6,7 +6,7 @@ export class ForecastError extends Error {
 
     this.type = type;
 
-    this.name = '[Forecast ERROR]';
+    this.name = '[Auth ERROR]';
 
     this.cause = cause;
   }

@@ -1,4 +1,4 @@
-export class MetroError extends Error {
+export class ClientError extends Error {
   type: string;
 
   constructor(type: string, message: string, cause?: Error) {
@@ -6,7 +6,7 @@ export class MetroError extends Error {
 
     this.type = type;
 
-    this.name = '[Metro Error]';
+    this.name = '[Client Error]';
 
     this.cause = cause;
   }

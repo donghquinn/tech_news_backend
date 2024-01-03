@@ -1,8 +1,8 @@
-import { HadaProvider } from 'providers/news/hada.pvd';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { hadaNewsStarValidator, hadaNewsValidator } from '@validators/hada.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
-import { MatchingDataRequest } from 'types/list.type';
+import { HadaProvider } from 'providers/news/hada.pvd';
+import { DailyHadaNewsRequest } from 'types/hada.type';
 import { StarRequest } from 'types/request.type';
 
 @Controller('hada')
@@ -10,7 +10,7 @@ export class HadaController {
   constructor(private readonly hada: HadaProvider) {}
 
   @Post('/news')
-  async getHackerNews(@Body() request: MatchingDataRequest) {
+  async getHadaNews(@Body() request: DailyHadaNewsRequest) {
     try {
       const { today } = await hadaNewsValidator(request);
 

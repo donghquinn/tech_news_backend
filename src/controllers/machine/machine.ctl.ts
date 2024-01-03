@@ -2,14 +2,15 @@ import { MachineLearningProvider } from 'providers/news/machine.pvd';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { machineLearningValidator, mlNewsStarValidator } from '@validators/ml.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
-import { ScrapeRequest, StarRequest } from 'types/request.type';
+import {  StarRequest } from 'types/request.type';
+import { DailyMlNewsRequest } from 'types/ml.type';
 
 @Controller('ml')
 export class MachineLearningController {
   constructor(private readonly mlNews: MachineLearningProvider) {}
 
   @Post('/latest')
-  async getLatestMlNewsController(@Body() request: ScrapeRequest) {
+  async getLatestMlNewsController(@Body() request: DailyMlNewsRequest) {
     try {
       const { today } = await machineLearningValidator(request);
 
