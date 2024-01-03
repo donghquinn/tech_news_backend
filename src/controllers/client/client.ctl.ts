@@ -11,13 +11,13 @@ export class ClientController {
   constructor(private readonly client: ClientProvider) {}
 
   @Post('signin')
-  async signupController(@Body() request: ClientSignupRequest) {
+  async signupController(@Body() request: ClientSignupRequest ) {
     try {
       const { email, name, password } = await clientSignupValidator(request);
 
       const result = await this.client.checkEmailandSignup(email, name, password);
 
-      return new SetResponse(200, { result });
+      return new SetResponse(200, {result});
     } catch (error) {
       return new SetErrorResponse(error);
     }
@@ -28,9 +28,9 @@ export class ClientController {
     try {
       const { email, password } = await clientLoginValidator(request);
 
-      const result = await this.client.login(email, password, response);
+      const jwt = await this.client.login(email, password, response);
 
-      return new SetResponse(200, { result });
+    return response.status( 200 ).send( jwt );
     } catch (error) {
       return new SetErrorResponse(error);
     }
