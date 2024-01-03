@@ -16,9 +16,9 @@ model Client{
   password String
   password_token String
   userName String
-  hackers_liked Hackers[]
-  hada_liked Hada[]
-  ml_liked MachineNews[]
+  // hackers_liked Hackers[]
+  // hada_liked Hada[]
+  // ml_liked MachineNews[]
 }
 
 model Hackers {
@@ -27,8 +27,8 @@ model Hackers {
   post    String
   link    String
   liked   Int   @default(0)
-  client_id String
-  liked_client Client @relation(fields: [client_id], references: [uuid])
+  // client_id String[]
+  // liked_client Client @relation(fields: [client_id], references: [uuid])
   founded DateTime
 }
 
@@ -40,8 +40,8 @@ model Hada {
   descLink String
   link    String
   liked   Int   @default(0)
-   client_id String
-  liked_client Client @relation(fields: [client_id], references: [uuid])
+  // client_id String[]
+  // liked_client Client @relation(fields: [client_id], references: [uuid])
   founded DateTime
 }
 
@@ -72,8 +72,8 @@ model MachineNews {
   title    String
   link     String
   liked    Int   @default(0)
-   client_id String
-  liked_client Client @relation(fields: [client_id], references: [uuid])
+  // client_id String
+  // liked_client Client @relation(fields: [client_id], references: [uuid])
   founded  DateTime
 }
 
