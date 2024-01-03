@@ -1,9 +1,10 @@
 import { ValidatorError } from '@errors/validator.error';
 import { Logger } from '@utils/logger.util';
-import { ScrapeRequest, StarRequest } from 'types/request.type';
+import { DailyMlNewsRequest } from 'types/ml.type';
+import { StarRequest } from 'types/request.type';
 import { z } from 'zod';
 
-export const machineLearningValidator = async (request: ScrapeRequest) => {
+export const machineLearningValidator = async (request: DailyMlNewsRequest) => {
   try {
     const scheme = z.object({ today: z.string() });
 

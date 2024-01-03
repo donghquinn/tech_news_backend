@@ -11,3 +11,7 @@ export interface DailyHackerNewsReturn {
   founded: Date;
   liked: number;
 }
+
+export interface DailyHackerNewsRequest {
+  today: string;
+}

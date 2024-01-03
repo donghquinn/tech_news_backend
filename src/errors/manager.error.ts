@@ -1,4 +1,4 @@
-export class ManagerError extends Error {
+export class StarError extends Error {
   type: string;
 
   constructor(type: string, message: string, cause?: Error) {
@@ -6,7 +6,7 @@ export class ManagerError extends Error {
 
     this.type = type;
 
-    this.name = '[Manager Error]';
+    this.name = '[Star Error]';
 
     this.cause = cause;
   }

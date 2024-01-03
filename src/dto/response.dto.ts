@@ -1,8 +1,6 @@
-import { BbcError } from '@errors/bbc.error';
 import { HackerError } from '@errors/hacker.error';
 import { HadaError } from '@errors/hada.error';
 import { MachineLearningError } from '@errors/machine.error';
-import { NaverError } from '@errors/naver.error';
 import { PrismaError } from '@errors/prisma.error';
 import { ValidatorError } from '@errors/validator.error';
 
@@ -36,10 +34,7 @@ export class SetErrorResponse implements ResponseObject {
   constructor(error: unknown) {
     const errorArray = [];
 
-    if (error instanceof BbcError) {
-      this.resCode = '401';
-      errorArray.push(error.type, error.message);
-    } else if (error instanceof HackerError) {
+    if (error instanceof HackerError) {
       this.resCode = '402';
       errorArray.push(error.type, error.message);
     } else if (error instanceof HadaError) {
@@ -53,9 +48,6 @@ export class SetErrorResponse implements ResponseObject {
       errorArray.push(error.type, error.message);
     } else if (error instanceof ValidatorError) {
       this.resCode = '406';
-      errorArray.push(error.type, error.message);
-    } else if (error instanceof NaverError) {
-      this.resCode = '407';
       errorArray.push(error.type, error.message);
     } else {
       this.resCode = '500';

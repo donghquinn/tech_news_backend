@@ -1,8 +1,8 @@
-import { HackersNewsProvider } from 'providers/news/hacker.pvd';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { hackerNewsStarValidator, hackerNewsValidator } from '@validators/hacker.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
-import { MatchingDataRequest } from 'types/list.type';
+import { HackersNewsProvider } from 'providers/news/hacker.pvd';
+import { DailyHackerNewsRequest } from 'types/hackers.type';
 import { StarRequest } from 'types/request.type';
 
 @Controller('hacker')
@@ -21,7 +21,7 @@ export class HackerController {
   }
 
   @Post('/news')
-  async getHackerNews(@Body() request: MatchingDataRequest) {
+  async getHackerNews(@Body() request: DailyHackerNewsRequest) {
     try {
       const { today } = await hackerNewsValidator(request);
 

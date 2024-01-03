@@ -13,3 +13,8 @@ export interface DailyHadaNewsReturn {
   founded: Date;
   liked: number;
 }
+
+export interface DailyHadaNewsRequest
+{
+  today: string;
+}

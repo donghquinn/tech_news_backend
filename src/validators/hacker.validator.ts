@@ -1,9 +1,10 @@
 import { ValidatorError } from '@errors/validator.error';
 import { Logger } from '@utils/logger.util';
-import { ScrapeRequest, StarRequest } from 'types/request.type';
+import { DailyHackerNewsRequest } from 'types/hackers.type';
+import { StarRequest } from 'types/request.type';
 import { z } from 'zod';
 
-export const hackerNewsValidator = async (request: ScrapeRequest) => {
+export const hackerNewsValidator = async (request: DailyHackerNewsRequest) => {
   try {
     const scheme = z.object({ today: z.string() });
 
