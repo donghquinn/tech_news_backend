@@ -119,6 +119,7 @@ export class HadaProvider {
         },
         where: {
           liked: 1,
+          // client_id: userUuid
         },
       });
 
