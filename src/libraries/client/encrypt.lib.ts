@@ -19,19 +19,23 @@ export const createToken = (certKey: string) => {
   return { hashToken };
 };
 
+export const createHashPassword = (password: string, hashToken: string) => {
+  const passwordBase = password + hashToken;
 
-export const encryptPassword = ( password: string ) =>
-{
-    // Base Half Key
-    const certKey = randomBytes( 16 ).toString( 'base64' );
-    
-    const { hashToken } = createToken( certKey );
+  const encodedPassword = createHash('sha256').update(passwordBase).digest('hex');
 
-    const passwordBase = password + hashToken;
+  return encodedPassword;
+};
 
-    const encodedPassword = createHash('sha256').update(passwordBase).digest('hex');
+export const encryptPassword = (password: string) => {
+  // Base Half Key
+  const certKey = randomBytes(16).toString('base64');
 
-    ClientLogger.debug( '[SIGNIN] Encoded Password: %o', { encodedPassword } );
-    
-    return {encodedPassword, hashToken};
-}
+  const { hashToken } = createToken(certKey);
+
+  const encodedPassword = createHashPassword(password, hashToken);
+
+  ClientLogger.debug('[SIGNIN] Encoded Password: %o', { encodedPassword });
+
+  return { encodedPassword, hashToken };
+};

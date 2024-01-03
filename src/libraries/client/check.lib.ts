@@ -14,12 +14,9 @@ export const checkIsEmailExist = async (prisma: PrismaLibrary, email: string) =>
     if (result !== null)
       throw new ClientError('[Signup] Check is Exisint Email', 'Found Existing Email. Please try different email');
 
-      ClientLogger.debug( "[Signup] No Email Found. Good to go: %o", {
-          email
-      } );
-
-    
-    
+    ClientLogger.debug('[Signup] No Email Found. Good to go: %o', {
+      email,
+    });
 
     return true;
   } catch (error) {
