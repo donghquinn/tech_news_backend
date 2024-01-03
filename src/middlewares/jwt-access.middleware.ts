@@ -11,7 +11,7 @@ export class JwtAccessStrategy extends PassportStrategy( Strategy, "access" ) {
         } );
     }
 
-    validate ( payload: ClientLoginRequest )
+    static validate ( payload: ClientLoginRequest )
     {
         return {
             email: payload.email,
