@@ -1,4 +1,4 @@
-import { Body, Controller, Res } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import { clientLoginValidator } from '@validators/client/login.validator';
 import { clientSignupValidator } from '@validators/client/signup.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
@@ -10,6 +10,7 @@ import { ClientLoginRequest, ClientSignupRequest } from 'types/client.type';
 export class ClientController {
   constructor(private readonly client: ClientProvider) {}
 
+  @Post('signin')
   async signupController(@Body() request: ClientSignupRequest) {
     try {
       const { email, name, password } = await clientSignupValidator(request);
@@ -22,6 +23,7 @@ export class ClientController {
     }
   }
 
+  @Post('login')
   async loginController(@Body() request: ClientLoginRequest, @Res() response: Response) {
     try {
       const { email, password } = await clientLoginValidator(request);
