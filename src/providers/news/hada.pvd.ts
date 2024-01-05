@@ -22,6 +22,7 @@ export class HadaProvider {
     try {
       const result = await bringHadaNews(this.prisma, today);
 
+
       this.resultNewsArray.push(...result);
 
       for (let i = 0; i <= result.length - 1; i += 1) {
@@ -65,7 +66,7 @@ export class HadaProvider {
       return result;
     } catch (error) {
       NewsLogger.error('[Hada] Bring Hada News Error: %o', {
-        error,
+        error:  error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
       throw new HadaError(
@@ -91,7 +92,7 @@ export class HadaProvider {
       return true;
     } catch (error) {
       NewsLogger.error('[HADA] Star Update Error: %o', {
-        error,
+        error:  error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
       throw new HadaError(
@@ -127,7 +128,7 @@ export class HadaProvider {
       return starredNews;
     } catch (error) {
       NewsLogger.error('[HADA] Get Starred Update Error: %o', {
-        error,
+        error:  error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
       throw new HadaError(
