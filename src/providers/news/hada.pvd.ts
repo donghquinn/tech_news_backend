@@ -64,10 +64,9 @@ export class HadaProvider {
 
       return result;
     } catch (error) {
-      NewsLogger.error(
-        '[Hada] Bring Hada News Error: %o',
-        error instanceof Error ? error : new Error(JSON.stringify(error)),
-      );
+      NewsLogger.error('[Hada] Bring Hada News Error: %o', {
+        error,
+      });
 
       throw new HadaError(
         '[HADA] Bring news',
@@ -92,7 +91,7 @@ export class HadaProvider {
       return true;
     } catch (error) {
       NewsLogger.error('[HADA] Star Update Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HadaError(
@@ -128,7 +127,7 @@ export class HadaProvider {
       return starredNews;
     } catch (error) {
       NewsLogger.error('[HADA] Get Starred Update Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HadaError(
