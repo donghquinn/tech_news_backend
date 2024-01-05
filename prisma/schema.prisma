@@ -17,9 +17,9 @@ model Client{
   password_token String
   userName String
   isLogin Int @default(0)
-  accessToken String
+  accessToken String?
   refreshToken String?
-  // hackers_liked Hackers[]
+  hackers_liked Hackers[]
   // hada_liked Hada[]
   // ml_liked MachineNews[]
 }
@@ -30,8 +30,8 @@ model Hackers {
   post    String
   link    String
   liked   Int   @default(0)
-  // client_id String[]
-  // liked_client Client @relation(fields: [client_id], references: [uuid])
+  client_id String[]
+  liked_client Client @relation(fields: [client_id], references: [uuid])
   founded DateTime
 }
 

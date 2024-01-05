@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { hackerNewsStarValidator, hackerNewsValidator } from '@validators/hacker.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { HackersNewsProvider } from 'providers/news/hacker.pvd';
@@ -60,9 +60,9 @@ export class HackerController {
   // }
 
   @Get('/starred')
-  async getStarredBbc() {
+  async getStarredBbc(@Query("page") page: number, @Query("size") size: number) {
     try {
-      const result = await this.hacker.bringStarredNews();
+      const result = await this.hacker.bringStarredNews(page, size);
 
       return new SetResponse(200, { result });
     } catch (error) {

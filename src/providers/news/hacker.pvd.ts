@@ -6,6 +6,7 @@ import {
   updateHackerNewsLiked,
   updateHackerNewsLikedtoUnliked,
 } from '@libraries/news/hacker.lib';
+import { getStarredNewsPagination } from '@libraries/news/hada.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 
@@ -79,26 +80,21 @@ export class HackersNewsProvider {
     }
   }
 
-  async bringStarredNews() {
-    try {
-      NewsLogger.info('[Hackers] Request to get Starred Hacker News');
+  // Pagination
+  async bringStarredNews(page: number, size: number) {
+    try
+    {
+      const pageNumber = typeof page === "number" ? page : Number( page );
+      const sizeNumber = typeof size === "number" ? size : Number( size );
 
-      const starredNews = await this.prisma.hackers.findMany({
-        select: {
-          uuid: true,
-          post: true,
-          link: true,
-          founded: true,
-        },
-        orderBy: {
-          founded: 'desc',
-        },
-        where: {
-          liked: 1,
-        },
+      NewsLogger.info( '[Hackers] Request to get Starred Hacker News: %o', {
+        pageNumber,
+        sizeNumber,
       });
 
-      NewsLogger.info('[Hackers] Founded Starred News');
+      const tempUserUuid = "123";
+
+      const starredNews = await getStarredNewsPagination( this.prisma, page, size, tempUserUuid );
 
       return starredNews;
     } catch (error) {

@@ -132,3 +132,47 @@ export const updateHadaNewsLiked = async (prisma: PrismaLibrary, uuid: string) =
     );
   }
 };
+
+// Pagination
+export const getStarredNewsPagination = async (prisma: PrismaLibrary, page: number, size: number, userUuid: string ) =>
+{
+  try
+  {
+    const totalPosts = await prisma.hackers.count( { where: { liked: 1 } } );
+
+     const starredNews = await prisma.hackers.findMany({
+        select: {
+          uuid: true,
+          post: true,
+          link: true,
+          founded: true,
+        },
+        orderBy: {
+          founded: 'desc',
+        },
+        where: {
+          liked: 1,
+          client_id: {has: userUuid},
+        },
+        take: size,
+        skip: (page - 1) * size
+      });
+
+    NewsLogger.info( '[Hackers] Founded Starred News: %o', {
+      totalPosts,
+      newsSize: starredNews.length,
+    } );
+    
+    return {
+      totalPosts,
+      starredNews,
+    }
+  } catch ( error )
+  {
+    throw new HadaError(
+      "[Hada] Get Starred News",
+      "Get Starred News Error.",
+
+    )
+  }
+}
