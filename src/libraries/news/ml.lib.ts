@@ -136,3 +136,53 @@ export const updateMlNewsLiked = async (prisma: PrismaLibrary, uuid: string) => 
     );
   }
 };
+
+// Pagination
+export const getStarredMlNewsPagination = async (
+  prisma: PrismaLibrary,
+  page: number,
+  size: number,
+  userUuid: string,
+) => {
+  try {
+    const totalPosts = await prisma.machineNews.count({ where: { liked: 1 } });
+
+    const starredNews = await prisma.machineNews.findMany({
+      select: {
+        uuid: true,
+        title: true,
+        link: true,
+        founded: true,
+      },
+      orderBy: {
+        founded: 'desc',
+      },
+      where: {
+        liked: 1,
+        client_id: { has: userUuid },
+      },
+      take: size,
+      skip: (page - 1) * size,
+    });
+
+    NewsLogger.info('[ML] Founded Starred News: %o', {
+      totalPosts,
+      newsSize: starredNews.length,
+    });
+
+    return {
+      totalPosts,
+      starredNews,
+    };
+  } catch (error) {
+    NewsLogger.info('[ML] Get Starred News Error: %o', {
+      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+    });
+
+    throw new MachineLearningError(
+      '[ML] Get Starred News',
+      'Get Starred News Error.',
+      error instanceof Error ? error : new Error(JSON.stringify(error)),
+    );
+  }
+};

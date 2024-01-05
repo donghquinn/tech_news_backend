@@ -1,5 +1,5 @@
 import { MachineLearningProvider } from 'providers/news/machine.pvd';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { machineLearningValidator, mlNewsStarValidator } from '@validators/ml.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { StarRequest } from 'types/request.type';
@@ -36,9 +36,9 @@ export class MachineLearningController {
   }
 
   @Get('/starred')
-  async getStarredBbc() {
+  async getStarredBbc(@Query('page') page: number, @Query('size') size: number) {
     try {
-      const result = await this.mlNews.bringStarredNews();
+      const result = await this.mlNews.bringStarredNews(page, size);
 
       return new SetResponse(200, { result });
     } catch (error) {
