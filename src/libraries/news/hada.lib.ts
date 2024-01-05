@@ -29,7 +29,7 @@ export const bringHadaNews = async (prisma: PrismaLibrary, today: string): Promi
     return result;
   } catch (error) {
     NewsLogger.error('[Hada] Bring Daily News Error: %o', {
-      error,
+      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
     });
 
     throw new HadaError(
@@ -60,7 +60,7 @@ export const checkHadaNewsIsLiked = async (prisma: PrismaLibrary, uuid: string) 
     return isStarred.liked;
   } catch (error) {
     NewsLogger.error('[Hada] Check Hada News Liked Info Error: %o', {
-      error,
+      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
     });
 
     throw new HadaError(
@@ -91,7 +91,7 @@ export const updateHadaNewsLikedtoUnliked = async (prisma: PrismaLibrary, uuid: 
     return 0;
   } catch (error) {
     NewsLogger.error('[Hada] Update Liked to UnLiked Error: %o', {
-      error,
+      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
     });
 
     throw new HadaError(
@@ -122,7 +122,7 @@ export const updateHadaNewsLiked = async (prisma: PrismaLibrary, uuid: string) =
     return 0;
   } catch (error) {
     NewsLogger.error('[Hada] Update News Liked Error: %o', {
-      error,
+      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
     });
 
     throw new HadaError(
