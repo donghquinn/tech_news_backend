@@ -3,10 +3,10 @@ import { PrismaLibrary } from '@libraries/common/prisma.lib';
 import {
   bringHackerNews,
   checkHackerNewsIsLiked,
+  getStarredHackerNewsPagination,
   updateHackerNewsLiked,
   updateHackerNewsLikedtoUnliked,
 } from '@libraries/news/hacker.lib';
-import { getStarredNewsPagination } from '@libraries/news/hada.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 
@@ -23,7 +23,7 @@ export class HackersNewsProvider {
       return count;
     } catch (error) {
       NewsLogger.error('[Hackers] Get Hacker News Count Error: %o', {
-        error:  error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
       throw new HackerError(
@@ -40,11 +40,9 @@ export class HackersNewsProvider {
 
       return result;
     } catch (error) {
-      NewsLogger.error(
-        '[Hackers] Bring Hacker News Error: %o', {
-          error:  error instanceof Error ? error : new Error(JSON.stringify(error)),
-        }
-      );
+      NewsLogger.error('[Hackers] Bring Hacker News Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
 
       throw new HackerError(
         '[Hackers] Hacker News',
@@ -69,7 +67,7 @@ export class HackersNewsProvider {
       return true;
     } catch (error) {
       NewsLogger.error('[Hackers] Star Update Error: %o', {
-        error:  error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
       throw new HackerError(
@@ -82,24 +80,23 @@ export class HackersNewsProvider {
 
   // Pagination
   async bringStarredNews(page: number, size: number) {
-    try
-    {
-      const pageNumber = typeof page === "number" ? page : Number( page );
-      const sizeNumber = typeof size === "number" ? size : Number( size );
+    try {
+      const pageNumber = typeof page === 'number' ? page : Number(page);
+      const sizeNumber = typeof size === 'number' ? size : Number(size);
 
-      NewsLogger.info( '[Hackers] Request to get Starred Hacker News: %o', {
+      NewsLogger.info('[Hackers] Request to get Starred Hacker News: %o', {
         pageNumber,
         sizeNumber,
       });
 
-      const tempUserUuid = "123";
+      const tempUserUuid = '123';
 
-      const starredNews = await getStarredNewsPagination( this.prisma, page, size, tempUserUuid );
+      const starredNews = await getStarredHackerNewsPagination(this.prisma, page, size, tempUserUuid);
 
       return starredNews;
     } catch (error) {
       NewsLogger.error('[Hackers] Get Starred Update Error: %o', {
-        error:  error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
       throw new HackerError(

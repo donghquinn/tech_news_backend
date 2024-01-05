@@ -3,6 +3,7 @@ import { PrismaLibrary } from '@libraries/common/prisma.lib';
 import {
   bringHadaNews,
   checkHadaNewsIsLiked,
+  getStarredHadaNewsPagination,
   updateHadaNewsLiked,
   updateHadaNewsLikedtoUnliked,
 } from '@libraries/news/hada.lib';
@@ -21,7 +22,6 @@ export class HadaProvider {
   async getNews(today: string) {
     try {
       const result = await bringHadaNews(this.prisma, today);
-
 
       this.resultNewsArray.push(...result);
 
@@ -66,7 +66,7 @@ export class HadaProvider {
       return result;
     } catch (error) {
       NewsLogger.error('[Hada] Bring Hada News Error: %o', {
-        error:  error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
       throw new HadaError(
@@ -92,7 +92,7 @@ export class HadaProvider {
       return true;
     } catch (error) {
       NewsLogger.error('[HADA] Star Update Error: %o', {
-        error:  error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
       throw new HadaError(
@@ -103,32 +103,38 @@ export class HadaProvider {
     }
   }
 
-  async bringStarredNews() {
+  async bringStarredNews(page: number, size: number) {
     try {
+      const pageNumber = typeof page === 'number' ? page : Number(page);
+      const sizeNumber = typeof size === 'number' ? size : Number(size);
+
       NewsLogger.info('[HADA] Request to get Starred Hacker News');
 
-      const starredNews = await this.prisma.hada.findMany({
-        select: {
-          uuid: true,
-          post: true,
-          link: true,
-          founded: true,
-        },
-        orderBy: {
-          founded: 'desc',
-        },
-        where: {
-          liked: 1,
-          // client_id: userUuid
-        },
-      });
+      const tempUserUuid = '123';
+      const starredNews = await getStarredHadaNewsPagination(this.prisma, pageNumber, sizeNumber, tempUserUuid);
+
+      // const starredNews = await this.prisma.hada.findMany({
+      //   select: {
+      //     uuid: true,
+      //     post: true,
+      //     link: true,
+      //     founded: true,
+      //   },
+      //   orderBy: {
+      //     founded: 'desc',
+      //   },
+      //   where: {
+      //     liked: 1,
+      //     // client_id: userUuid
+      //   },
+      // });
 
       NewsLogger.info('[HADA] Founded Starred News');
 
       return starredNews;
     } catch (error) {
       NewsLogger.error('[HADA] Get Starred Update Error: %o', {
-        error:  error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
       throw new HadaError(

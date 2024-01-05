@@ -60,7 +60,7 @@ export class HackerController {
   // }
 
   @Get('/starred')
-  async getStarredBbc(@Query("page") page: number, @Query("size") size: number) {
+  async getStarredBbc(@Query('page') page: number, @Query('size') size: number) {
     try {
       const result = await this.hacker.bringStarredNews(page, size);
 

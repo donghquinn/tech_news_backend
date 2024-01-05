@@ -20,7 +20,7 @@ model Client{
   accessToken String?
   refreshToken String?
   hackers_liked Hackers[]
-  // hada_liked Hada[]
+  hada_liked Hada[]
   // ml_liked MachineNews[]
 }
 
@@ -43,8 +43,8 @@ model Hada {
   descLink String
   link    String
   liked   Int   @default(0)
-  // client_id String[]
-  // liked_client Client @relation(fields: [client_id], references: [uuid])
+  client_id String[]
+  liked_client Client @relation(fields: [client_id], references: [uuid])
   founded DateTime
 }
 
