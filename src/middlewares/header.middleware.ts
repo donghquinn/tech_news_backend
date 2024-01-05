@@ -8,7 +8,7 @@ export const globalMiddleware = (request: Request, response: Response, next: Nex
 
   Logger.debug('Request IP: %o', {
     IpAddress: request.ip,
-    origin: request.ips,
+    origin: request.originalUrl,
   });
 
   if (authKey === process.env.AUTH_KEY) {

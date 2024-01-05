@@ -2,7 +2,7 @@ import { MachineLearningProvider } from 'providers/news/machine.pvd';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { machineLearningValidator, mlNewsStarValidator } from '@validators/ml.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
-import {  StarRequest } from 'types/request.type';
+import { StarRequest } from 'types/request.type';
 import { DailyMlNewsRequest } from 'types/ml.type';
 
 @Controller('ml')

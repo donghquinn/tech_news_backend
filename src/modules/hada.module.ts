@@ -1,10 +1,11 @@
 import { HadaController } from '@controllers/hada/hada.ctl';
-import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import { HadaProvider } from 'providers/news/hada.pvd';
 import { Module } from '@nestjs/common';
+import { HadaProvider } from 'providers/news/hada.pvd';
+import { PrismaModule } from './prisma.module';
 
 @Module({
   controllers: [HadaController],
-  providers: [HadaProvider, PrismaLibrary],
+  imports: [PrismaModule],
+  providers: [HadaProvider],
 })
 export class HadaModule {}

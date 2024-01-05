@@ -15,8 +15,8 @@ interface KeyableObject {
 }
 
 export class SetResponse implements ResponseObject {
-  constructor(res: number, data?: KeyableObject) {
-    this.resCode = res.toString();
+  constructor(resCode: number, data?: KeyableObject) {
+    this.resCode = resCode.toString();
 
     this.dataRes = data ?? null;
 
