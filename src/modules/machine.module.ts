@@ -1,10 +1,11 @@
 import { MachineLearningController } from '@controllers/machine/machine.ctl';
-import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import { MachineLearningProvider } from 'providers/news/machine.pvd';
 import { Module } from '@nestjs/common';
+import { MachineLearningProvider } from 'providers/news/machine.pvd';
+import { PrismaModule } from './prisma.module';
 
 @Module({
   controllers: [MachineLearningController],
-  providers: [MachineLearningProvider, PrismaLibrary],
+  imports: [PrismaModule],
+  providers: [MachineLearningProvider],
 })
 export class MachineLearningNewsModule {}
