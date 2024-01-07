@@ -17,7 +17,6 @@ export const bootstrap = async () => {
   const port = Number(process.env.APP_PORT);
 
   app.use(helmet());
-  // app.use(HeaderAuthMiddleware);
   app.enableCors();
   app.enableVersioning();
   app.useBodyParser('json');
