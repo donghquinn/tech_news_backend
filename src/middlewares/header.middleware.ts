@@ -1,9 +1,9 @@
 import { AuthError } from '@errors/auth.error';
 import { Logger } from '@nestjs/common';
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request } from 'express';
 
 // eslint-disable-next-line consistent-return
-export const globalMiddleware = (request: Request, response: Response, next: NextFunction): void => {
+export const globalMiddleware = (request: Request, next: NextFunction): void => {
   const authKey = request.headers?.key;
 
   Logger.debug('Request IP: %o', {
