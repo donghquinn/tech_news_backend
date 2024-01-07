@@ -1,6 +1,12 @@
 import { MachineLearningError } from '@errors/machine.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import { bringMlNews, checkMlNewsIsLiked, updateMlNewsLiked, updateMlNewsLikedtoUnliked } from '@libraries/news/ml.lib';
+import {
+  bringMlNews,
+  checkMlNewsIsLiked,
+  getStarredMlNewsPagination,
+  updateMlNewsLiked,
+  updateMlNewsLikedtoUnliked,
+} from '@libraries/news/ml.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 
@@ -52,24 +58,16 @@ export class MachineLearningProvider {
     }
   }
 
-  async bringStarredNews() {
+  async bringStarredNews(page: number, size: number) {
     try {
+      const pageNumber = typeof page === 'number' ? page : Number(page);
+      const sizeNumber = typeof size === 'number' ? size : Number(size);
+
       NewsLogger.info('[ML] Request to get Starred ML News');
 
-      const starredNews = await this.prisma.machineNews.findMany({
-        select: {
-          uuid: true,
-          title: true,
-          link: true,
-          founded: true,
-        },
-        orderBy: {
-          founded: 'desc',
-        },
-        where: {
-          liked: 1,
-        },
-      });
+      const tempUserUuid = '123';
+
+      const starredNews = await getStarredMlNewsPagination(this.prisma, pageNumber, sizeNumber, tempUserUuid);
 
       NewsLogger.info('[ML] Founded Starred News');
 

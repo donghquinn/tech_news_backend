@@ -3,6 +3,7 @@ import { PrismaLibrary } from '@libraries/common/prisma.lib';
 import {
   bringHackerNews,
   checkHackerNewsIsLiked,
+  getStarredHackerNewsPagination,
   updateHackerNewsLiked,
   updateHackerNewsLikedtoUnliked,
 } from '@libraries/news/hacker.lib';
@@ -22,7 +23,7 @@ export class HackersNewsProvider {
       return count;
     } catch (error) {
       NewsLogger.error('[Hackers] Get Hacker News Count Error: %o', {
-        error:  error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
       throw new HackerError(
@@ -39,11 +40,9 @@ export class HackersNewsProvider {
 
       return result;
     } catch (error) {
-      NewsLogger.error(
-        '[Hackers] Bring Hacker News Error: %o', {
-          error:  error instanceof Error ? error : new Error(JSON.stringify(error)),
-        }
-      );
+      NewsLogger.error('[Hackers] Bring Hacker News Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
 
       throw new HackerError(
         '[Hackers] Hacker News',
@@ -68,7 +67,7 @@ export class HackersNewsProvider {
       return true;
     } catch (error) {
       NewsLogger.error('[Hackers] Star Update Error: %o', {
-        error:  error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
       throw new HackerError(
@@ -79,31 +78,25 @@ export class HackersNewsProvider {
     }
   }
 
-  async bringStarredNews() {
+  // Pagination
+  async bringStarredNews(page: number, size: number) {
     try {
-      NewsLogger.info('[Hackers] Request to get Starred Hacker News');
+      const pageNumber = typeof page === 'number' ? page : Number(page);
+      const sizeNumber = typeof size === 'number' ? size : Number(size);
 
-      const starredNews = await this.prisma.hackers.findMany({
-        select: {
-          uuid: true,
-          post: true,
-          link: true,
-          founded: true,
-        },
-        orderBy: {
-          founded: 'desc',
-        },
-        where: {
-          liked: 1,
-        },
+      NewsLogger.info('[Hackers] Request to get Starred Hacker News: %o', {
+        pageNumber,
+        sizeNumber,
       });
 
-      NewsLogger.info('[Hackers] Founded Starred News');
+      const tempUserUuid = '123';
+
+      const starredNews = await getStarredHackerNewsPagination(this.prisma, page, size, tempUserUuid);
 
       return starredNews;
     } catch (error) {
       NewsLogger.error('[Hackers] Get Starred Update Error: %o', {
-        error:  error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
       });
 
       throw new HackerError(

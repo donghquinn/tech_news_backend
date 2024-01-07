@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { hadaNewsStarValidator, hadaNewsValidator } from '@validators/hada.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { HadaProvider } from 'providers/news/hada.pvd';
@@ -49,9 +49,9 @@ export class HadaController {
   // }
 
   @Get('/starred')
-  async getStarredBbc() {
+  async getStarredBbc(@Query('page') page: number, @Query('size') size: number) {
     try {
-      const result = await this.hada.bringStarredNews();
+      const result = await this.hada.bringStarredNews(page, size);
 
       return new SetResponse(200, { result });
     } catch (error) {

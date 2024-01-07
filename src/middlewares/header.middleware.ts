@@ -1,9 +1,9 @@
+import { AuthError } from '@errors/auth.error';
 import { Logger } from '@nestjs/common';
-import { SetErrorResponse } from 'dto/response.dto';
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request } from 'express';
 
 // eslint-disable-next-line consistent-return
-export const globalMiddleware = (request: Request, response: Response, next: NextFunction) => {
+export const globalMiddleware = (request: Request, next: NextFunction): void => {
   const authKey = request.headers?.key;
 
   Logger.debug('Request IP: %o', {
@@ -16,6 +16,6 @@ export const globalMiddleware = (request: Request, response: Response, next: Nex
 
     next();
   } else {
-    return new SetErrorResponse('No Auth Key Detected');
+    throw new AuthError( "[AUTH] Validate Header Key", "Given Key is not valid. Please Check and Try again." );
   }
 };

@@ -23,7 +23,7 @@
 
 ---
 
---- Legeacy ---
+--- Legacy ---
 
 ## BBC Tech News
 
