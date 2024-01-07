@@ -2,6 +2,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ClientLoginRequest } from 'types/client.type';
 
+// TODO JWT 모듈 작업
 export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
   constructor() {
     super({
