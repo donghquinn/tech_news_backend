@@ -6,6 +6,7 @@ import { Response } from 'express';
 import { ClientProvider } from 'providers/client/client.pvd';
 import { ClientLoginRequest, ClientSignupRequest } from 'types/client.type';
 
+// TODO User 회원가입 / 로그인 / 로그아웃 / 회원 탈퇴 기능 구현
 @Controller('users')
 export class ClientController {
   constructor(private readonly client: ClientProvider) {}
