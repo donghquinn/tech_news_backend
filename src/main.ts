@@ -4,6 +4,8 @@ import { AppModule } from 'app.module';
 import helmet from 'helmet';
 import { shutdown } from 'utils/shutdown.utils';
 
+process.env.TZ = "Asia/Seoul";
+
 export const bootstrap = async () => {
   const { NestFactory } = await import('@nestjs/core');
   // const source = await import('source-map-support');
