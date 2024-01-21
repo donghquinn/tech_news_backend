@@ -8,7 +8,6 @@ process.env.TZ = 'Asia/Seoul';
 
 export const bootstrap = async () => {
   const { NestFactory } = await import('@nestjs/core');
-  // const source = await import('source-map-support');
 
   const date = new Date().toLocaleTimeString();
 
