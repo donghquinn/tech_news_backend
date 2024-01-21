@@ -17,7 +17,7 @@ export class MachineLearningProvider {
 
   async bringLatestMachineLearningNews(today: string) {
     try {
-      const yesterday = moment(today).subtract(1, 'day').toString();
+      const yesterday = moment(today).subtract(1, 'day').toDate();
 
       const startDate = startOfDay(new Date(yesterday));
       const endDate = endOfDay(new Date(yesterday));
