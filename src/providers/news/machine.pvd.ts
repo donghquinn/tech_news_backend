@@ -1,7 +1,6 @@
 import { MachineLearningError } from '@errors/machine.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
 import {
-  bringMlNews,
   checkMlNewsIsLiked,
   getStarredMlNewsPagination,
   updateMlNewsLiked,
@@ -9,6 +8,8 @@ import {
 } from '@libraries/news/ml.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
+import { endOfDay, startOfDay } from 'date-fns';
+import moment from 'moment-timezone';
 
 @Injectable()
 export class MachineLearningProvider {
@@ -16,7 +17,16 @@ export class MachineLearningProvider {
 
   async bringLatestMachineLearningNews(today: string) {
     try {
-      const result = await bringMlNews(this.prisma, today);
+      const yesterday = moment(today).subtract(1, 'day').toString();
+
+      const startDate = startOfDay(new Date(yesterday));
+      const endDate = endOfDay(new Date(yesterday));
+
+      NewsLogger.info('[ML] YesterDay: %o', {
+        start: startDate,
+        end: endDate,
+      });
+      const result = await this.prisma.bringMlNews(startDate, endDate);
 
       return result;
     } catch (error) {

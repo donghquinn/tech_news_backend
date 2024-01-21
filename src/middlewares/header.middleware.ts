@@ -16,6 +16,6 @@ export const globalMiddleware = (request: Request, res: Response, next: NextFunc
 
     next();
   } else {
-    throw new AuthError( "[AUTH] Validate Header Key", "Given Key is not valid. Please Check and Try again." );
+    throw new AuthError('[AUTH] Validate Header Key', 'Given Key is not valid. Please Check and Try again.');
   }
 };

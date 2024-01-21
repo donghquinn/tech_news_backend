@@ -1,7 +1,6 @@
 import { HadaError } from '@errors/hada.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
 import {
-  bringHadaNews,
   checkHadaNewsIsLiked,
   getStarredHadaNewsPagination,
   updateHadaNewsLiked,
@@ -9,6 +8,8 @@ import {
 } from '@libraries/news/hada.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
+import { endOfDay, startOfDay } from 'date-fns';
+import moment from 'moment-timezone';
 import { HadaNewsReturn } from 'types/hada.type';
 
 @Injectable()
@@ -21,7 +22,16 @@ export class HadaProvider {
 
   async getNews(today: string) {
     try {
-      const result = await bringHadaNews(this.prisma, today);
+      const yesterday = moment(today).subtract(1, 'day').toString();
+
+      const startDate = startOfDay(new Date(yesterday));
+      const endDate = endOfDay(new Date(yesterday));
+
+      NewsLogger.info('[HADA] YesterDay: %o', {
+        start: startDate,
+        end: endDate,
+      });
+      const result = await this.prisma.bringHadaNews(startDate, endDate);
 
       this.resultNewsArray.push(...result);
 

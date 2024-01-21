@@ -1,44 +1,8 @@
 import { HadaError } from '@errors/hada.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
 import { NewsLogger } from '@utils/logger.util';
-import { endOfDay, startOfDay } from 'date-fns';
-import moment from 'moment-timezone';
-import { DailyHadaNewsReturn } from 'types/hada.type';
 
 // 뉴스 가져오는 함수
-export const bringHadaNews = async (prisma: PrismaLibrary, today: string): Promise<Array<DailyHadaNewsReturn>> => {
-  try {
-    const yesterday = moment(today).subtract(1, 'day').toString();
-
-    NewsLogger.info('[HadaNews] YesterDay: %o', {
-      start: startOfDay(new Date(yesterday)),
-      end: endOfDay(new Date(yesterday)),
-    });
-
-    const result = await prisma.hada.findMany({
-      select: { uuid: true, post: true, descLink: true, founded: true, liked: true },
-      where: {
-        founded: {
-          gte: startOfDay(new Date(yesterday)),
-          lte: endOfDay(new Date(yesterday)),
-        },
-      },
-      orderBy: { rank: 'desc' },
-    });
-
-    return result;
-  } catch (error) {
-    NewsLogger.error('[Hada] Bring Daily News Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
-    });
-
-    throw new HadaError(
-      '[Hada] Bring Daily News',
-      'Bring Daily News Error.',
-      error instanceof Error ? error : new Error(JSON.stringify(error)),
-    );
-  }
-};
 
 export const checkHadaNewsIsLiked = async (prisma: PrismaLibrary, uuid: string) => {
   try {
