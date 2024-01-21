@@ -1,5 +1,4 @@
-import { AuthError } from '@errors/auth.error';
-import { Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { NextFunction, Request } from 'express';
 
 // eslint-disable-next-line consistent-return
@@ -16,6 +15,6 @@ export const globalMiddleware = (request: Request, res: Response, next: NextFunc
 
     next();
   } else {
-    throw new AuthError('[AUTH] Validate Header Key', 'Given Key is not valid. Please Check and Try again.');
+    throw new HttpException( "Authorize Key Not Match", HttpStatus.BAD_REQUEST );
   }
 };
