@@ -1,48 +1,6 @@
 import { MachineLearningError } from '@errors/machine.error';
 import { PrismaLibrary } from '@libraries/common/prisma.lib';
 import { NewsLogger } from '@utils/logger.util';
-import { endOfDay, startOfDay } from 'date-fns';
-import moment from 'moment-timezone';
-import { DailyMlNewsReturn } from 'types/ml.type';
-
-export const bringMlNews = async (prisma: PrismaLibrary, today: string): Promise<Array<DailyMlNewsReturn>> => {
-  try {
-    const yesterday = moment(today).subtract(1, 'day').toString();
-
-    NewsLogger.info('[ML] Latest Machine Learning News: %o', {
-      start: startOfDay(new Date(yesterday)),
-      end: endOfDay(new Date(yesterday)),
-    });
-
-    const result = await prisma.machineNews.findMany({
-      select: {
-        uuid: true,
-        category: true,
-        title: true,
-        link: true,
-        founded: true,
-      },
-      where: {
-        founded: {
-          gte: startOfDay(new Date(yesterday)),
-          lte: endOfDay(new Date(yesterday)),
-        },
-      },
-    });
-
-    return result;
-  } catch (error) {
-    NewsLogger.error('[ML] Bring Daily News Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
-    });
-
-    throw new MachineLearningError(
-      '[ML] Bring Daily News',
-      'Bring Daily News Error.',
-      error instanceof Error ? error : new Error(JSON.stringify(error)),
-    );
-  }
-};
 
 export const checkMlNewsIsLiked = async (prisma: PrismaLibrary, uuid: string) => {
   try {

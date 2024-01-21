@@ -1,3 +1,4 @@
+import { AuthError } from '@errors/auth.error';
 import { HackerError } from '@errors/hacker.error';
 import { HadaError } from '@errors/hada.error';
 import { MachineLearningError } from '@errors/machine.error';
@@ -34,7 +35,10 @@ export class SetErrorResponse implements ResponseObject {
   constructor(error: unknown) {
     const errorArray = [];
 
-    if (error instanceof HackerError) {
+    if (error instanceof AuthError) {
+      this.resCode = '401';
+      errorArray.push(error.type, error.message);
+    } else if (error instanceof HackerError) {
       this.resCode = '402';
       errorArray.push(error.type, error.message);
     } else if (error instanceof HadaError) {

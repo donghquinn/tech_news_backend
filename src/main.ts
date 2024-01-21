@@ -1,13 +1,13 @@
 import { Logger } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from 'app.module';
 import helmet from 'helmet';
 import { shutdown } from 'utils/shutdown.utils';
 
-export const bootstrap = async () => {
-  const { NestFactory } = await import('@nestjs/core');
-  // const source = await import('source-map-support');
+process.env.TZ = 'Asia/Seoul';
 
+export const bootstrap = async () => {
   const date = new Date().toLocaleTimeString();
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
