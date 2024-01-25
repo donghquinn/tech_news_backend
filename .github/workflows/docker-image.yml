@@ -26,7 +26,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: dockerfile build
-      run: docker build . --file Dockerfile --tag registry.andongh.com/${{secrets.IMAGE_NAME}}/${{secrets.IMAGE_NAME}}:latest
+      run: docker build . --file Dockerfile-deploy --tag registry.andongh.com/${{secrets.IMAGE_NAME}}/${{secrets.IMAGE_NAME}}:latest
 
     - name: dockerfile push
       run: docker push registry.andongh.com/${{secrets.IMAGE_NAME}}/${{secrets.IMAGE_NAME}}:latest
