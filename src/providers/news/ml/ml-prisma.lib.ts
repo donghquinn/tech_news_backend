@@ -1,10 +1,48 @@
-import { MachineLearningError } from '@errors/machine.error';
-import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import { NewsLogger } from '@utils/logger.util';
+import { MachineLearningError } from "@errors/machine.error";
+import { PrismaError } from "@errors/prisma.error";
+import { Injectable } from "@nestjs/common";
+import { PrismaClient } from "@prisma/client";
+import { NewsLogger } from "@utils/logger.util";
 
-export const checkMlNewsIsLiked = async (prisma: PrismaLibrary, uuid: string) => {
-  try {
-    const isStarred = await prisma.machineNews.findFirst({
+@Injectable()
+export class MlPrismaLibrary extends PrismaClient {
+  async bringMlNews(startDate: Date, endDate: Date) {
+    try {
+      const result = await this.machineNews.findMany({
+        select: {
+          uuid: true,
+          category: true,
+          title: true,
+          link: true,
+          founded: true,
+        },
+        where: {
+          founded: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+
+      return result;
+    } catch (error) {
+      NewsLogger.error('[ML] Bring Geek News Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
+      throw new PrismaError(
+        '[ML] Bring Geek News',
+        'Bring Geek News Error. Please Try Again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+    
+    async checkIsMlNewsLiked (uuid: string)
+    {
+        try
+        {
+             const isStarred = await this.machineNews.findFirst({
       select: {
         liked: true,
       },
@@ -31,15 +69,15 @@ export const checkMlNewsIsLiked = async (prisma: PrismaLibrary, uuid: string) =>
       error instanceof Error ? error : new Error(JSON.stringify(error)),
     );
   }
-};
+    }
 
-export const updateMlNewsLikedtoUnliked = async (prisma: PrismaLibrary, uuid: string) => {
+async updateMlNewsLikedtoUnliked  ( uuid: string)  {
   try {
     NewsLogger.info('[ML] Give Hada News unStar Request: %o', {
       uuid,
     });
 
-    await prisma.machineNews.update({
+    await this.machineNews.update({
       data: {
         liked: 0,
       },
@@ -62,15 +100,15 @@ export const updateMlNewsLikedtoUnliked = async (prisma: PrismaLibrary, uuid: st
       error instanceof Error ? error : new Error(JSON.stringify(error)),
     );
   }
-};
-
-export const updateMlNewsLiked = async (prisma: PrismaLibrary, uuid: string) => {
+    };
+    
+    async updateMlNewsLiked  ( uuid: string) {
   try {
     NewsLogger.info('[ML] Give Hacker News Star Request: %o', {
       uuid,
     });
 
-    await prisma.machineNews.update({
+    await this.machineNews.update({
       data: {
         liked: 1,
       },
@@ -95,17 +133,16 @@ export const updateMlNewsLiked = async (prisma: PrismaLibrary, uuid: string) => 
   }
 };
 
-// Pagination
-export const getStarredMlNewsPagination = async (
-  prisma: PrismaLibrary,
+
+async getStarredMlNewsPagination  (
   page: number,
   size: number,
   userUuid: string,
-) => {
+) {
   try {
-    const totalPosts = await prisma.machineNews.count({ where: { liked: 1 } });
+    const totalPosts = await this.machineNews.count({ where: { liked: 1 } });
 
-    const starredNews = await prisma.machineNews.findMany({
+    const starredNews = await this.machineNews.findMany({
       select: {
         uuid: true,
         title: true,
@@ -144,3 +181,4 @@ export const getStarredMlNewsPagination = async (
     );
   }
 };
+}

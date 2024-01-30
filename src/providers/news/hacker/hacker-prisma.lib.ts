@@ -1,10 +1,41 @@
-import { HackerError } from '@errors/hacker.error';
-import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import { NewsLogger } from '@utils/logger.util';
+import { HackerError } from "@errors/hacker.error";
+import { PrismaError } from "@errors/prisma.error";
+import { Injectable } from "@nestjs/common";
+import { PrismaClient } from "@prisma/client";
+import { NewsLogger } from "@utils/logger.util";
 
-export const checkHackerNewsIsLiked = async (prisma: PrismaLibrary, uuid: string) => {
+@Injectable()
+export class HackerPrismaLibrary extends PrismaClient {   
+  async bringHackerNews(startDate: Date, endDate: Date) {
+    try {
+      const result = await this.hackers.findMany({
+        select: { uuid: true, post: true, link: true, founded: true, liked: true },
+        where: {
+          founded: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+        orderBy: { rank: 'desc' },
+      });
+
+      return result;
+    } catch (error) {
+      NewsLogger.error('[ML] Bring Geek News Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
+      throw new PrismaError(
+        '[ML] Bring Geek News',
+        'Bring Geek News Error. Please Try Again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async checkHackerNewsIsLiked  (uuid: string)  {
   try {
-    const isStarred = await prisma.hackers.findFirst({
+    const isStarred = await this.hackers.findFirst({
       select: {
         liked: true,
       },
@@ -31,15 +62,15 @@ export const checkHackerNewsIsLiked = async (prisma: PrismaLibrary, uuid: string
       error instanceof Error ? error : new Error(JSON.stringify(error)),
     );
   }
-};
-
-export const updateHackerNewsLikedtoUnliked = async (prisma: PrismaLibrary, uuid: string) => {
+  }
+  
+  async updateHackerNewsLikedtoUnliked (uuid: string)  {
   try {
     NewsLogger.info('[Hacker] Give Hada News unStar Request: %o', {
       uuid,
     });
 
-    await prisma.hackers.update({
+    await this.hackers.update({
       data: {
         liked: 0,
       },
@@ -62,15 +93,15 @@ export const updateHackerNewsLikedtoUnliked = async (prisma: PrismaLibrary, uuid
       error instanceof Error ? error : new Error(JSON.stringify(error)),
     );
   }
-};
-
-export const updateHackerNewsLiked = async (prisma: PrismaLibrary, uuid: string) => {
+  }
+  
+async updateHackerNewsLiked  (uuid: string) {
   try {
     NewsLogger.info('[Hacker] Give Hacker News Star Request: %o', {
       uuid,
     });
 
-    await prisma.hackers.update({
+    await this.hackers.update({
       data: {
         liked: 1,
       },
@@ -93,18 +124,17 @@ export const updateHackerNewsLiked = async (prisma: PrismaLibrary, uuid: string)
       error instanceof Error ? error : new Error(JSON.stringify(error)),
     );
   }
-};
-
-export const getStarredHackerNewsPagination = async (
-  prisma: PrismaLibrary,
+}
+  
+ async getStarredHackerNewsPagination  (
   page: number,
   size: number,
   userUuid: string,
-) => {
+) {
   try {
-    const totalPosts = await prisma.hackers.count({ where: { liked: 1 } });
+    const totalPosts = await this.hackers.count({ where: { liked: 1 } });
 
-    const starredNews = await prisma.hackers.findMany({
+    const starredNews = await this.hackers.findMany({
       select: {
         uuid: true,
         post: true,
@@ -143,3 +173,5 @@ export const getStarredHackerNewsPagination = async (
     );
   }
 };
+
+}

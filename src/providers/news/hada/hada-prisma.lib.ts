@@ -1,12 +1,41 @@
-import { HadaError } from '@errors/hada.error';
-import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import { NewsLogger } from '@utils/logger.util';
+import { HadaError } from "@errors/hada.error";
+import { PrismaError } from "@errors/prisma.error";
+import { Injectable } from "@nestjs/common";
+import { PrismaClient } from "@prisma/client";
+import { NewsLogger } from "@utils/logger.util";
 
-// 뉴스 가져오는 함수
+@Injectable()
+export class HadaPrismaLibrary extends PrismaClient {
+  async bringHadaNews(startDate: Date, endDate: Date) {
+    try {
+      const result = await this.hada.findMany({
+        select: { uuid: true, post: true, descLink: true, founded: true, liked: true },
+        where: {
+          founded: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+        orderBy: { rank: 'desc' },
+      });
 
-export const checkHadaNewsIsLiked = async (prisma: PrismaLibrary, uuid: string) => {
+      return result;
+    } catch (error) {
+      NewsLogger.error('[HADA] Bring Geek News Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
+      throw new PrismaError(
+        '[HADA] Bring Geek News',
+        'Bring Geek News Error. Please Try Again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async checkHadaNewsIsLiked  ( uuid: string) {
   try {
-    const isStarred = await prisma.hada.findFirst({
+    const isStarred = await this.hada.findFirst({
       select: {
         liked: true,
       },
@@ -33,15 +62,17 @@ export const checkHadaNewsIsLiked = async (prisma: PrismaLibrary, uuid: string) 
       error instanceof Error ? error : new Error(JSON.stringify(error)),
     );
   }
+    
+   
 };
 
-export const updateHadaNewsLikedtoUnliked = async (prisma: PrismaLibrary, uuid: string) => {
+ async updateHadaNewsLikedtoUnliked ( uuid: string) {
   try {
     NewsLogger.info('[HADA] Give Hada News unStar Request: %o', {
       uuid,
     });
 
-    await prisma.hada.update({
+    await this.hada.update({
       data: {
         liked: 0,
       },
@@ -64,15 +95,15 @@ export const updateHadaNewsLikedtoUnliked = async (prisma: PrismaLibrary, uuid: 
       error instanceof Error ? error : new Error(JSON.stringify(error)),
     );
   }
-};
-
-export const updateHadaNewsLiked = async (prisma: PrismaLibrary, uuid: string) => {
+ }
+  
+  async updateHadaNewsLiked  ( uuid: string) {
   try {
     NewsLogger.info('[HADA] Give Hacker News Star Request: %o', {
       uuid,
     });
 
-    await prisma.hada.update({
+    await this.hada.update({
       data: {
         liked: 1,
       },
@@ -97,17 +128,15 @@ export const updateHadaNewsLiked = async (prisma: PrismaLibrary, uuid: string) =
   }
 };
 
-// Pagination
-export const getStarredHadaNewsPagination = async (
-  prisma: PrismaLibrary,
+async getStarredHadaNewsPagination (
   page: number,
   size: number,
   userUuid: string,
-) => {
+)  {
   try {
-    const totalPosts = await prisma.hada.count({ where: { liked: 1 } });
+    const totalPosts = await this.hada.count({ where: { liked: 1 } });
 
-    const starredNews = await prisma.hada.findMany({
+    const starredNews = await this.hada.findMany({
       select: {
         uuid: true,
         post: true,
@@ -146,3 +175,5 @@ export const getStarredHadaNewsPagination = async (
     );
   }
 };
+
+}

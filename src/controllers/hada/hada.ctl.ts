@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { hadaNewsStarValidator, hadaNewsValidator } from '@validators/hada.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
-import { HadaProvider } from 'providers/news/hada.pvd';
+import { HadaProvider } from 'providers/news/hada/hada.pvd';
 import { DailyHadaNewsRequest } from 'types/hada.type';
 import { StarRequest } from 'types/request.type';
 

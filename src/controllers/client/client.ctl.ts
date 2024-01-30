@@ -11,12 +11,12 @@ import { ClientLoginRequest, ClientSignupRequest } from 'types/client.type';
 export class ClientController {
   constructor(private readonly client: ClientProvider) {}
 
-  @Post('signin')
+  @Post('signup')
   async signupController(@Body() request: ClientSignupRequest) {
     try {
-      const { email, name, password } = await clientSignupValidator(request);
+      const { email, password } = await clientSignupValidator(request);
 
-      const message = await this.client.checkEmailandSignup(email, name, password);
+      const message = await this.client.checkEmailandSignup(email, password);
 
       return new SetResponse(200, { message });
     } catch (error) {

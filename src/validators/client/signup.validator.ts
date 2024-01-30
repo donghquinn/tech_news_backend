@@ -7,7 +7,6 @@ export const clientSignupValidator = async (request: ClientSignupRequest) => {
   try {
     const scheme = z.object({
       email: z.string(),
-      name: z.string(),
       password: z.string(),
     });
 

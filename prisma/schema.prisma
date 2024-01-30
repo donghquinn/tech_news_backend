@@ -12,13 +12,11 @@ datasource db {
 
 model Client{
   uuid String @id @default(uuid())
-  email String
+  email String @unique
   password String
   password_token String
-  userName String
-  isLogin Int @default(0)
-  accessToken String?
-  refreshToken String?
+  signedin DateTime @default(now())
+  logined DateTime @updatedAt
   hackers_liked Hackers[]
   hada_liked Hada[]
   ml_liked MachineNews[]

@@ -1,4 +1,4 @@
-import { PrismaLibrary } from '@libraries/common/prisma.lib';
+import { PrismaLibrary } from 'providers/common/prisma.lib';
 import { Module } from '@nestjs/common';
 
 @Module({

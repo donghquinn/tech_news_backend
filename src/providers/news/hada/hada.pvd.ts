@@ -1,22 +1,16 @@
 import { HadaError } from '@errors/hada.error';
-import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import {
-  checkHadaNewsIsLiked,
-  getStarredHadaNewsPagination,
-  updateHadaNewsLiked,
-  updateHadaNewsLikedtoUnliked,
-} from '@libraries/news/hada.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
 import { HadaNewsReturn } from 'types/hada.type';
+import { HadaPrismaLibrary } from './hada-prisma.lib';
 
 @Injectable()
 export class HadaProvider {
   private resultNewsArray: Array<HadaNewsReturn>;
 
-  constructor(private readonly prisma: PrismaLibrary) {
+  constructor(private readonly prisma: HadaPrismaLibrary) {
     this.resultNewsArray = [];
   }
 
@@ -89,14 +83,14 @@ export class HadaProvider {
 
   async giveStar(uuid: string) {
     try {
-      const isLiked = await checkHadaNewsIsLiked(this.prisma, uuid);
+      const isLiked = await this.prisma.checkHadaNewsIsLiked(uuid);
 
       if (isLiked) {
-        await updateHadaNewsLikedtoUnliked(this.prisma, uuid);
+        await this.prisma.updateHadaNewsLikedtoUnliked(uuid);
       }
 
       if (!isLiked) {
-        await updateHadaNewsLiked(this.prisma, uuid);
+        await this.prisma.updateHadaNewsLiked(uuid);
       }
 
       return true;
@@ -121,7 +115,7 @@ export class HadaProvider {
       NewsLogger.info('[HADA] Request to get Starred Hacker News');
 
       const tempUserUuid = '123';
-      const starredNews = await getStarredHadaNewsPagination(this.prisma, pageNumber, sizeNumber, tempUserUuid);
+      const starredNews = await this.prisma.getStarredHadaNewsPagination(pageNumber, sizeNumber, tempUserUuid);
 
       // const starredNews = await this.prisma.hada.findMany({
       //   select: {

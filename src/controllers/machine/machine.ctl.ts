@@ -1,4 +1,4 @@
-import { MachineLearningProvider } from 'providers/news/machine.pvd';
+import { MachineLearningProvider } from 'providers/news/ml/machine.pvd';
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { machineLearningValidator, mlNewsStarValidator } from '@validators/ml.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';

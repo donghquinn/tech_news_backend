@@ -1,43 +1,35 @@
 import { ClientError } from '@errors/client.error';
-import { checkIsEmailExist } from '@libraries/client/check.lib';
-import { createHashPassword, encryptPassword } from '@libraries/client/encrypt.lib';
-import { PrismaLibrary } from '@libraries/common/prisma.lib';
+import { comparePassword } from '@libraries/client/decrypt.lib';
+import { cryptPassword } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
-import { Response } from 'express';
 import { JwtProvider } from 'providers/auth/jwt.pvd';
+import { ClientPrismaLibrary } from './client-prisma.pvd';
 
 @Injectable()
 export class ClientProvider {
   constructor(
-    private readonly prisma: PrismaLibrary,
+    private readonly prisma: ClientPrismaLibrary,
     private readonly jwt: JwtProvider,
   ) {}
 
-  async checkEmailandSignup(email: string, name: string, password: string) {
+  async checkEmailandSignup(email: string, password: string) {
     try {
-      const result = await checkIsEmailExist(this.prisma, email);
+      const result = await this.prisma.checkIsEmailExist(email);
 
-      if (result) {
-        ClientLogger.info('[Signup] Start to create user: %o', {
+      if (result) throw new ClientError("[SIGNUP] Check Exist User Info", "Found Already Exist User. Reject.")
+
+       ClientLogger.info('[Signup] Start to create user: %o', {
           email,
         });
 
-        const { encodedPassword, hashToken } = encryptPassword(password);
+        const { encodedPassword, passwordToken } = cryptPassword(password);
 
-        await this.prisma.client.create({
-          data: {
-            email,
-            userName: name,
-            password: encodedPassword,
-            password_token: hashToken,
-          },
-        });
+     const uuid = await  this.prisma.insertNewClient( email, encodedPassword, passwordToken );
 
-        ClientLogger.info('[Signup] Data Insert Success');
-      }
-
-      return 'success';
+      ClientLogger.info( '[Signup] Data Insert Success' );
+      
+      return uuid;
     } catch (error) {
       ClientLogger.error('[Signup] Singup New User Error: %o', {
         error: error instanceof Error ? error : new Error(JSON.stringify(error)),
@@ -51,20 +43,10 @@ export class ClientProvider {
     }
   }
 
-  async login(email: string, password: string, response: Response) {
+  async login(email: string, password: string) {
     try {
-      const userInfo = await this.prisma.client.findFirst({
-        select: {
-          uuid: true,
-          password_token: true,
-          password: true,
-          isLogin: true,
-        },
-        where: {
-          email,
-        },
-      });
-
+    
+      const userInfo= await this.prisma.selectUserInfo( email );
       if (userInfo === null) {
         ClientLogger.info('[Login] No Matching User Found: %o', {
           email,
@@ -73,24 +55,20 @@ export class ClientProvider {
         throw new ClientError('[Login] Finding Matching User Info', 'No Matching User Found');
       }
 
-      const { password: foundPassword, password_token: passwordToken, uuid, isLogin } = userInfo;
+      const { password: foundPassword, password_token: passwordToken, uuid } = userInfo;
 
-      if (isLogin) {
-        ClientLogger.error('[Login] Received User is already Logined: %o', {
-          email,
-        });
+      const isMatch = comparePassword( password, foundPassword, passwordToken );
 
-        throw new ClientError('[Login] Check if user is logined', 'Given User is Already Logined. Please try again.');
+      if ( !isMatch )
+      {
+        ClientLogger.error( "[LOGIN] Password Matching Given Password is Not Match. Reject." )
+        
+        throw new ClientError(
+          "[ LOGIN ] Password Matching ", 
+          " Password Matching is Not Match. Reject."
+        )
       }
-
-      const encodedPassword = createHashPassword(password, passwordToken);
-
-      if (foundPassword !== encodedPassword) {
-        ClientLogger.error('[Login] Password Doesnot Match.');
-
-        throw new ClientError('[Login] Login Password', 'Password Does not Match.');
-      }
-
+      
       await this.jwt.setRefreshToken(email, uuid, response);
 
       const accessToken = await this.jwt.getAccessToken(email, uuid);
