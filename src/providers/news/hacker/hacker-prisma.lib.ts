@@ -142,7 +142,7 @@ export class HackerPrismaLibrary extends PrismaClient {
         },
         where: {
           liked: 1,
-          client_id: { has: userUuid },
+          liked_client: userUuid,
         },
         take: size,
         skip: (page - 1) * size,

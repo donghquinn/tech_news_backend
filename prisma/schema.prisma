@@ -29,7 +29,7 @@ model Hackers {
   link    String
   liked   Int   @default(0)
   liked_client String
-  client Client @relation(fields: [liked_client], references: [email])
+  client Client @relation(fields: [liked_client], references: [uuid])
   founded DateTime
 }
 
@@ -42,7 +42,7 @@ model Hada {
   link    String
   liked   Int   @default(0)
   liked_client String
-  client Client @relation(fields: [liked_client], references: [email])
+  client Client @relation(fields: [liked_client], references: [uuid])
   founded DateTime
 }
 
@@ -53,7 +53,7 @@ model MachineNews {
   link     String
   liked    Int   @default(0)
   liked_client String
-  client Client @relation(fields: [liked_client], references: [email])
+  client Client @relation(fields: [liked_client], references: [uuid])
   founded  DateTime
 }
 
