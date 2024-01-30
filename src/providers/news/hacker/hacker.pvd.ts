@@ -59,7 +59,7 @@ export class HackersNewsProvider {
 
   async giveStar(uuid: string) {
     try {
-      const isLiked = await this.prisma.checkHackerNewsIsLiked( uuid);
+      const isLiked = await this.prisma.checkHackerNewsIsLiked(uuid);
 
       if (isLiked) {
         await this.prisma.updateHackerNewsLikedtoUnliked(uuid);

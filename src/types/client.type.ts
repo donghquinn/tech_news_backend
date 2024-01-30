@@ -8,12 +8,10 @@ export interface ClientLoginRequest {
   password: string;
 }
 
-export interface ClientLoginMapKey
-{
+export interface ClientLoginMapKey {
   uuid: string;
 }
 
-export interface ClientLoginMapItem
-{
+export interface ClientLoginMapItem {
   email: string;
 }

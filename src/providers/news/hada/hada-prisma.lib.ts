@@ -1,8 +1,8 @@
-import { HadaError } from "@errors/hada.error";
-import { PrismaError } from "@errors/prisma.error";
-import { Injectable } from "@nestjs/common";
-import { PrismaClient } from "@prisma/client";
-import { NewsLogger } from "@utils/logger.util";
+import { HadaError } from '@errors/hada.error';
+import { PrismaError } from '@errors/prisma.error';
+import { Injectable } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+import { NewsLogger } from '@utils/logger.util';
 
 @Injectable()
 export class HadaPrismaLibrary extends PrismaClient {
@@ -33,147 +33,140 @@ export class HadaPrismaLibrary extends PrismaClient {
     }
   }
 
-  async checkHadaNewsIsLiked  ( uuid: string) {
-  try {
-    const isStarred = await this.hada.findFirst({
-      select: {
-        liked: true,
-      },
-      where: {
+  async checkHadaNewsIsLiked(uuid: string) {
+    try {
+      const isStarred = await this.hada.findFirst({
+        select: {
+          liked: true,
+        },
+        where: {
+          uuid,
+        },
+      });
+
+      if (isStarred === null) throw new HadaError('[Hada] Get Star Info', 'No Star Info Found.');
+
+      NewsLogger.info('[Hada] Found Is Starred Info: %o', {
+        isLiked: isStarred?.liked,
+      });
+
+      return isStarred.liked;
+    } catch (error) {
+      NewsLogger.error('[Hada] Check Hada News Liked Info Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
+      throw new HadaError(
+        '[Hada] Check Hada News Liked Info',
+        'Check Hada News Liked Info Error.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async updateHadaNewsLikedtoUnliked(uuid: string) {
+    try {
+      NewsLogger.info('[HADA] Give Hada News unStar Request: %o', {
         uuid,
-      },
-    });
+      });
 
-    if (isStarred === null) throw new HadaError('[Hada] Get Star Info', 'No Star Info Found.');
+      await this.hada.update({
+        data: {
+          liked: 0,
+        },
+        where: {
+          uuid,
+        },
+      });
 
-    NewsLogger.info('[Hada] Found Is Starred Info: %o', {
-      isLiked: isStarred?.liked,
-    });
+      NewsLogger.info('[HADA] Unstarred Updated');
 
-    return isStarred.liked;
-  } catch (error) {
-    NewsLogger.error('[Hada] Check Hada News Liked Info Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
-    });
+      return 0;
+    } catch (error) {
+      NewsLogger.error('[Hada] Update Liked to UnLiked Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
 
-    throw new HadaError(
-      '[Hada] Check Hada News Liked Info',
-      'Check Hada News Liked Info Error.',
-      error instanceof Error ? error : new Error(JSON.stringify(error)),
-    );
+      throw new HadaError(
+        '[Hada] Update Liked to UnLiked',
+        'Update Liked to UnLiked Error.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
   }
-    
-   
-};
 
- async updateHadaNewsLikedtoUnliked ( uuid: string) {
-  try {
-    NewsLogger.info('[HADA] Give Hada News unStar Request: %o', {
-      uuid,
-    });
-
-    await this.hada.update({
-      data: {
-        liked: 0,
-      },
-      where: {
+  async updateHadaNewsLiked(uuid: string) {
+    try {
+      NewsLogger.info('[HADA] Give Hacker News Star Request: %o', {
         uuid,
-      },
-    });
+      });
 
-    NewsLogger.info('[HADA] Unstarred Updated');
+      await this.hada.update({
+        data: {
+          liked: 1,
+        },
+        where: {
+          uuid,
+        },
+      });
 
-    return 0;
-  } catch (error) {
-    NewsLogger.error('[Hada] Update Liked to UnLiked Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
-    });
+      NewsLogger.info('[HADA] Starred Updated');
 
-    throw new HadaError(
-      '[Hada] Update Liked to UnLiked',
-      'Update Liked to UnLiked Error.',
-      error instanceof Error ? error : new Error(JSON.stringify(error)),
-    );
+      return 0;
+    } catch (error) {
+      NewsLogger.error('[Hada] Update News Liked Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
+      throw new HadaError(
+        '[Hada] Update News Liked',
+        'Update News Liked Error.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
   }
- }
-  
-  async updateHadaNewsLiked  ( uuid: string) {
-  try {
-    NewsLogger.info('[HADA] Give Hacker News Star Request: %o', {
-      uuid,
-    });
 
-    await this.hada.update({
-      data: {
-        liked: 1,
-      },
-      where: {
-        uuid,
-      },
-    });
+  async getStarredHadaNewsPagination(page: number, size: number, userUuid: string) {
+    try {
+      const totalPosts = await this.hada.count({ where: { liked: 1 } });
 
-    NewsLogger.info('[HADA] Starred Updated');
+      const starredNews = await this.hada.findMany({
+        select: {
+          uuid: true,
+          post: true,
+          link: true,
+          founded: true,
+        },
+        orderBy: {
+          founded: 'desc',
+        },
+        where: {
+          liked: 1,
+          client_id: { has: userUuid },
+        },
+        take: size,
+        skip: (page - 1) * size,
+      });
 
-    return 0;
-  } catch (error) {
-    NewsLogger.error('[Hada] Update News Liked Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
-    });
+      NewsLogger.info('[Hada] Founded Starred News: %o', {
+        totalPosts,
+        newsSize: starredNews.length,
+      });
 
-    throw new HadaError(
-      '[Hada] Update News Liked',
-      'Update News Liked Error.',
-      error instanceof Error ? error : new Error(JSON.stringify(error)),
-    );
+      return {
+        totalPosts,
+        starredNews,
+      };
+    } catch (error) {
+      NewsLogger.info('[Hada] Get Starred News Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
+      throw new HadaError(
+        '[Hada] Get Starred News',
+        'Get Starred News Error.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
   }
-};
-
-async getStarredHadaNewsPagination (
-  page: number,
-  size: number,
-  userUuid: string,
-)  {
-  try {
-    const totalPosts = await this.hada.count({ where: { liked: 1 } });
-
-    const starredNews = await this.hada.findMany({
-      select: {
-        uuid: true,
-        post: true,
-        link: true,
-        founded: true,
-      },
-      orderBy: {
-        founded: 'desc',
-      },
-      where: {
-        liked: 1,
-        client_id: { has: userUuid },
-      },
-      take: size,
-      skip: (page - 1) * size,
-    });
-
-    NewsLogger.info('[Hada] Founded Starred News: %o', {
-      totalPosts,
-      newsSize: starredNews.length,
-    });
-
-    return {
-      totalPosts,
-      starredNews,
-    };
-  } catch (error) {
-    NewsLogger.info('[Hada] Get Starred News Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
-    });
-
-    throw new HadaError(
-      '[Hada] Get Starred News',
-      'Get Starred News Error.',
-      error instanceof Error ? error : new Error(JSON.stringify(error)),
-    );
-  }
-};
-
 }

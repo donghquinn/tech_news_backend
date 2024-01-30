@@ -1,8 +1,8 @@
-import { MachineLearningError } from "@errors/machine.error";
-import { PrismaError } from "@errors/prisma.error";
-import { Injectable } from "@nestjs/common";
-import { PrismaClient } from "@prisma/client";
-import { NewsLogger } from "@utils/logger.util";
+import { MachineLearningError } from '@errors/machine.error';
+import { PrismaError } from '@errors/prisma.error';
+import { Injectable } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+import { NewsLogger } from '@utils/logger.util';
 
 @Injectable()
 export class MlPrismaLibrary extends PrismaClient {
@@ -37,148 +37,141 @@ export class MlPrismaLibrary extends PrismaClient {
       );
     }
   }
-    
-    async checkIsMlNewsLiked (uuid: string)
-    {
-        try
-        {
-             const isStarred = await this.machineNews.findFirst({
-      select: {
-        liked: true,
-      },
-      where: {
-        uuid,
-      },
-    });
 
-    if (isStarred === null) throw new MachineLearningError('[ML] Get Star Info', 'No Star Info Found.');
+  async checkIsMlNewsLiked(uuid: string) {
+    try {
+      const isStarred = await this.machineNews.findFirst({
+        select: {
+          liked: true,
+        },
+        where: {
+          uuid,
+        },
+      });
 
-    NewsLogger.info('[ML] Found Is Starred Info: %o', {
-      isLiked: isStarred.liked,
-    });
+      if (isStarred === null) throw new MachineLearningError('[ML] Get Star Info', 'No Star Info Found.');
 
-    return isStarred.liked;
-  } catch (error) {
-    NewsLogger.error('[ML] Check Hada News Liked Info Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
-    });
+      NewsLogger.info('[ML] Found Is Starred Info: %o', {
+        isLiked: isStarred.liked,
+      });
 
-    throw new MachineLearningError(
-      '[ML] Check Hada News Liked Info',
-      'Check Hada News Liked Info Error.',
-      error instanceof Error ? error : new Error(JSON.stringify(error)),
-    );
-  }
+      return isStarred.liked;
+    } catch (error) {
+      NewsLogger.error('[ML] Check Hada News Liked Info Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
+      throw new MachineLearningError(
+        '[ML] Check Hada News Liked Info',
+        'Check Hada News Liked Info Error.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
     }
+  }
 
-async updateMlNewsLikedtoUnliked  ( uuid: string)  {
-  try {
-    NewsLogger.info('[ML] Give Hada News unStar Request: %o', {
-      uuid,
-    });
-
-    await this.machineNews.update({
-      data: {
-        liked: 0,
-      },
-      where: {
+  async updateMlNewsLikedtoUnliked(uuid: string) {
+    try {
+      NewsLogger.info('[ML] Give Hada News unStar Request: %o', {
         uuid,
-      },
-    });
+      });
 
-    NewsLogger.info('[ML] Unstarred Updated');
+      await this.machineNews.update({
+        data: {
+          liked: 0,
+        },
+        where: {
+          uuid,
+        },
+      });
 
-    return 0;
-  } catch (error) {
-    NewsLogger.error('[ML] Update Liked to UnLiked Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
-    });
+      NewsLogger.info('[ML] Unstarred Updated');
 
-    throw new MachineLearningError(
-      '[ML] Update Liked to UnLiked',
-      'Update Liked to UnLiked Error.',
-      error instanceof Error ? error : new Error(JSON.stringify(error)),
-    );
+      return 0;
+    } catch (error) {
+      NewsLogger.error('[ML] Update Liked to UnLiked Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
+      throw new MachineLearningError(
+        '[ML] Update Liked to UnLiked',
+        'Update Liked to UnLiked Error.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
   }
-    };
-    
-    async updateMlNewsLiked  ( uuid: string) {
-  try {
-    NewsLogger.info('[ML] Give Hacker News Star Request: %o', {
-      uuid,
-    });
 
-    await this.machineNews.update({
-      data: {
-        liked: 1,
-      },
-      where: {
+  async updateMlNewsLiked(uuid: string) {
+    try {
+      NewsLogger.info('[ML] Give Hacker News Star Request: %o', {
         uuid,
-      },
-    });
+      });
 
-    NewsLogger.info('[ML] Starred Updated');
+      await this.machineNews.update({
+        data: {
+          liked: 1,
+        },
+        where: {
+          uuid,
+        },
+      });
 
-    return 0;
-  } catch (error) {
-    NewsLogger.error('[ML] Update News Liked Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
-    });
+      NewsLogger.info('[ML] Starred Updated');
 
-    throw new MachineLearningError(
-      '[ML] Update News Liked',
-      'Update News Liked Error.',
-      error instanceof Error ? error : new Error(JSON.stringify(error)),
-    );
+      return 0;
+    } catch (error) {
+      NewsLogger.error('[ML] Update News Liked Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
+
+      throw new MachineLearningError(
+        '[ML] Update News Liked',
+        'Update News Liked Error.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
   }
-};
 
+  async getStarredMlNewsPagination(page: number, size: number, userUuid: string) {
+    try {
+      const totalPosts = await this.machineNews.count({ where: { liked: 1 } });
 
-async getStarredMlNewsPagination  (
-  page: number,
-  size: number,
-  userUuid: string,
-) {
-  try {
-    const totalPosts = await this.machineNews.count({ where: { liked: 1 } });
+      const starredNews = await this.machineNews.findMany({
+        select: {
+          uuid: true,
+          title: true,
+          link: true,
+          founded: true,
+        },
+        orderBy: {
+          founded: 'desc',
+        },
+        where: {
+          liked: 1,
+          client_id: { has: userUuid },
+        },
+        take: size,
+        skip: (page - 1) * size,
+      });
 
-    const starredNews = await this.machineNews.findMany({
-      select: {
-        uuid: true,
-        title: true,
-        link: true,
-        founded: true,
-      },
-      orderBy: {
-        founded: 'desc',
-      },
-      where: {
-        liked: 1,
-        client_id: { has: userUuid },
-      },
-      take: size,
-      skip: (page - 1) * size,
-    });
+      NewsLogger.info('[ML] Founded Starred News: %o', {
+        totalPosts,
+        newsSize: starredNews.length,
+      });
 
-    NewsLogger.info('[ML] Founded Starred News: %o', {
-      totalPosts,
-      newsSize: starredNews.length,
-    });
+      return {
+        totalPosts,
+        starredNews,
+      };
+    } catch (error) {
+      NewsLogger.info('[ML] Get Starred News Error: %o', {
+        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      });
 
-    return {
-      totalPosts,
-      starredNews,
-    };
-  } catch (error) {
-    NewsLogger.info('[ML] Get Starred News Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
-    });
-
-    throw new MachineLearningError(
-      '[ML] Get Starred News',
-      'Get Starred News Error.',
-      error instanceof Error ? error : new Error(JSON.stringify(error)),
-    );
+      throw new MachineLearningError(
+        '[ML] Get Starred News',
+        'Get Starred News Error.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
   }
-};
 }

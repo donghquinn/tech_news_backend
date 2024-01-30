@@ -16,7 +16,7 @@ export class HadaProvider {
 
   async getNews(today: string) {
     try {
-      const yesterday = moment( today ).subtract( 1, 'day' ).toDate();
+      const yesterday = moment(today).subtract(1, 'day').toDate();
 
       const startDate = startOfDay(new Date(yesterday));
       const endDate = endOfDay(new Date(yesterday));

@@ -29,7 +29,7 @@ export class ClientController {
     try {
       const { email, password } = await clientLoginValidator(request);
 
-      const jwt = await this.client.login(email, password, response);
+      const jwt = await this.client.login(email, password);
 
       return response.status(200).send(jwt);
     } catch (error) {
