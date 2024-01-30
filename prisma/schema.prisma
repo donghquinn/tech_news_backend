@@ -28,8 +28,8 @@ model Hackers {
   post    String
   link    String
   liked   Int   @default(0)
-  client_id String[]
-  liked_client Client @relation(fields: [client_id], references: [uuid])
+  liked_client String
+  client Client @relation(fields: [liked_client], references: [email])
   founded DateTime
 }
 
@@ -41,30 +41,9 @@ model Hada {
   descLink String
   link    String
   liked   Int   @default(0)
-  client_id String[]
-  liked_client Client @relation(fields: [client_id], references: [uuid])
+  liked_client String
+  client Client @relation(fields: [liked_client], references: [email])
   founded DateTime
-}
-
-model BbcTechNews {
-  uuid    String   @id @default(uuid())
-  rank    Int
-  post    String
-  link    String
-  liked   Int   @default(0)
-  founded DateTime
-}
-
-model NaverNews {
-  uuid         String   @id @default(uuid())
-  keyWord      String
-  title        String
-  description  String
-  originallink String
-  url          String
-  postedTime   String
-  liked        Int   @default(0)
-  founded      DateTime
 }
 
 model MachineNews {
@@ -73,57 +52,78 @@ model MachineNews {
   title    String
   link     String
   liked    Int   @default(0)
-  client_id String[]
-  liked_client Client @relation(fields: [client_id], references: [uuid])
+  liked_client String
+  client Client @relation(fields: [liked_client], references: [email])
   founded  DateTime
 }
 
-model Climate {
-  uuid       String   @id @default(uuid())
-  dataTime   String
-  // 초미세먼지(PM2.5) 농도	
-  pm25Value  String?
-  // 미세먼지(PM10) 농도	
-  pm10Value  String?
-  // 이산화질소 농도
-  no2Value   String?
-  // 오존 농도
-  o3Value    String?
-  // 일산화탄소 농도
-  coValue    String?
-  // 아황산가스 농도
-  so2Value   String?
-  // 통합대기환경수치
-  khaiValue  String?
-  // 오존 지수
-  o3Grade    String?
-  // 아황산가스 지수
-  so2Grade   String?
-  // 이산화질소 지수
-  no2Grade   String?
-  // 일산화탄소 지수
-  coGrade    String?
-  // 통합대기환경지수
-  khaiGrade  String?
-  khaiStatus String   @default("normal")
-  founded    DateTime
-}
+// model BbcTechNews {
+//   uuid    String   @id @default(uuid())
+//   rank    Int
+//   post    String
+//   link    String
+//   liked   Int   @default(0)
+//   founded DateTime
+// }
 
-model Forecast {
-  identification String  @id
-  date           String
-  station        String
-  time           String
-  temperature    String? @default("0")
-  rain           String? @default("0")
-  windSpeed      String? @default("0")
-  windDirection  String? @default("0")
-  humidity       String? @default("0")
-  pressure       String? @default("0")
-  totalCloud     String? @default("0")
-  visibility     String? @default("0")
-  solarRadiation String? @default("0")
+// model NaverNews {
+//   uuid         String   @id @default(uuid())
+//   keyWord      String
+//   title        String
+//   description  String
+//   originallink String
+//   url          String
+//   postedTime   String
+//   liked        Int   @default(0)
+//   founded      DateTime
+// }
 
-  created DateTime @default(now())
-  updated DateTime @updatedAt()
-}
+// model Climate {
+//   uuid       String   @id @default(uuid())
+//   dataTime   String
+//   // 초미세먼지(PM2.5) 농도	
+//   pm25Value  String?
+//   // 미세먼지(PM10) 농도	
+//   pm10Value  String?
+//   // 이산화질소 농도
+//   no2Value   String?
+//   // 오존 농도
+//   o3Value    String?
+//   // 일산화탄소 농도
+//   coValue    String?
+//   // 아황산가스 농도
+//   so2Value   String?
+//   // 통합대기환경수치
+//   khaiValue  String?
+//   // 오존 지수
+//   o3Grade    String?
+//   // 아황산가스 지수
+//   so2Grade   String?
+//   // 이산화질소 지수
+//   no2Grade   String?
+//   // 일산화탄소 지수
+//   coGrade    String?
+//   // 통합대기환경지수
+//   khaiGrade  String?
+//   khaiStatus String   @default("normal")
+//   founded    DateTime
+// }
+
+// model Forecast {
+//   identification String  @id
+//   date           String
+//   station        String
+//   time           String
+//   temperature    String? @default("0")
+//   rain           String? @default("0")
+//   windSpeed      String? @default("0")
+//   windDirection  String? @default("0")
+//   humidity       String? @default("0")
+//   pressure       String? @default("0")
+//   totalCloud     String? @default("0")
+//   visibility     String? @default("0")
+//   solarRadiation String? @default("0")
+
+//   created DateTime @default(now())
+//   updated DateTime @updatedAt()
+// }
