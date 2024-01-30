@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
-import { HackerModule } from '@modules/hacker.module';
-import { HadaModule } from '@modules/hada.module';
-import { MachineLearningNewsModule } from '@modules/machine.module';
+import { HackerModule } from '@modules/hacker/hacker.module';
+import { HadaModule } from '@modules/hada/hada.module';
+import { MachineLearningNewsModule } from '@modules/ml/machine.module';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { globalMiddleware } from 'middlewares/header.middleware';
 
