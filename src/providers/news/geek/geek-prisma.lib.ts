@@ -8,8 +8,9 @@ import { NewsLogger } from '@utils/logger.util';
 export class HadaPrismaLibrary extends PrismaClient {
   async bringHadaNews(startDate: Date, endDate: Date) {
     try {
-      const result = await this.hada.findMany({
-        select: { uuid: true, post: true, descLink: true, founded: true, liked: true },
+      const result = await this.geek.findMany({
+        select: { uuid: true, post: true, link: true,
+          descLink: true, founded: true, liked: true },
         where: {
           founded: {
             gte: startDate,
@@ -35,7 +36,7 @@ export class HadaPrismaLibrary extends PrismaClient {
 
   async checkHadaNewsIsLiked(uuid: string) {
     try {
-      const isStarred = await this.hada.findFirst({
+      const isStarred = await this.geek.findFirst({
         select: {
           liked: true,
         },
@@ -70,7 +71,7 @@ export class HadaPrismaLibrary extends PrismaClient {
         uuid,
       });
 
-      await this.hada.update({
+      await this.geek.update({
         data: {
           liked: 0,
         },
@@ -101,7 +102,7 @@ export class HadaPrismaLibrary extends PrismaClient {
         uuid,
       });
 
-      await this.hada.update({
+      await this.geek.update({
         data: {
           liked: 1,
         },
@@ -126,11 +127,11 @@ export class HadaPrismaLibrary extends PrismaClient {
     }
   }
 
-  async getStarredHadaNewsPagination(page: number, size: number, userUuid: string) {
+  async getStarredHadaNewsPagination(page: number, size: number) {
     try {
-      const totalPosts = await this.hada.count({ where: { liked: 1 } });
+      const totalPosts = await this.geek.count({ where: { liked: 1 } });
 
-      const starredNews = await this.hada.findMany({
+      const starredNews = await this.geek.findMany({
         select: {
           uuid: true,
           post: true,
@@ -142,7 +143,6 @@ export class HadaPrismaLibrary extends PrismaClient {
         },
         where: {
           liked: 1,
-          liked_client: userUuid,
         },
         take: size,
         skip: (page - 1) * size,

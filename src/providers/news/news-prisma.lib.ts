@@ -8,7 +8,7 @@ import { NewsLogger } from '@utils/logger.util';
 export class NewsPrismaLibrary extends PrismaClient {
   async bringHadaNews(startDate: Date, endDate: Date) {
     try {
-      const result = await this.hada.findMany({
+      const result = await this.geek.findMany({
         select: { uuid: true, post: true, descLink: true, founded: true, liked: true },
         where: {
           founded: {
@@ -158,7 +158,7 @@ export class NewsPrismaLibrary extends PrismaClient {
     }
   }
 
-  async getStarredMlNewsPagination(page: number, size: number, userUuid: string) {
+  async getStarredMlNewsPagination(page: number, size: number) {
     try {
       const totalPosts = await this.machineNews.count({ where: { liked: 1 } });
 
@@ -174,7 +174,6 @@ export class NewsPrismaLibrary extends PrismaClient {
         },
         where: {
           liked: 1,
-          liked_client: userUuid,
         },
         take: size,
         skip: (page - 1) * size,

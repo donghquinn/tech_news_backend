@@ -130,23 +130,38 @@ export class HackerPrismaLibrary extends PrismaClient {
     try {
       const totalPosts = await this.hackers.count({ where: { liked: 1 } });
 
-      const starredNews = await this.hackers.findMany({
+      const starredNews = await this.hacker_Liked.findMany( {
         select: {
-          uuid: true,
-          post: true,
-          link: true,
-          founded: true,
-        },
-        orderBy: {
-          founded: 'desc',
-        },
-        where: {
-          liked: 1,
-          liked_client: userUuid,
+          hacker_news: {
+            select: {
+              uuid: true,
+              post: true,
+              link: true,
+              founded: true,
+            }
+          }
+        }, where: {
+          userUuid,
         },
         take: size,
         skip: (page - 1) * size,
-      });
+      })
+      // const starredNews = await this.hackers.findMany({
+      //   select: {
+      //     uuid: true,
+      //     post: true,
+      //     link: true,
+      //     founded: true,
+      //   },
+      //   orderBy: {
+      //     founded: 'desc',
+      //   },
+      //   where: {
+      //     liked: 1,
+      //   },
+      //   take: size,
+      //   skip: (page - 1) * size,
+      // });
 
       NewsLogger.info('[Hacker] Founded Starred News: %o', {
         totalPosts,

@@ -69,9 +69,7 @@ export class MachineLearningProvider {
 
       NewsLogger.info('[ML] Request to get Starred ML News');
 
-      const tempUserUuid = '123';
-
-      const starredNews = await this.prisma.getStarredMlNewsPagination(pageNumber, sizeNumber, tempUserUuid);
+      const starredNews = await this.prisma.getStarredMlNewsPagination(pageNumber, sizeNumber);
 
       NewsLogger.info('[ML] Founded Starred News');
 

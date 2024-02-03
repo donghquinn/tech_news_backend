@@ -134,4 +134,84 @@ export class ClientPrismaLibrary extends PrismaClient {
       );
     }
   }
+
+    async getStarredNewsPagination(page: number, size: number, userUuid: string) {
+    try {
+      const totalPosts = await this.hackers.count({ where: { liked: 1 } });
+
+      const hackerStarredNews = await this.hacker_Liked.findMany( {
+        select: {
+          hacker_news: {
+            select: {
+              uuid: true,
+              post: true,
+              link: true,
+              founded: true,
+            }
+          }
+        }, where: {
+          userUuid,
+        },
+        take: size,
+        skip: (page - 1) * size,
+      } )
+      
+
+      const geekStarredNews = await this.geek_Liked.findMany( {
+        select: {
+          geek_news: {
+            select: {
+ uuid: true, post: true, descLink: true, founded: true, liked: true 
+            }
+          }
+        }, where: {
+          userUuid,
+        },
+        take: size,
+        skip: (page - 1) * size,
+      })
+      
+      const mlStarredNews = await this.ml_Liked.findMany( {
+        select: {
+          ml_news: {
+            select: {
+              uuid: true,
+              category: true,
+              title: true,
+              link: true,
+              founded: true,
+            }
+          }
+        }, where: {
+          userUuid,
+        },
+        take: size,
+        skip: (page - 1) * size,
+      })
+
+      ClientLogger.info('[STARRED] Founded Starred News: %o', {
+        totalPosts,
+        hackerNewsSize: hackerStarredNews.length,
+        geekNewsSize: geekStarredNews.length,
+        mlNewsSize: mlStarredNews.length,
+      });
+
+      return {
+        totalPosts,
+        hackerStarredNews,
+        geekStarredNews,
+        mlStarredNews,
+      };
+    } catch (error) {
+      ClientLogger.info('[STARRED] Get Starred News Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[STARRED] Get Starred News',
+        'Get Starred News Error.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
 }

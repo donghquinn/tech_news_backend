@@ -131,7 +131,7 @@ export class MlPrismaLibrary extends PrismaClient {
     }
   }
 
-  async getStarredMlNewsPagination(page: number, size: number, userUuid: string) {
+  async getStarredMlNewsPagination(page: number, size: number) {
     try {
       const totalPosts = await this.machineNews.count({ where: { liked: 1 } });
 
@@ -147,7 +147,6 @@ export class MlPrismaLibrary extends PrismaClient {
         },
         where: {
           liked: 1,
-          liked_client: userUuid,
         },
         take: size,
         skip: (page - 1) * size,
