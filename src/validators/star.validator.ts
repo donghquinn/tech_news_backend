@@ -12,7 +12,7 @@ export const starValidator = async (request: StarRequest) => {
     return validated;
   } catch (error) {
     Logger.error('[Validator] Star Request Validator Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      error,
     });
 
     throw new ValidatorError(

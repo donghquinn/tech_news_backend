@@ -1,4 +1,5 @@
 import { AuthError } from '@errors/auth.error';
+import { ClientError } from '@errors/client.error';
 import { HackerError } from '@errors/hacker.error';
 import { HadaError } from '@errors/hada.error';
 import { MachineLearningError } from '@errors/machine.error';
@@ -38,20 +39,23 @@ export class SetErrorResponse implements ResponseObject {
     if (error instanceof AuthError) {
       this.resCode = '401';
       errorArray.push(error.type, error.message);
-    } else if (error instanceof HackerError) {
+    } else if (error instanceof ClientError) {
       this.resCode = '402';
       errorArray.push(error.type, error.message);
-    } else if (error instanceof HadaError) {
+    } else if (error instanceof HackerError) {
       this.resCode = '403';
       errorArray.push(error.type, error.message);
-    } else if (error instanceof MachineLearningError) {
+    } else if (error instanceof HadaError) {
       this.resCode = '404';
       errorArray.push(error.type, error.message);
-    } else if (error instanceof PrismaError) {
+    } else if (error instanceof MachineLearningError) {
       this.resCode = '405';
       errorArray.push(error.type, error.message);
-    } else if (error instanceof ValidatorError) {
+    } else if (error instanceof PrismaError) {
       this.resCode = '406';
+      errorArray.push(error.type, error.message);
+    } else if (error instanceof ValidatorError) {
+      this.resCode = '407';
       errorArray.push(error.type, error.message);
     } else {
       this.resCode = '500';

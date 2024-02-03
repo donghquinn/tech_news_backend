@@ -1,19 +1,13 @@
 import { HackerError } from '@errors/hacker.error';
-import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import {
-  checkHackerNewsIsLiked,
-  getStarredHackerNewsPagination,
-  updateHackerNewsLiked,
-  updateHackerNewsLikedtoUnliked,
-} from '@libraries/news/hacker.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
+import { HackerPrismaLibrary } from './hacker-prisma.lib';
 
 @Injectable()
 export class HackersNewsProvider {
-  constructor(private prisma: PrismaLibrary) {}
+  constructor(private prisma: HackerPrismaLibrary) {}
 
   async getHackerNewsCount() {
     try {
@@ -24,7 +18,7 @@ export class HackersNewsProvider {
       return count;
     } catch (error) {
       NewsLogger.error('[Hackers] Get Hacker News Count Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HackerError(
@@ -52,7 +46,7 @@ export class HackersNewsProvider {
       return result;
     } catch (error) {
       NewsLogger.error('[Hackers] Bring Hacker News Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HackerError(
@@ -65,20 +59,20 @@ export class HackersNewsProvider {
 
   async giveStar(uuid: string) {
     try {
-      const isLiked = await checkHackerNewsIsLiked(this.prisma, uuid);
+      const isLiked = await this.prisma.checkHackerNewsIsLiked(uuid);
 
       if (isLiked) {
-        await updateHackerNewsLikedtoUnliked(this.prisma, uuid);
+        await this.prisma.updateHackerNewsLikedtoUnliked(uuid);
       }
 
       if (!isLiked) {
-        await updateHackerNewsLiked(this.prisma, uuid);
+        await this.prisma.updateHackerNewsLiked(uuid);
       }
 
       return true;
     } catch (error) {
       NewsLogger.error('[Hackers] Star Update Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HackerError(
@@ -102,12 +96,12 @@ export class HackersNewsProvider {
 
       const tempUserUuid = '123';
 
-      const starredNews = await getStarredHackerNewsPagination(this.prisma, page, size, tempUserUuid);
+      const starredNews = await this.prisma.getStarredHackerNewsPagination(page, size, tempUserUuid);
 
       return starredNews;
     } catch (error) {
       NewsLogger.error('[Hackers] Get Starred Update Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HackerError(

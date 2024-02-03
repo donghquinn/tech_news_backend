@@ -1,26 +1,25 @@
 import { ValidatorError } from '@errors/validator.error';
 import { Logger } from '@utils/logger.util';
-import { ClientSignupRequest } from 'types/client.type';
+import { ClientLogoutRequest } from 'types/client.type';
 import { z } from 'zod';
 
-export const clientSignupValidator = async (request: ClientSignupRequest) => {
+export const clientLogoutValidator = async (request: ClientLogoutRequest) => {
   try {
     const scheme = z.object({
-      email: z.string(),
-      password: z.string(),
+      uuid: z.string(),
     });
 
     const parsed = await scheme.parseAsync(request);
 
     return parsed;
   } catch (error) {
-    Logger.error('[Client] Signup Validator: %o', {
+    Logger.error('[Client] Logout Validator: %o', {
       error,
     });
 
     throw new ValidatorError(
-      '[Client] Signup Validator',
-      'Validate Signup Error',
+      '[Client] Logout Validator',
+      'Validate Logout Error',
       error instanceof Error ? error : new Error(JSON.stringify(error)),
     );
   }

@@ -1,20 +1,20 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { hadaNewsStarValidator, hadaNewsValidator } from '@validators/hada.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
-import { HadaProvider } from 'providers/news/hada.pvd';
+import { GeekProvider } from 'providers/news/geek/geek.pvd';
 import { DailyHadaNewsRequest } from 'types/hada.type';
 import { StarRequest } from 'types/request.type';
 
-@Controller('hada')
-export class HadaController {
-  constructor(private readonly hada: HadaProvider) {}
+@Controller('geek')
+export class GeekController {
+  constructor(private readonly geek: GeekProvider) {}
 
   @Post('/news')
   async getHadaNews(@Body() request: DailyHadaNewsRequest) {
     try {
       const { today } = await hadaNewsValidator(request);
 
-      const result = await this.hada.getNews(today);
+      const result = await this.geek.getNews(today);
 
       return new SetResponse(200, { result });
     } catch (error) {
@@ -27,7 +27,7 @@ export class HadaController {
     try {
       const { uuid } = await hadaNewsStarValidator(request);
 
-      const result = await this.hada.giveStar(uuid);
+      const result = await this.geek.giveStar(uuid);
 
       return new SetResponse(200, { result });
     } catch (error) {
@@ -51,7 +51,7 @@ export class HadaController {
   @Get('/starred')
   async getStarredBbc(@Query('page') page: number, @Query('size') size: number) {
     try {
-      const result = await this.hada.bringStarredNews(page, size);
+      const result = await this.geek.bringStarredNews(page, size);
 
       return new SetResponse(200, { result });
     } catch (error) {

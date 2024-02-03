@@ -1,43 +1,35 @@
 import { ClientError } from '@errors/client.error';
-import { checkIsEmailExist } from '@libraries/client/check.lib';
-import { createHashPassword, encryptPassword } from '@libraries/client/encrypt.lib';
-import { PrismaLibrary } from '@libraries/common/prisma.lib';
+import { comparePassword } from '@libraries/client/decrypt.lib';
+import { cryptPassword } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
-import { Response } from 'express';
-import { JwtProvider } from 'providers/auth/jwt.pvd';
+import { AccountManager } from './account-manager.pvd';
+import { ClientPrismaLibrary } from './client-prisma.pvd';
 
 @Injectable()
 export class ClientProvider {
   constructor(
-    private readonly prisma: PrismaLibrary,
-    private readonly jwt: JwtProvider,
+    private readonly prisma: ClientPrismaLibrary,
+    private readonly accountManager: AccountManager,
   ) {}
 
-  async checkEmailandSignup(email: string, name: string, password: string) {
+  async checkEmailandSignup(email: string, password: string) {
     try {
-      const result = await checkIsEmailExist(this.prisma, email);
+      await this.prisma.checkIsEmailExist(email);
 
-      if (result) {
-        ClientLogger.info('[Signup] Start to create user: %o', {
-          email,
-        });
+      // if (result) throw new ClientError('[SIGNUP] Check Exist User Info', 'Found Already Exist User. Reject.');
 
-        const { encodedPassword, hashToken } = encryptPassword(password);
+      ClientLogger.info('[Signup] Start to create user: %o', {
+        email,
+      });
 
-        await this.prisma.client.create({
-          data: {
-            email,
-            userName: name,
-            password: encodedPassword,
-            password_token: hashToken,
-          },
-        });
+      const { encodedPassword, passwordToken } = cryptPassword(password);
 
-        ClientLogger.info('[Signup] Data Insert Success');
-      }
+      const uuid = await this.prisma.insertNewClient(email, encodedPassword, passwordToken);
 
-      return 'success';
+      ClientLogger.info('[Signup] Data Insert Success');
+
+      return uuid;
     } catch (error) {
       ClientLogger.error('[Signup] Singup New User Error: %o', {
         error: error instanceof Error ? error : new Error(JSON.stringify(error)),
@@ -51,58 +43,75 @@ export class ClientProvider {
     }
   }
 
-  async login(email: string, password: string, response: Response) {
+  async login(email: string, password: string) {
     try {
-      const userInfo = await this.prisma.client.findFirst({
-        select: {
-          uuid: true,
-          password_token: true,
-          password: true,
-          isLogin: true,
-        },
-        where: {
-          email,
-        },
-      });
+      const userInfo = await this.prisma.selectUserInfoByMail(email, 0);
 
       if (userInfo === null) {
-        ClientLogger.info('[Login] No Matching User Found: %o', {
+        ClientLogger.info('[LOGIN] No Matching User Found: %o', {
           email,
         });
 
-        throw new ClientError('[Login] Finding Matching User Info', 'No Matching User Found');
+        throw new ClientError('[LOGIN] Finding Matching User Info', 'No Matching User Found');
       }
 
-      const { password: foundPassword, password_token: passwordToken, uuid, isLogin } = userInfo;
+      const { password: foundPassword, password_token: passwordToken, uuid } = userInfo;
 
-      if (isLogin) {
-        ClientLogger.error('[Login] Received User is already Logined: %o', {
-          email,
-        });
+      const isMatch = comparePassword(password, foundPassword, passwordToken);
 
-        throw new ClientError('[Login] Check if user is logined', 'Given User is Already Logined. Please try again.');
+      if (!isMatch) {
+        ClientLogger.error('[LOGIN] Password Matching Given Password is Not Match. Reject.');
+
+        throw new ClientError('[LOGIN] Password Matching ', ' Password Matching is Not Match. Reject.');
       }
 
-      const encodedPassword = createHashPassword(password, passwordToken);
+      this.accountManager.setLoginUser(uuid, email);
 
-      if (foundPassword !== encodedPassword) {
-        ClientLogger.error('[Login] Password Doesnot Match.');
+      await this.prisma.updateClientLoginStatus( uuid, 1 );
 
-        throw new ClientError('[Login] Login Password', 'Password Does not Match.');
-      }
-
-      await this.jwt.setRefreshToken(email, uuid, response);
-
-      const accessToken = await this.jwt.getAccessToken(email, uuid);
-
-      return accessToken;
+      return uuid;
     } catch (error) {
-      ClientLogger.error('[Login] Login Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      ClientLogger.error('[LOGIN] Login Error: %o', {
+        error,
       });
 
       throw new ClientError(
-        '[Login] Login',
+        '[LOGIN] Login',
+        'Login Error. Please try again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async logout(clientUuid: string) {
+    try {
+      const foundKey = this.accountManager.searchItem(clientUuid);
+
+      if (foundKey === null) {
+        ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
+          clientUuid,
+        });
+
+        throw new ClientError('[LOGIN] Finding Matching User Info', 'No Matching User Found');
+      }
+
+      ClientLogger.debug('[LOGOUT] Found Key Item: %o', {
+        clientUuid,
+        foundKey,
+      } );
+      
+      await this.prisma.updateClientLoginStatus( clientUuid, 0 );
+
+      this.accountManager.deleteItem(clientUuid);
+
+      return 'Logout Success';
+    } catch (error) {
+      ClientLogger.error('[LOGIN] Login Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[LOGIN] Login',
         'Login Error. Please try again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );

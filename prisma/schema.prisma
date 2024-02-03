@@ -12,16 +12,48 @@ datasource db {
 
 model Client{
   uuid String @id @default(uuid())
-  email String
+  email String @unique
   password String
   password_token String
-  userName String
-  isLogin Int @default(0)
-  accessToken String?
-  refreshToken String?
-  hackers_liked Hackers[]
-  hada_liked Hada[]
-  ml_liked MachineNews[]
+  is_logined Int  @default(0)
+  signed_in DateTime @default(now())
+  logined DateTime @updatedAt
+  liked_hacker_posts Hacker_Liked[]
+  liked_geek_posts Geek_Liked[]
+  liked_ml_posts Ml_Liked[]
+}
+
+model Hacker_Liked {
+  uuid          String @id @default(uuid())
+  userUuid      String 
+  postUuid      String
+  newsPlatform  String
+  created       DateTime @default(now())
+  // On Delete Cascaed: Delete related Data
+  client_news   Client @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+  hacker_news   Hackers @relation(fields: [postUuid], references: [uuid], onDelete: Cascade)
+}
+
+model Geek_Liked {
+  uuid          String @id @default(uuid())
+  userUuid      String 
+  postUuid      String 
+  newsPlatform  String
+  created       DateTime @default(now())
+  // On Delete Cascaed: Delete related Data
+  client_news   Client @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+  geek_news     Geek @relation(fields: [postUuid], references: [uuid], onDelete: Cascade)
+}
+
+model Ml_Liked {
+  uuid          String @id @default(uuid())
+  userUuid      String 
+  postUuid      String 
+  newsPlatform  String
+  created       DateTime @default(now())
+  // On Delete Cascaed: Delete related Data
+  client_news   Client @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+  ml_news       MachineNews @relation(fields: [postUuid], references: [uuid], onDelete: Cascade) 
 }
 
 model Hackers {
@@ -30,12 +62,11 @@ model Hackers {
   post    String
   link    String
   liked   Int   @default(0)
-  client_id String[]
-  liked_client Client @relation(fields: [client_id], references: [uuid])
+  liked_model Hacker_Liked[]
   founded DateTime
 }
 
-model Hada {
+model Geek {
   uuid    String   @id @default(uuid())
   page String
   rank    Int
@@ -43,30 +74,8 @@ model Hada {
   descLink String
   link    String
   liked   Int   @default(0)
-  client_id String[]
-  liked_client Client @relation(fields: [client_id], references: [uuid])
+  liked_model Geek_Liked[]
   founded DateTime
-}
-
-model BbcTechNews {
-  uuid    String   @id @default(uuid())
-  rank    Int
-  post    String
-  link    String
-  liked   Int   @default(0)
-  founded DateTime
-}
-
-model NaverNews {
-  uuid         String   @id @default(uuid())
-  keyWord      String
-  title        String
-  description  String
-  originallink String
-  url          String
-  postedTime   String
-  liked        Int   @default(0)
-  founded      DateTime
 }
 
 model MachineNews {
@@ -75,57 +84,77 @@ model MachineNews {
   title    String
   link     String
   liked    Int   @default(0)
-  client_id String[]
-  liked_client Client @relation(fields: [client_id], references: [uuid])
+  liked_model Ml_Liked[]
   founded  DateTime
 }
 
-model Climate {
-  uuid       String   @id @default(uuid())
-  dataTime   String
-  // 초미세먼지(PM2.5) 농도	
-  pm25Value  String?
-  // 미세먼지(PM10) 농도	
-  pm10Value  String?
-  // 이산화질소 농도
-  no2Value   String?
-  // 오존 농도
-  o3Value    String?
-  // 일산화탄소 농도
-  coValue    String?
-  // 아황산가스 농도
-  so2Value   String?
-  // 통합대기환경수치
-  khaiValue  String?
-  // 오존 지수
-  o3Grade    String?
-  // 아황산가스 지수
-  so2Grade   String?
-  // 이산화질소 지수
-  no2Grade   String?
-  // 일산화탄소 지수
-  coGrade    String?
-  // 통합대기환경지수
-  khaiGrade  String?
-  khaiStatus String   @default("normal")
-  founded    DateTime
-}
+// model BbcTechNews {
+//   uuid    String   @id @default(uuid())
+//   rank    Int
+//   post    String
+//   link    String
+//   liked   Int   @default(0)
+//   founded DateTime
+// }
 
-model Forecast {
-  identification String  @id
-  date           String
-  station        String
-  time           String
-  temperature    String? @default("0")
-  rain           String? @default("0")
-  windSpeed      String? @default("0")
-  windDirection  String? @default("0")
-  humidity       String? @default("0")
-  pressure       String? @default("0")
-  totalCloud     String? @default("0")
-  visibility     String? @default("0")
-  solarRadiation String? @default("0")
+// model NaverNews {
+//   uuid         String   @id @default(uuid())
+//   keyWord      String
+//   title        String
+//   description  String
+//   originallink String
+//   url          String
+//   postedTime   String
+//   liked        Int   @default(0)
+//   founded      DateTime
+// }
 
-  created DateTime @default(now())
-  updated DateTime @updatedAt()
-}
+// model Climate {
+//   uuid       String   @id @default(uuid())
+//   dataTime   String
+//   // 초미세먼지(PM2.5) 농도	
+//   pm25Value  String?
+//   // 미세먼지(PM10) 농도	
+//   pm10Value  String?
+//   // 이산화질소 농도
+//   no2Value   String?
+//   // 오존 농도
+//   o3Value    String?
+//   // 일산화탄소 농도
+//   coValue    String?
+//   // 아황산가스 농도
+//   so2Value   String?
+//   // 통합대기환경수치
+//   khaiValue  String?
+//   // 오존 지수
+//   o3Grade    String?
+//   // 아황산가스 지수
+//   so2Grade   String?
+//   // 이산화질소 지수
+//   no2Grade   String?
+//   // 일산화탄소 지수
+//   coGrade    String?
+//   // 통합대기환경지수
+//   khaiGrade  String?
+//   khaiStatus String   @default("normal")
+//   founded    DateTime
+// }
+
+// model Forecast {
+//   identification String  @id
+//   date           String
+//   station        String
+//   time           String
+//   temperature    String? @default("0")
+//   rain           String? @default("0")
+//   windSpeed      String? @default("0")
+//   windDirection  String? @default("0")
+//   humidity       String? @default("0")
+//   pressure       String? @default("0")
+//   totalCloud     String? @default("0")
+//   visibility     String? @default("0")
+//   solarRadiation String? @default("0")
+
+//   created DateTime @default(now())
+//   updated DateTime @updatedAt()
+// }

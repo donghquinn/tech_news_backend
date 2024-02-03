@@ -15,7 +15,7 @@ export const clientLoginValidator = async (request: ClientLoginRequest) => {
     return parsed;
   } catch (error) {
     Logger.error('[Client] Login Validator: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      error,
     });
 
     throw new ValidatorError(

@@ -13,7 +13,7 @@ export const hackerNewsValidator = async (request: DailyHackerNewsRequest) => {
     return validated;
   } catch (error) {
     Logger.error('[Hacker] Hacker News Request Validation Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      error,
     });
 
     throw new ValidatorError(
@@ -33,7 +33,7 @@ export const hackerNewsStarValidator = async (request: StarRequest) => {
     return validated;
   } catch (error) {
     Logger.error('[Hacker] Star Request Validator Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      error,
     });
 
     throw new ValidatorError(
@@ -53,7 +53,7 @@ export const hackerNewsUnStarValidator = async (request: StarRequest) => {
     return validated;
   } catch (error) {
     Logger.error('[Hacker] Unstar Request Validator Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      error,
     });
 
     throw new ValidatorError(

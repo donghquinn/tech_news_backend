@@ -13,7 +13,7 @@ export const hadaNewsValidator = async (request: DailyHadaNewsRequest) => {
     return validated;
   } catch (error) {
     Logger.error('[Hada] Hada News Request Validation Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      error,
     });
 
     throw new ValidatorError(
@@ -33,7 +33,7 @@ export const hadaNewsStarValidator = async (request: StarRequest) => {
     return validated;
   } catch (error) {
     Logger.error('[Hada] Star Request Validator Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      error,
     });
 
     throw new ValidatorError(
@@ -53,7 +53,7 @@ export const hadaNewsUnStarValidator = async (request: StarRequest) => {
     return validated;
   } catch (error) {
     Logger.error('[Hada] Unstar Request Validator Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      error,
     });
 
     throw new ValidatorError(

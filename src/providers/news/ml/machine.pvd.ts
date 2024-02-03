@@ -1,19 +1,13 @@
 import { MachineLearningError } from '@errors/machine.error';
-import { PrismaLibrary } from '@libraries/common/prisma.lib';
-import {
-  checkMlNewsIsLiked,
-  getStarredMlNewsPagination,
-  updateMlNewsLiked,
-  updateMlNewsLikedtoUnliked,
-} from '@libraries/news/ml.lib';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
+import { MlPrismaLibrary } from './ml-prisma.lib';
 
 @Injectable()
 export class MachineLearningProvider {
-  constructor(private readonly prisma: PrismaLibrary) {}
+  constructor(private readonly prisma: MlPrismaLibrary) {}
 
   async bringLatestMachineLearningNews(today: string) {
     try {
@@ -44,14 +38,14 @@ export class MachineLearningProvider {
 
   async giveStar(uuid: string) {
     try {
-      const isLiked = await checkMlNewsIsLiked(this.prisma, uuid);
+      const isLiked = await this.prisma.checkIsMlNewsLiked(uuid);
 
       if (!isLiked) {
-        await updateMlNewsLiked(this.prisma, uuid);
+        await this.prisma.updateMlNewsLiked(uuid);
       }
 
       if (isLiked) {
-        await updateMlNewsLikedtoUnliked(this.prisma, uuid);
+        await this.prisma.updateMlNewsLikedtoUnliked(uuid);
       }
 
       return true;
@@ -75,9 +69,7 @@ export class MachineLearningProvider {
 
       NewsLogger.info('[ML] Request to get Starred ML News');
 
-      const tempUserUuid = '123';
-
-      const starredNews = await getStarredMlNewsPagination(this.prisma, pageNumber, sizeNumber, tempUserUuid);
+      const starredNews = await this.prisma.getStarredMlNewsPagination(pageNumber, sizeNumber);
 
       NewsLogger.info('[ML] Founded Starred News');
 

@@ -24,6 +24,8 @@ class WinstonLogger {
 
   private clientLogger: Winston.Logger;
 
+  private managerLogger: Winston.Logger;
+
   private constructor() {
     this.newsLogger = Winston.createLogger({
       level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
@@ -34,6 +36,21 @@ class WinstonLogger {
           datePattern: 'YYYY-MM-DD',
           dirname: dirSaveName,
           filename: '%DATE%.news.log',
+          maxFiles: 30,
+          zippedArchive: true,
+        }),
+      ],
+    });
+
+    this.managerLogger = Winston.createLogger({
+      level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+      format: combine(splat(), json(), colorize(), defaultTimestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), formatted),
+      transports: [
+        new Winston.transports.Console(),
+        new WinstonDaily({
+          datePattern: 'YYYY-MM-DD',
+          dirname: dirSaveName,
+          filename: '%DATE%.manager.log',
           maxFiles: 30,
           zippedArchive: true,
         }),
@@ -105,8 +122,9 @@ class WinstonLogger {
       NewsLogger: this.instance.newsLogger,
       ClimateLogger: this.instance.climateLogger,
       ClientLogger: this.instance.clientLogger,
+      ManagerLogger: this.instance.managerLogger,
     };
   }
 }
 
-export const { Logger, NewsLogger, ClimateLogger, ClientLogger } = WinstonLogger.getInstance();
+export const { Logger, NewsLogger, ClimateLogger, ClientLogger, ManagerLogger } = WinstonLogger.getInstance();

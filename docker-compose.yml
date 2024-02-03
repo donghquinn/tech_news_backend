@@ -9,7 +9,7 @@ services:
     container_name: news_miner
     restart: unless-stopped
     volumes:
-      - ./webServer/logs:/home/node/logs
+      - ./logs:/home/node/logs
       - /etc/localtime:/etc/localtime
     deploy:
       resources:
@@ -19,8 +19,8 @@ services:
         reservations:
           cpus: '0.15'
           memory: 300M
-    expose:
-      - ${APP_PORT}
+    # expose:
+    #   - ${APP_PORT}
     env_file:
       - .env
     networks:
