@@ -114,13 +114,14 @@ export class ClientPrismaLibrary extends PrismaClient {
 
   async updateClientLoginStatus(clientUuid: string, isLogined: number) {
     try {
-      const userInfo = await this.client.update( {
+      const userInfo = await this.client.update({
         data: {
           is_logined: isLogined,
-        }, where: {
-          uuid: clientUuid
-        }
-      })
+        },
+        where: {
+          uuid: clientUuid,
+        },
+      });
       return userInfo;
     } catch (error) {
       ClientLogger.error('[STATUS] User Status Update: %o', {
@@ -135,11 +136,11 @@ export class ClientPrismaLibrary extends PrismaClient {
     }
   }
 
-    async getStarredNewsPagination(page: number, size: number, userUuid: string) {
+  async getStarredNewsPagination(page: number, size: number, userUuid: string) {
     try {
       const totalPosts = await this.hackers.count({ where: { liked: 1 } });
 
-      const hackerStarredNews = await this.hacker_Liked.findMany( {
+      const hackerStarredNews = await this.hacker_Liked.findMany({
         select: {
           hacker_news: {
             select: {
@@ -147,31 +148,36 @@ export class ClientPrismaLibrary extends PrismaClient {
               post: true,
               link: true,
               founded: true,
-            }
-          }
-        }, where: {
+            },
+          },
+        },
+        where: {
           userUuid,
         },
         take: size,
         skip: (page - 1) * size,
-      } )
-      
+      });
 
-      const geekStarredNews = await this.geek_Liked.findMany( {
+      const geekStarredNews = await this.geek_Liked.findMany({
         select: {
           geek_news: {
             select: {
- uuid: true, post: true, descLink: true, founded: true, liked: true 
-            }
-          }
-        }, where: {
+              uuid: true,
+              post: true,
+              descLink: true,
+              founded: true,
+              liked: true,
+            },
+          },
+        },
+        where: {
           userUuid,
         },
         take: size,
         skip: (page - 1) * size,
-      })
-      
-      const mlStarredNews = await this.ml_Liked.findMany( {
+      });
+
+      const mlStarredNews = await this.ml_Liked.findMany({
         select: {
           ml_news: {
             select: {
@@ -180,14 +186,15 @@ export class ClientPrismaLibrary extends PrismaClient {
               title: true,
               link: true,
               founded: true,
-            }
-          }
-        }, where: {
+            },
+          },
+        },
+        where: {
           userUuid,
         },
         take: size,
         skip: (page - 1) * size,
-      })
+      });
 
       ClientLogger.info('[STARRED] Founded Starred News: %o', {
         totalPosts,

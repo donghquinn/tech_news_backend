@@ -67,7 +67,7 @@ export class ClientProvider {
 
       this.accountManager.setLoginUser(uuid, email);
 
-      await this.prisma.updateClientLoginStatus( uuid, 1 );
+      await this.prisma.updateClientLoginStatus(uuid, 1);
 
       return uuid;
     } catch (error) {
@@ -98,13 +98,52 @@ export class ClientProvider {
       ClientLogger.debug('[LOGOUT] Found Key Item: %o', {
         clientUuid,
         foundKey,
-      } );
-      
-      await this.prisma.updateClientLoginStatus( clientUuid, 0 );
+      });
+
+      await this.prisma.updateClientLoginStatus(clientUuid, 0);
 
       this.accountManager.deleteItem(clientUuid);
 
       return 'Logout Success';
+    } catch (error) {
+      ClientLogger.error('[LOGIN] Login Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[LOGIN] Login',
+        'Login Error. Please try again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async myPage(clientUuid: string, page: number) {
+    try {
+      const foundKey = this.accountManager.searchItem(clientUuid);
+
+      if (foundKey === null) {
+        ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
+          clientUuid,
+        });
+
+        throw new ClientError('[LOGIN] Finding Matching User Info', 'No Matching User Found');
+      }
+
+      ClientLogger.debug('[LOGOUT] Found Key Item: %o', {
+        clientUuid,
+        foundKey,
+      });
+
+      const { totalPosts, hackerStarredNews, geekStarredNews, mlStarredNews } =
+        await this.prisma.getStarredNewsPagination(page, 10, clientUuid);
+
+      return {
+        totalPosts,
+        hackerStarredNews,
+        geekStarredNews,
+        mlStarredNews,
+      };
     } catch (error) {
       ClientLogger.error('[LOGIN] Login Error: %o', {
         error,

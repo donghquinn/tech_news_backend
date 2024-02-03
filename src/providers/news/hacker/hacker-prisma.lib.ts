@@ -130,7 +130,7 @@ export class HackerPrismaLibrary extends PrismaClient {
     try {
       const totalPosts = await this.hackers.count({ where: { liked: 1 } });
 
-      const starredNews = await this.hacker_Liked.findMany( {
+      const starredNews = await this.hacker_Liked.findMany({
         select: {
           hacker_news: {
             select: {
@@ -138,14 +138,15 @@ export class HackerPrismaLibrary extends PrismaClient {
               post: true,
               link: true,
               founded: true,
-            }
-          }
-        }, where: {
+            },
+          },
+        },
+        where: {
           userUuid,
         },
         take: size,
         skip: (page - 1) * size,
-      })
+      });
       // const starredNews = await this.hackers.findMany({
       //   select: {
       //     uuid: true,

@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
-import { HadaNewsReturn } from 'types/hada.type';
+import { HadaNewsReturn } from 'types/geek.type';
 import { GeekPrismaLibrary } from './geek-prisma.lib';
 
 @Injectable()
@@ -25,6 +25,7 @@ export class GeekProvider {
         start: startDate,
         end: endDate,
       });
+
       const result = await this.prisma.bringHadaNews(startDate, endDate);
 
       for (let i = 0; i <= result.length - 1; i += 1) {
@@ -37,32 +38,29 @@ export class GeekProvider {
             uuid: result[i].uuid,
             isUrlUndefined,
           });
-          
-            NewsLogger.debug('[GEEK] Put Original Link into return array: %o', {
-              post: result[i].post,
-              uuid: result[i].uuid,
-              desc: result[i].descLink,
-              originalLink: result[i].link,
-            });
 
-          this.resultNewsArray.push( {
-            post: result[ i ].post,
-            uuid: result[ i ].uuid,
-            descLink: result[ i ].link,
+          NewsLogger.debug('[GEEK] Put Original Link into return array: %o', {
+            post: result[i].post,
+            uuid: result[i].uuid,
+            desc: result[i].descLink,
+            originalLink: result[i].link,
+          });
+
+          this.resultNewsArray.push({
+            post: result[i].post,
+            uuid: result[i].uuid,
+            descLink: result[i].link,
             founded: result[i].founded,
-            })
-        } else
-        {
-          this.resultNewsArray.push( {
-            post: result[ i ].post,
-            uuid: result[ i ].uuid,
-            descLink: result[ i ].descLink,
+          });
+        } else {
+          this.resultNewsArray.push({
+            post: result[i].post,
+            uuid: result[i].uuid,
+            descLink: result[i].descLink,
             founded: result[i].founded,
-          })
-          }
-        
+          });
         }
-      
+      }
 
       return result;
     } catch (error) {
