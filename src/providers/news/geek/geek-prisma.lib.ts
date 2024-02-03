@@ -9,8 +9,7 @@ export class GeekPrismaLibrary extends PrismaClient {
   async bringHadaNews(startDate: Date, endDate: Date) {
     try {
       const result = await this.geek.findMany({
-        select: { uuid: true, post: true, link: true,
-          descLink: true, founded: true, liked: true },
+        select: { uuid: true, post: true, link: true, descLink: true, founded: true, liked: true },
         where: {
           founded: {
             gte: startDate,

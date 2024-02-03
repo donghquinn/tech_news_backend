@@ -1,10 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Param, Post } from '@nestjs/common';
 import { clientLoginValidator } from '@validators/client/login.validator';
 import { clientLogoutValidator } from '@validators/client/logout.validator';
+import { clientMyPageValidator } from '@validators/client/mypage.validator';
 import { clientSignupValidator } from '@validators/client/signup.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { ClientProvider } from 'providers/client/client.pvd';
-import { ClientLoginRequest, ClientLogoutRequest, ClientSignupRequest } from 'types/client.type';
+import { ClientLoginRequest, ClientLogoutRequest, ClientMyPageRequest, ClientSignupRequest } from 'types/client.type';
 
 // TODO User 회원가입 / 로그인 / 로그아웃 / 회원 탈퇴 기능 구현
 @Controller('users')
@@ -45,6 +46,24 @@ export class ClientController {
       const uuid = await this.client.logout(clientUuid);
 
       return new SetResponse(200, { uuid });
+    } catch (error) {
+      return new SetErrorResponse(error);
+    }
+  }
+
+  @Post('myPage')
+  async myPageController(@Body() request: ClientMyPageRequest, @Param('page') page: number) {
+    try {
+      const { uuid } = await clientMyPageValidator(request);
+
+      const { totalPosts, hackerStarredNews, geekStarredNews, mlStarredNews } = await this.client.myPage(uuid, page);
+
+      return new SetResponse(200, {
+        totalPosts,
+        hackerStarredNews,
+        geekStarredNews,
+        mlStarredNews,
+      });
     } catch (error) {
       return new SetErrorResponse(error);
     }

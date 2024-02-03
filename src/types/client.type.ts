@@ -19,3 +19,7 @@ export interface ClientLoginMapKey {
 export interface ClientLoginMapItem {
   email: string;
 }
+
+export interface ClientMyPageRequest {
+  uuid: string;
+}

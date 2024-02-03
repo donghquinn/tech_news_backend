@@ -65,7 +65,7 @@ class WinstonLogger {
         new WinstonDaily({
           datePattern: 'YYYY-MM-DD',
           dirname: dirSaveName,
-          filename: '%DATE%.news.log',
+          filename: '%DATE%.client.log',
           maxFiles: 30,
           zippedArchive: true,
         }),

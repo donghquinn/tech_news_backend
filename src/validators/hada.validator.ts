@@ -1,6 +1,6 @@
 import { ValidatorError } from '@errors/validator.error';
 import { Logger } from '@utils/logger.util';
-import { DailyHadaNewsRequest } from 'types/hada.type';
+import { DailyHadaNewsRequest } from 'types/geek.type';
 import { StarRequest } from 'types/request.type';
 import { z } from 'zod';
 
