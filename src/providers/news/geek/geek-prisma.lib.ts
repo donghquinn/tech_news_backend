@@ -5,7 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import { NewsLogger } from '@utils/logger.util';
 
 @Injectable()
-export class HadaPrismaLibrary extends PrismaClient {
+export class GeekPrismaLibrary extends PrismaClient {
   async bringHadaNews(startDate: Date, endDate: Date) {
     try {
       const result = await this.geek.findMany({
