@@ -48,11 +48,11 @@ export class ClientProvider {
       const userInfo = await this.prisma.selectUserInfo(email);
 
       if (userInfo === null) {
-        ClientLogger.info('[Login] No Matching User Found: %o', {
+        ClientLogger.info('[LOGIN] No Matching User Found: %o', {
           email,
         });
 
-        throw new ClientError('[Login] Finding Matching User Info', 'No Matching User Found');
+        throw new ClientError('[LOGIN] Finding Matching User Info', 'No Matching User Found');
       }
 
       const { password: foundPassword, password_token: passwordToken, uuid } = userInfo;
@@ -62,7 +62,7 @@ export class ClientProvider {
       if (!isMatch) {
         ClientLogger.error('[LOGIN] Password Matching Given Password is Not Match. Reject.');
 
-        throw new ClientError('[ LOGIN ] Password Matching ', ' Password Matching is Not Match. Reject.');
+        throw new ClientError('[LOGIN] Password Matching ', ' Password Matching is Not Match. Reject.');
       }
 
       this.accountManager.setLoginUser(uuid, email);
@@ -73,12 +73,12 @@ export class ClientProvider {
 
       return uuid;
     } catch (error) {
-      ClientLogger.error('[Login] Login Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      ClientLogger.error('[LOGIN] Login Error: %o', {
+        error,
       });
 
       throw new ClientError(
-        '[Login] Login',
+        '[LOGIN] Login',
         'Login Error. Please try again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );

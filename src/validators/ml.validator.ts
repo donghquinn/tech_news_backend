@@ -13,7 +13,7 @@ export const machineLearningValidator = async (request: DailyMlNewsRequest) => {
     return validated;
   } catch (error) {
     Logger.error('[ML] MachineLearning News Request Validation Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      error,
     });
 
     throw new ValidatorError(
@@ -33,7 +33,7 @@ export const mlNewsStarValidator = async (request: StarRequest) => {
     return validated;
   } catch (error) {
     Logger.error('[ML] Star Request Validator Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      error,
     });
 
     throw new ValidatorError(
@@ -53,7 +53,7 @@ export const mlNewsUnStarValidator = async (request: StarRequest) => {
     return validated;
   } catch (error) {
     Logger.error('[ML] Unstar Request Validator Error: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      error,
     });
 
     throw new ValidatorError(

@@ -18,7 +18,7 @@ export class HackersNewsProvider {
       return count;
     } catch (error) {
       NewsLogger.error('[Hackers] Get Hacker News Count Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HackerError(
@@ -46,7 +46,7 @@ export class HackersNewsProvider {
       return result;
     } catch (error) {
       NewsLogger.error('[Hackers] Bring Hacker News Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HackerError(
@@ -72,7 +72,7 @@ export class HackersNewsProvider {
       return true;
     } catch (error) {
       NewsLogger.error('[Hackers] Star Update Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HackerError(
@@ -101,7 +101,7 @@ export class HackersNewsProvider {
       return starredNews;
     } catch (error) {
       NewsLogger.error('[Hackers] Get Starred Update Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HackerError(

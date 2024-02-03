@@ -22,7 +22,7 @@ export class HackerPrismaLibrary extends PrismaClient {
       return result;
     } catch (error) {
       NewsLogger.error('[ML] Bring Geek News Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new PrismaError(
@@ -53,7 +53,7 @@ export class HackerPrismaLibrary extends PrismaClient {
       return isStarred.liked;
     } catch (error) {
       NewsLogger.error('[Hacker] Check Hada News Liked Info Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HackerError(
@@ -84,7 +84,7 @@ export class HackerPrismaLibrary extends PrismaClient {
       return 0;
     } catch (error) {
       NewsLogger.error('[Hacker] Update Liked to UnLiked Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HackerError(
@@ -115,7 +115,7 @@ export class HackerPrismaLibrary extends PrismaClient {
       return 0;
     } catch (error) {
       NewsLogger.error('[Hacker] Update News Liked Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HackerError(
@@ -159,7 +159,7 @@ export class HackerPrismaLibrary extends PrismaClient {
       };
     } catch (error) {
       NewsLogger.info('[Hacker] Get Starred News Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HackerError(

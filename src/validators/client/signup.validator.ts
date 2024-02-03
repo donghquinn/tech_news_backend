@@ -15,7 +15,7 @@ export const clientSignupValidator = async (request: ClientSignupRequest) => {
     return parsed;
   } catch (error) {
     Logger.error('[Client] Signup Validator: %o', {
-      error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+      error,
     });
 
     throw new ValidatorError(
