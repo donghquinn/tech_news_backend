@@ -15,9 +15,9 @@ export class ClientProvider {
 
   async checkEmailandSignup(email: string, password: string) {
     try {
-      const result = await this.prisma.checkIsEmailExist(email);
+      await this.prisma.checkIsEmailExist(email);
 
-      if (result) throw new ClientError('[SIGNUP] Check Exist User Info', 'Found Already Exist User. Reject.');
+      // if (result) throw new ClientError('[SIGNUP] Check Exist User Info', 'Found Already Exist User. Reject.');
 
       ClientLogger.info('[Signup] Start to create user: %o', {
         email,
@@ -45,7 +45,7 @@ export class ClientProvider {
 
   async login(email: string, password: string) {
     try {
-      const userInfo = await this.prisma.selectUserInfo(email);
+      const userInfo = await this.prisma.selectUserInfoByMail(email, 0);
 
       if (userInfo === null) {
         ClientLogger.info('[LOGIN] No Matching User Found: %o', {
@@ -67,11 +67,44 @@ export class ClientProvider {
 
       this.accountManager.setLoginUser(uuid, email);
 
-      // await this.jwt.setRefreshToken(email, uuid, response);
-
-      // const accessToken = await this.jwt.getAccessToken(email, uuid);
+      await this.prisma.updateClientLoginStatus( uuid, 1 );
 
       return uuid;
+    } catch (error) {
+      ClientLogger.error('[LOGIN] Login Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[LOGIN] Login',
+        'Login Error. Please try again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async logout(clientUuid: string) {
+    try {
+      const foundKey = this.accountManager.searchItem(clientUuid);
+
+      if (foundKey === null) {
+        ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
+          clientUuid,
+        });
+
+        throw new ClientError('[LOGIN] Finding Matching User Info', 'No Matching User Found');
+      }
+
+      ClientLogger.debug('[LOGOUT] Found Key Item: %o', {
+        clientUuid,
+        foundKey,
+      } );
+      
+      await this.prisma.updateClientLoginStatus( clientUuid, 0 );
+
+      this.accountManager.deleteItem(clientUuid);
+
+      return 'Logout Success';
     } catch (error) {
       ClientLogger.error('[LOGIN] Login Error: %o', {
         error,

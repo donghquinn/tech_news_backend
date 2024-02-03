@@ -1,7 +1,8 @@
-import { Module } from "@nestjs/common";
-import { AccountManager } from "providers/client/account-manager.pvd";
+import { Module } from '@nestjs/common';
+import { AccountManager } from 'providers/client/account-manager.pvd';
 
-@Module( {
-    providers: [ AccountManager ],
-    exports: [AccountManager]
-}) export class AccountManagerModule{}
+@Module({
+  providers: [AccountManager],
+  exports: [AccountManager],
+})
+export class AccountManagerModule {}

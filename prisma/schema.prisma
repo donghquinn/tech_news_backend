@@ -15,6 +15,7 @@ model Client{
   email String @unique
   password String
   password_token String
+  is_logined Int  @default(0)
   signedin DateTime @default(now())
   logined DateTime @updatedAt
   hackers_liked Hackers[]

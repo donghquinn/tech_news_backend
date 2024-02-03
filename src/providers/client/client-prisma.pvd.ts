@@ -21,7 +21,7 @@ export class ClientPrismaLibrary extends PrismaClient {
         email,
       });
 
-      return true;
+      // return true;
     } catch (error) {
       ClientLogger.error('[Signup] Check is existing email: %o', {
         error: error instanceof Error ? error : new Error(JSON.stringify(error)),
@@ -59,13 +59,14 @@ export class ClientPrismaLibrary extends PrismaClient {
     }
   }
 
-  async selectUserInfo(email: string) {
+  async selectUserInfoByMail(email: string, isLogined: number) {
     try {
       const userInfo = await this.client.findFirst({
         select: {
           uuid: true,
           password_token: true,
           password: true,
+          is_logined: isLogined,
         },
         where: {
           email,
@@ -80,6 +81,55 @@ export class ClientPrismaLibrary extends PrismaClient {
       throw new ClientError(
         '[Signup] Check is Existing Email',
         'Check is Existing Email Error. Please Check Again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async selectUserInfoByUuid(clientUuid: string) {
+    try {
+      const userInfo = await this.client.findFirst({
+        select: {
+          uuid: true,
+          password_token: true,
+          password: true,
+        },
+        where: {
+          uuid: clientUuid,
+        },
+      });
+      return userInfo;
+    } catch (error) {
+      ClientLogger.error('[LOGOUT] Check is existing email: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[LOGOUT] Check is Existing Email',
+        'Check is Existing Email Error. Please Check Again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async updateClientLoginStatus(clientUuid: string, isLogined: number) {
+    try {
+      const userInfo = await this.client.update( {
+        data: {
+          is_logined: isLogined,
+        }, where: {
+          uuid: clientUuid
+        }
+      })
+      return userInfo;
+    } catch (error) {
+      ClientLogger.error('[STATUS] User Status Update: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[STATUS] User Status Update',
+        'User Status Update Error. Please Check Again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
