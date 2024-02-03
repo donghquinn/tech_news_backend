@@ -16,11 +16,44 @@ model Client{
   password String
   password_token String
   is_logined Int  @default(0)
-  signedin DateTime @default(now())
+  signed_in DateTime @default(now())
   logined DateTime @updatedAt
-  hackers_liked Hackers[]
-  hada_liked Hada[]
-  ml_liked MachineNews[]
+  liked_hacker_posts Hacker_Liked[]
+  liked_geek_posts Geek_Liked[]
+  liked_ml_posts Ml_Liked[]
+}
+
+model Hacker_Liked {
+  uuid          String @id @default(uuid())
+  userUuid      String 
+  postUuid      String
+  newsPlatform  String
+  created       DateTime @default(now())
+  // On Delete Cascaed: Delete related Data
+  client_news   Client @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+  hacker_news   Hackers @relation(fields: [postUuid], references: [uuid], onDelete: Cascade)
+}
+
+model Geek_Liked {
+  uuid          String @id @default(uuid())
+  userUuid      String 
+  postUuid      String 
+  newsPlatform  String
+  created       DateTime @default(now())
+  // On Delete Cascaed: Delete related Data
+  client_news   Client @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+  geek_news     Geek @relation(fields: [postUuid], references: [uuid], onDelete: Cascade)
+}
+
+model Ml_Liked {
+  uuid          String @id @default(uuid())
+  userUuid      String 
+  postUuid      String 
+  newsPlatform  String
+  created       DateTime @default(now())
+  // On Delete Cascaed: Delete related Data
+  client_news   Client @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+  ml_news       MachineNews @relation(fields: [postUuid], references: [uuid], onDelete: Cascade) 
 }
 
 model Hackers {
@@ -29,12 +62,11 @@ model Hackers {
   post    String
   link    String
   liked   Int   @default(0)
-  liked_client String
-  client Client @relation(fields: [liked_client], references: [uuid])
+  liked_model Hacker_Liked[]
   founded DateTime
 }
 
-model Hada {
+model Geek {
   uuid    String   @id @default(uuid())
   page String
   rank    Int
@@ -42,8 +74,7 @@ model Hada {
   descLink String
   link    String
   liked   Int   @default(0)
-  liked_client String
-  client Client @relation(fields: [liked_client], references: [uuid])
+  liked_model Geek_Liked[]
   founded DateTime
 }
 
@@ -53,8 +84,7 @@ model MachineNews {
   title    String
   link     String
   liked    Int   @default(0)
-  liked_client String
-  client Client @relation(fields: [liked_client], references: [uuid])
+  liked_model Ml_Liked[]
   founded  DateTime
 }
 

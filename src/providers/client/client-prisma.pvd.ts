@@ -66,10 +66,10 @@ export class ClientPrismaLibrary extends PrismaClient {
           uuid: true,
           password_token: true,
           password: true,
-          is_logined: isLogined,
         },
         where: {
           email,
+          is_logined: isLogined,
         },
       });
       return userInfo;
