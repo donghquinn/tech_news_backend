@@ -6,11 +6,7 @@ import { ClientLoginMapItem, ClientLoginMapKey } from 'types/client.type';
 export class AccountManager {
   private userMap: WeakMap<ClientLoginMapKey, ClientLoginMapItem>;
 
-  private isListening: boolean;
-
   constructor() {
-    this.isListening = true;
-
     this.userMap = new WeakMap();
   }
 
@@ -34,10 +30,10 @@ export class AccountManager {
         ManagerLogger.info('[ACCOUNT] It is not existing user. Clear Interval.');
 
         clearInterval(timer);
+      } else {
+        ManagerLogger.info('[ACCOUNT] Expiration time. Delete user.');
+        this.deleteItem(uuid);
       }
-
-      ManagerLogger.info('[ACCOUNT] Expiration time. Delete user.');
-      this.deleteItem(uuid);
     }, interval);
   }
 
