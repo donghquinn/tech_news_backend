@@ -71,6 +71,7 @@ export class ClientPrismaLibrary extends PrismaClient {
           email,
         },
       });
+
       return userInfo;
     } catch (error) {
       ClientLogger.error('[Signup] Check is existing email: %o', {
@@ -113,7 +114,7 @@ export class ClientPrismaLibrary extends PrismaClient {
 
   async updateClientLoginStatus(clientUuid: string, isLogined: number) {
     try {
-      const userInfo = await this.client.update({
+      await this.client.update({
         data: {
           is_logined: isLogined,
         },
@@ -121,7 +122,6 @@ export class ClientPrismaLibrary extends PrismaClient {
           uuid: clientUuid,
         },
       });
-      return userInfo;
     } catch (error) {
       ClientLogger.error('[STATUS] User Status Update: %o', {
         error,

@@ -4,7 +4,6 @@ import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
 import { AccountManager } from 'providers/auth/account-manager.pvd';
-import { ClientLoginMapKey } from 'types/client.type';
 import { MlPrismaLibrary } from './ml-prisma.lib';
 
 @Injectable()
@@ -43,8 +42,7 @@ export class MachineLearningProvider {
 
   async giveStar(postUuid: string, clientUuid: string) {
     try {
-      const itemKey: ClientLoginMapKey = { uuid: clientUuid };
-      const isLogined = this.account.searchItem(itemKey);
+      const isLogined = this.account.getItem(clientUuid);
 
       if (!isLogined) throw new MachineLearningError('[ML] Give Star on the Stars', 'No Logined User Found.');
 

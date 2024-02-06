@@ -4,7 +4,6 @@ import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
 import { AccountManager } from 'providers/auth/account-manager.pvd';
-import { ClientLoginMapKey } from 'types/client.type';
 import { HadaNewsReturn } from 'types/geek.type';
 import { GeekPrismaLibrary } from './geek-prisma.lib';
 
@@ -83,9 +82,7 @@ export class GeekProvider {
 
   async giveStar(postUuid: string, clientUuid: string) {
     try {
-      const itemKey: ClientLoginMapKey = { uuid: clientUuid };
-
-      const isLogined = this.account.searchItem(itemKey);
+      const isLogined = this.account.getItem(clientUuid);
 
       if (!isLogined) throw new HadaError('[GEEK] Give Star on the Stars', 'No Logined User Found.');
 

@@ -1,25 +1,39 @@
 import { Injectable } from '@nestjs/common';
-import { ManagerLogger } from '@utils/logger.util';
+import { ClientLogger, ManagerLogger } from '@utils/logger.util';
 import { ClientLoginMapItem, ClientLoginMapKey } from 'types/client.type';
 
 @Injectable()
 export class AccountManager {
   private userMap: WeakMap<ClientLoginMapKey, ClientLoginMapItem>;
 
+  private userKeys: Array<ClientLoginMapKey>;
+
   constructor() {
+    this.userKeys = [];
     this.userMap = new WeakMap();
   }
 
-  public setLoginUser(clientKey: ClientLoginMapKey, email: string, password?: string) {
-    const isLogined = this.searchItem(clientKey);
+  public setLoginUser(clientUuid: string, email: string, password?: string) {
+    const isLogined = this.getItem(clientUuid);
 
-    if (isLogined) {
-      ManagerLogger.info('[ACCOUNT] Found Already Logined User Info. Ignore');
+    ManagerLogger.debug('[ACCOUNT] Searching User Info: %o', {
+      isLogined,
+      map: this.userMap,
+      clientUuid,
+    });
 
-      return;
+    if (!isLogined) {
+      const clientKey = { uuid: clientUuid };
+      this.userKeys.push(clientKey);
+      this.setItem(email, clientKey, password);
+
+      if (this.userKeys.length >= 5000) {
+        ClientLogger.debug('[AccountManager] keyList maximum reached. shift()');
+        this.userKeys.shift();
+      }
+
+      return clientKey;
     }
-
-    this.setItem(email, clientKey, password);
 
     ManagerLogger.debug('[ACCOUNT] Client Map Inspection: %o', {
       map: this.userMap,
@@ -28,49 +42,72 @@ export class AccountManager {
     const interval = 1000 * 60 * 10;
 
     const timer = setInterval(() => {
-      const isExsit = this.searchItem(clientKey);
+      const isExsit = this.getItem(clientUuid);
 
       if (!isExsit) {
         ManagerLogger.info('[ACCOUNT] It is not existing user. Clear Interval.');
 
+        ManagerLogger.debug('[ACCOUNT] Client Map Inspection: %o', {
+          isExsit,
+          clientUuid,
+          map: this.userMap,
+        });
+
         clearInterval(timer);
       } else {
         ManagerLogger.info('[ACCOUNT] Expiration time. Delete user.');
-        this.deleteItem(clientKey);
+
+        ManagerLogger.debug('[ACCOUNT] Client Map Inspection: %o', {
+          clientUuid,
+          map: this.userMap,
+        });
+        this.deleteItem(clientUuid);
       }
     }, interval);
+
+    return isLogined;
   }
 
-  public deleteLogoutUser(clientKey: ClientLoginMapKey) {
-    const isExist = this.searchItem(clientKey);
+  public deleteLogoutUser(clientUuid: string) {
+    ManagerLogger.debug('[ACCOUNT] Client Data: %o', {
+      clientUuid,
+      map: this.userMap,
+    });
+
+    const isExist = this.getItem(clientUuid);
 
     if (!isExist) {
       ManagerLogger.info('[ACCOUNT] Not Matchin Data found. Ignore.');
 
-      return;
+      return false;
     }
 
-    this.deleteItem(clientKey);
+    this.deleteItem(clientUuid);
+
     ManagerLogger.debug('[ACCOUNT] Client Map Delete Inspection: %o', {
-      clientKey,
+      clientUuid,
       map: this.userMap,
     });
+
+    return true;
   }
 
-  public searchItem(clientKey: ClientLoginMapKey) {
-    return this.userMap.has(clientKey);
-  }
+  public deleteItem(clientUuid: string) {
+    const index = this.userKeys.findIndex((item) => item.uuid === clientUuid);
 
-  public deleteItem(clientKey: ClientLoginMapKey) {
-    return this.userMap.delete(clientKey);
+    if (index > -1) this.userKeys.splice(index, 1);
   }
 
   public setItem(email: string, clientKey: ClientLoginMapKey, password?: string) {
     return this.userMap.set(clientKey, { email, password });
   }
 
-  public getItem(clientKey: ClientLoginMapKey) {
-    return this.userMap.get(clientKey);
+  public getItem(clientUuid: string) {
+    const key = this.userKeys.find((item) => item.uuid === clientUuid);
+
+    if (!key) return null;
+
+    return this.userMap.get(key);
   }
 
   //      public stop() {

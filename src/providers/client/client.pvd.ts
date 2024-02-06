@@ -65,6 +65,7 @@ export class ClientProvider {
 
         throw new ClientError('[LOGIN] Password Matching ', ' Password Matching is Not Match. Reject.');
       }
+
       const itemKey: ClientLoginMapKey = { uuid };
 
       this.accountManager.setLoginUser(itemKey, email, foundPassword);
@@ -99,14 +100,11 @@ export class ClientProvider {
         throw new ClientError('[LOGIN] Finding Matching User Info', 'No Matching User Found');
       }
 
-      ClientLogger.debug('[LOGOUT] Found Key Item: %o', {
-        clientUuid,
-        foundKey,
-      });
-
       await this.prisma.updateClientLoginStatus(clientUuid, 0);
 
-      this.accountManager.deleteLogoutUser(itemKey);
+      const deleteItem = this.accountManager.deleteLogoutUser(itemKey);
+
+      if (!deleteItem) throw new ClientError('[LOGOUT] Logout', 'No Data Found. Ignore.');
 
       return 'Logout Success';
     } catch (error) {
