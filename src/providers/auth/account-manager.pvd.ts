@@ -24,6 +24,7 @@ export class AccountManager {
 
     if (!isLogined) {
       const clientKey = { uuid: clientUuid };
+
       this.userKeys.push(clientKey);
       this.setItem(email, clientKey, password);
 
@@ -32,10 +33,13 @@ export class AccountManager {
         this.userKeys.shift();
       }
 
-      return clientKey;
+      ClientLogger.info('[ACCOUNT] Set Finished');
+
+      return clientUuid;
     }
 
-    ManagerLogger.debug('[ACCOUNT] Client Map Inspection: %o', {
+    ManagerLogger.debug('[ACCOUNT] Found User Key: %o', {
+      clientUuid,
       map: this.userMap,
     });
 
@@ -61,11 +65,12 @@ export class AccountManager {
           clientUuid,
           map: this.userMap,
         });
+
         this.deleteItem(clientUuid);
       }
     }, interval);
 
-    return isLogined;
+    return clientUuid;
   }
 
   public deleteLogoutUser(clientUuid: string) {
@@ -96,6 +101,13 @@ export class AccountManager {
     const index = this.userKeys.findIndex((item) => item.uuid === clientUuid);
 
     if (index > -1) this.userKeys.splice(index, 1);
+
+    ClientLogger.debug('[ACCOUNT] Delete Finished: %o', {
+      clientUuid,
+      index,
+      keyList: this.userKeys,
+      map: this.userMap,
+    });
   }
 
   public setItem(email: string, clientKey: ClientLoginMapKey, password?: string) {
@@ -107,7 +119,7 @@ export class AccountManager {
 
     if (!key) return null;
 
-    return this.userMap.get(key);
+    return this.userMap.get(key) as ClientLoginMapItem;
   }
 
   //      public stop() {

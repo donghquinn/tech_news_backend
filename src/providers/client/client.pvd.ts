@@ -3,7 +3,6 @@ import { comparePassword } from '@libraries/client/decrypt.lib';
 import { cryptPassword } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
-import { ClientLoginMapKey } from 'types/client.type';
 import { AccountManager } from '../auth/account-manager.pvd';
 import { ClientPrismaLibrary } from './client-prisma.pvd';
 
@@ -66,9 +65,7 @@ export class ClientProvider {
         throw new ClientError('[LOGIN] Password Matching ', ' Password Matching is Not Match. Reject.');
       }
 
-      const itemKey: ClientLoginMapKey = { uuid };
-
-      this.accountManager.setLoginUser(itemKey, email, foundPassword);
+      this.accountManager.setLoginUser(uuid, email, foundPassword);
 
       await this.prisma.updateClientLoginStatus(uuid, 1);
 
@@ -88,9 +85,7 @@ export class ClientProvider {
 
   async logout(clientUuid: string) {
     try {
-      const itemKey: ClientLoginMapKey = { uuid: clientUuid };
-
-      const foundKey = this.accountManager.searchItem(itemKey);
+      const foundKey = this.accountManager.getItem(clientUuid);
 
       if (foundKey === null) {
         ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
@@ -102,7 +97,7 @@ export class ClientProvider {
 
       await this.prisma.updateClientLoginStatus(clientUuid, 0);
 
-      const deleteItem = this.accountManager.deleteLogoutUser(itemKey);
+      const deleteItem = this.accountManager.deleteLogoutUser(clientUuid);
 
       if (!deleteItem) throw new ClientError('[LOGOUT] Logout', 'No Data Found. Ignore.');
 
@@ -122,9 +117,7 @@ export class ClientProvider {
 
   async myPage(clientUuid: string, page: number) {
     try {
-      const itemKey: ClientLoginMapKey = { uuid: clientUuid };
-
-      const foundKey = this.accountManager.searchItem(itemKey);
+      const foundKey = this.accountManager.getItem(clientUuid);
 
       if (foundKey === null) {
         ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
