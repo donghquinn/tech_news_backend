@@ -10,8 +10,8 @@ export class AccountManager {
     this.userMap = new WeakMap();
   }
 
-  public setLoginUser(uuid: string, email: string, password?: string) {
-    const isLogined = this.searchItem(uuid);
+  public setLoginUser(clientKey: ClientLoginMapKey, email: string, password?: string) {
+    const isLogined = this.searchItem(clientKey);
 
     if (isLogined) {
       ManagerLogger.info('[ACCOUNT] Found Already Logined User Info. Ignore');
@@ -19,12 +19,16 @@ export class AccountManager {
       return;
     }
 
-    this.setItem(email, uuid, password);
+    this.setItem(email, clientKey, password);
+
+    ManagerLogger.debug('[ACCOUNT] Client Map Inspection: %o', {
+      map: this.userMap,
+    });
 
     const interval = 1000 * 60 * 10;
 
     const timer = setInterval(() => {
-      const isExsit = this.searchItem(uuid);
+      const isExsit = this.searchItem(clientKey);
 
       if (!isExsit) {
         ManagerLogger.info('[ACCOUNT] It is not existing user. Clear Interval.');
@@ -32,21 +36,13 @@ export class AccountManager {
         clearInterval(timer);
       } else {
         ManagerLogger.info('[ACCOUNT] Expiration time. Delete user.');
-        this.deleteItem(uuid);
+        this.deleteItem(clientKey);
       }
     }, interval);
   }
 
-  public searchItem(uuid: string) {
-    const isExist = this.userMap.has({ uuid });
-
-    ManagerLogger.info('[ACCOUNT] Found Existing user info');
-
-    return isExist;
-  }
-
-  public deleteItem(uuid: string) {
-    const isExist = this.searchItem(uuid);
+  public deleteLogoutUser(clientKey: ClientLoginMapKey) {
+    const isExist = this.searchItem(clientKey);
 
     if (!isExist) {
       ManagerLogger.info('[ACCOUNT] Not Matchin Data found. Ignore.');
@@ -54,19 +50,27 @@ export class AccountManager {
       return;
     }
 
-    ManagerLogger.info('[ACCOUNT] Found Existing user info. Delete it');
-
-    this.userMap.delete({ uuid });
+    this.deleteItem(clientKey);
+    ManagerLogger.debug('[ACCOUNT] Client Map Delete Inspection: %o', {
+      clientKey,
+      map: this.userMap,
+    });
   }
 
-  public setItem(email: string, uuid: string, password?: string) {
-    this.userMap.set({ uuid }, { email, password });
+  public searchItem(clientKey: ClientLoginMapKey) {
+    return this.userMap.has(clientKey);
   }
 
-  public getItem(uuid: string) {
-    const foundUuid = this.userMap.get({ uuid });
+  public deleteItem(clientKey: ClientLoginMapKey) {
+    return this.userMap.delete(clientKey);
+  }
 
-    return foundUuid;
+  public setItem(email: string, clientKey: ClientLoginMapKey, password?: string) {
+    return this.userMap.set(clientKey, { email, password });
+  }
+
+  public getItem(clientKey: ClientLoginMapKey) {
+    return this.userMap.get(clientKey);
   }
 
   //      public stop() {

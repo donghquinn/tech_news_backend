@@ -59,7 +59,7 @@ export class ClientPrismaLibrary extends PrismaClient {
     }
   }
 
-  async selectUserInfoByMail(email: string, isLogined: number) {
+  async selectUserInfoByMail(email: string) {
     try {
       const userInfo = await this.client.findFirst({
         select: {
@@ -69,7 +69,6 @@ export class ClientPrismaLibrary extends PrismaClient {
         },
         where: {
           email,
-          is_logined: isLogined,
         },
       });
       return userInfo;

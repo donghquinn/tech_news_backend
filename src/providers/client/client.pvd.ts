@@ -3,6 +3,7 @@ import { comparePassword } from '@libraries/client/decrypt.lib';
 import { cryptPassword } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
+import { ClientLoginMapKey } from 'types/client.type';
 import { AccountManager } from '../auth/account-manager.pvd';
 import { ClientPrismaLibrary } from './client-prisma.pvd';
 
@@ -45,7 +46,7 @@ export class ClientProvider {
 
   async login(email: string, password: string) {
     try {
-      const userInfo = await this.prisma.selectUserInfoByMail(email, 0);
+      const userInfo = await this.prisma.selectUserInfoByMail(email);
 
       if (userInfo === null) {
         ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
@@ -64,8 +65,9 @@ export class ClientProvider {
 
         throw new ClientError('[LOGIN] Password Matching ', ' Password Matching is Not Match. Reject.');
       }
+      const itemKey: ClientLoginMapKey = { uuid };
 
-      this.accountManager.setLoginUser(uuid, email, foundPassword);
+      this.accountManager.setLoginUser(itemKey, email, foundPassword);
 
       await this.prisma.updateClientLoginStatus(uuid, 1);
 
@@ -85,7 +87,9 @@ export class ClientProvider {
 
   async logout(clientUuid: string) {
     try {
-      const foundKey = this.accountManager.searchItem(clientUuid);
+      const itemKey: ClientLoginMapKey = { uuid: clientUuid };
+
+      const foundKey = this.accountManager.searchItem(itemKey);
 
       if (foundKey === null) {
         ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
@@ -102,7 +106,7 @@ export class ClientProvider {
 
       await this.prisma.updateClientLoginStatus(clientUuid, 0);
 
-      this.accountManager.deleteItem(clientUuid);
+      this.accountManager.deleteLogoutUser(itemKey);
 
       return 'Logout Success';
     } catch (error) {
@@ -120,7 +124,9 @@ export class ClientProvider {
 
   async myPage(clientUuid: string, page: number) {
     try {
-      const foundKey = this.accountManager.searchItem(clientUuid);
+      const itemKey: ClientLoginMapKey = { uuid: clientUuid };
+
+      const foundKey = this.accountManager.searchItem(itemKey);
 
       if (foundKey === null) {
         ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
