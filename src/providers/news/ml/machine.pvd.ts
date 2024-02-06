@@ -3,11 +3,15 @@ import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
+import { AccountManager } from 'providers/auth/account-manager.pvd';
 import { MlPrismaLibrary } from './ml-prisma.lib';
 
 @Injectable()
 export class MachineLearningProvider {
-  constructor(private readonly prisma: MlPrismaLibrary) {}
+  constructor(
+    private readonly prisma: MlPrismaLibrary,
+    private readonly account: AccountManager,
+  ) {}
 
   async bringLatestMachineLearningNews(today: string) {
     try {
@@ -25,7 +29,7 @@ export class MachineLearningProvider {
       return result;
     } catch (error) {
       NewsLogger.error('[ML] Get Latest Machine Learning News Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new MachineLearningError(
@@ -36,22 +40,26 @@ export class MachineLearningProvider {
     }
   }
 
-  async giveStar(uuid: string) {
+  async giveStar(postUuid: string, clientUuid: string) {
     try {
-      const isLiked = await this.prisma.checkIsMlNewsLiked(uuid);
+      const isLogined = this.account.getItem(clientUuid);
+
+      if (!isLogined) throw new MachineLearningError('[ML] Give Star on the Stars', 'No Logined User Found.');
+
+      const { uuid: likedUuid, isLiked } = await this.prisma.checkIsMlNewsLiked(postUuid, clientUuid);
 
       if (!isLiked) {
-        await this.prisma.updateMlNewsLiked(uuid);
+        await this.prisma.updateMlNewsLiked(likedUuid, postUuid, clientUuid);
       }
 
       if (isLiked) {
-        await this.prisma.updateMlNewsLikedtoUnliked(uuid);
+        await this.prisma.updateMlNewsLikedtoUnliked(likedUuid, postUuid, clientUuid);
       }
 
       return true;
     } catch (error) {
       NewsLogger.error('[ML] Give Star on the ML News Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new MachineLearningError(
@@ -76,7 +84,7 @@ export class MachineLearningProvider {
       return starredNews;
     } catch (error) {
       NewsLogger.error('[ML] Bring Starred ML News Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new MachineLearningError(

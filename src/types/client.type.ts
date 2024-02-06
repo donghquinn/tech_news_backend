@@ -18,6 +18,7 @@ export interface ClientLoginMapKey {
 
 export interface ClientLoginMapItem {
   email: string;
+  password?: string;
 }
 
 export interface ClientMyPageRequest {

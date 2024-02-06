@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Headers, Query } from '@nestjs/common';
 import { hackerNewsStarValidator, hackerNewsValidator } from '@validators/hacker.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { HackersNewsProvider } from 'providers/news/hacker/hacker.pvd';
@@ -34,11 +34,11 @@ export class HackerController {
   }
 
   @Post('/star')
-  async giveStarNews(@Body() request: StarRequest) {
+  async giveStarNews(@Body() request: StarRequest, @Headers('Authorization') clientUuid: string) {
     try {
-      const { uuid } = await hackerNewsStarValidator(request);
+      const { uuid: PostUuid } = await hackerNewsStarValidator(request);
 
-      const result = await this.hacker.giveStar(uuid);
+      const result = await this.hacker.giveStar(PostUuid, clientUuid);
 
       return new SetResponse(200, { result });
     } catch (error) {

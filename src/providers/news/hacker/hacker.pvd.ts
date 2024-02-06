@@ -3,11 +3,15 @@ import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
+import { AccountManager } from 'providers/auth/account-manager.pvd';
 import { HackerPrismaLibrary } from './hacker-prisma.lib';
 
 @Injectable()
 export class HackersNewsProvider {
-  constructor(private prisma: HackerPrismaLibrary) {}
+  constructor(
+    private readonly prisma: HackerPrismaLibrary,
+    private readonly account: AccountManager,
+  ) {}
 
   async getHackerNewsCount() {
     try {
@@ -57,16 +61,20 @@ export class HackersNewsProvider {
     }
   }
 
-  async giveStar(uuid: string) {
+  async giveStar(postUuid: string, clientUuid: string) {
     try {
-      const isLiked = await this.prisma.checkHackerNewsIsLiked(uuid);
+      const isLogined = this.account.getItem(clientUuid);
+
+      if (!isLogined) throw new HackerError('[Hackers] Give Star on the Stars', 'No Logined User Found.');
+
+      const { uuid: likedUuid, isLiked } = await this.prisma.checkHackerNewsIsLiked(postUuid, clientUuid);
 
       if (isLiked) {
-        await this.prisma.updateHackerNewsLikedtoUnliked(uuid);
+        await this.prisma.updateHackerNewsLikedtoUnliked(likedUuid, postUuid, clientUuid);
       }
 
       if (!isLiked) {
-        await this.prisma.updateHackerNewsLiked(uuid);
+        await this.prisma.updateHackerNewsLiked(likedUuid, postUuid, clientUuid);
       }
 
       return true;

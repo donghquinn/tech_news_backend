@@ -33,24 +33,30 @@ export class HackerPrismaLibrary extends PrismaClient {
     }
   }
 
-  async checkHackerNewsIsLiked(uuid: string) {
+  async checkHackerNewsIsLiked(postUuid: string, clientUuid: string) {
     try {
-      const isStarred = await this.hackers.findFirst({
+      const isStarred = await this.hacker_Liked.findFirst({
         select: {
-          liked: true,
+          uuid: true,
+          hacker_news: {
+            select: {
+              liked: true,
+            },
+          },
         },
         where: {
-          uuid,
+          userUuid: clientUuid,
+          postUuid,
         },
       });
 
       if (isStarred === null) throw new HackerError('[Hacker] Get Star Info', 'No Star Info Found.');
 
-      NewsLogger.info('[Hacker] Found Is Starred Info: %o', {
-        isLiked: isStarred?.liked,
+      NewsLogger.debug('[Hacker] Found Is Starred Info: %o', {
+        isLiked: isStarred.hacker_news.liked,
       });
 
-      return isStarred.liked;
+      return { uuid: isStarred.uuid, isLiked: isStarred.hacker_news.liked };
     } catch (error) {
       NewsLogger.error('[Hacker] Check Hada News Liked Info Error: %o', {
         error,
@@ -64,24 +70,29 @@ export class HackerPrismaLibrary extends PrismaClient {
     }
   }
 
-  async updateHackerNewsLikedtoUnliked(uuid: string) {
+  async updateHackerNewsLikedtoUnliked(likedUuid: string, postUuid: string, clientUuid: string): Promise<void> {
     try {
-      NewsLogger.info('[Hacker] Give Hada News unStar Request: %o', {
-        uuid,
+      NewsLogger.debug('[Hacker] Give Hada News unStar Request: %o', {
+        likedUuid,
+        postUuid,
+        clientUuid,
       });
 
-      await this.hackers.update({
+      await this.hacker_Liked.update({
         data: {
-          liked: 0,
+          hacker_news: {
+            update: {
+              liked: 0,
+            },
+          },
         },
         where: {
-          uuid,
+          uuid: likedUuid,
+          postUuid,
+          userUuid: clientUuid,
         },
       });
-
       NewsLogger.info('[Hacker] Unstarred Updated');
-
-      return 0;
     } catch (error) {
       NewsLogger.error('[Hacker] Update Liked to UnLiked Error: %o', {
         error,
@@ -95,24 +106,30 @@ export class HackerPrismaLibrary extends PrismaClient {
     }
   }
 
-  async updateHackerNewsLiked(uuid: string) {
+  async updateHackerNewsLiked(likedUuid: string, postUuid: string, clientUuid: string): Promise<void> {
     try {
-      NewsLogger.info('[Hacker] Give Hacker News Star Request: %o', {
-        uuid,
+      NewsLogger.debug('[Hacker] Give Hacker News Star Request: %o', {
+        likedUuid,
+        postUuid,
+        clientUuid,
       });
 
-      await this.hackers.update({
+      await this.hacker_Liked.update({
         data: {
-          liked: 1,
+          hacker_news: {
+            update: {
+              liked: 1,
+            },
+          },
         },
         where: {
-          uuid,
+          uuid: likedUuid,
+          postUuid,
+          userUuid: clientUuid,
         },
       });
 
       NewsLogger.info('[Hacker] Starred Updated');
-
-      return 0;
     } catch (error) {
       NewsLogger.error('[Hacker] Update News Liked Error: %o', {
         error,
@@ -164,7 +181,7 @@ export class HackerPrismaLibrary extends PrismaClient {
       //   skip: (page - 1) * size,
       // });
 
-      NewsLogger.info('[Hacker] Founded Starred News: %o', {
+      NewsLogger.debug('[Hacker] Founded Starred News: %o', {
         totalPosts,
         newsSize: starredNews.length,
       });
@@ -174,7 +191,7 @@ export class HackerPrismaLibrary extends PrismaClient {
         starredNews,
       };
     } catch (error) {
-      NewsLogger.info('[Hacker] Get Starred News Error: %o', {
+      NewsLogger.error('[Hacker] Get Starred News Error: %o', {
         error,
       });
 

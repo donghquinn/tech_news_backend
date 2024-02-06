@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
+import { AccountManager } from 'providers/auth/account-manager.pvd';
 import { HadaNewsReturn } from 'types/geek.type';
 import { GeekPrismaLibrary } from './geek-prisma.lib';
 
@@ -10,7 +11,10 @@ import { GeekPrismaLibrary } from './geek-prisma.lib';
 export class GeekProvider {
   private resultNewsArray: Array<HadaNewsReturn>;
 
-  constructor(private readonly prisma: GeekPrismaLibrary) {
+  constructor(
+    private readonly prisma: GeekPrismaLibrary,
+    private readonly account: AccountManager,
+  ) {
     this.resultNewsArray = [];
   }
 
@@ -32,7 +36,7 @@ export class GeekProvider {
         const isUrlUndefined = result[i].descLink.split('.io/')[1];
 
         if (isUrlUndefined === 'undefined') {
-          NewsLogger.info('[GEEK] Found Undefiend Desc Card URL: %o', {
+          NewsLogger.debug('[GEEK] Found Undefiend Desc Card URL: %o', {
             title: result[i].post,
             descUrl: result[i].descLink,
             uuid: result[i].uuid,
@@ -65,7 +69,7 @@ export class GeekProvider {
       return result;
     } catch (error) {
       NewsLogger.error('[GEEK] Bring Hada News Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HadaError(
@@ -76,22 +80,26 @@ export class GeekProvider {
     }
   }
 
-  async giveStar(uuid: string) {
+  async giveStar(postUuid: string, clientUuid: string) {
     try {
-      const isLiked = await this.prisma.checkHadaNewsIsLiked(uuid);
+      const isLogined = this.account.getItem(clientUuid);
 
-      if (isLiked) {
-        await this.prisma.updateHadaNewsLikedtoUnliked(uuid);
+      if (!isLogined) throw new HadaError('[GEEK] Give Star on the Stars', 'No Logined User Found.');
+
+      const { uuid: likedUuid, liked } = await this.prisma.checkHadaNewsIsLiked(postUuid, clientUuid);
+
+      if (liked) {
+        await this.prisma.updateHadaNewsLikedtoUnliked(likedUuid, postUuid, clientUuid);
       }
 
-      if (!isLiked) {
-        await this.prisma.updateHadaNewsLiked(uuid);
+      if (!liked) {
+        await this.prisma.updateHadaNewsLiked(likedUuid, postUuid, clientUuid);
       }
 
       return true;
     } catch (error) {
       NewsLogger.error('[GEEK] Star Update Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HadaError(
@@ -116,7 +124,7 @@ export class GeekProvider {
       return starredNews;
     } catch (error) {
       NewsLogger.error('[GEEK] Get Starred Update Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HadaError(

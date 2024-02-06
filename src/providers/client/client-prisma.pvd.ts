@@ -48,7 +48,7 @@ export class ClientPrismaLibrary extends PrismaClient {
       return uuid;
     } catch (error) {
       ClientLogger.error('[Signup] Check is existing email: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new ClientError(
@@ -59,7 +59,7 @@ export class ClientPrismaLibrary extends PrismaClient {
     }
   }
 
-  async selectUserInfoByMail(email: string, isLogined: number) {
+  async selectUserInfoByMail(email: string) {
     try {
       const userInfo = await this.client.findFirst({
         select: {
@@ -69,13 +69,13 @@ export class ClientPrismaLibrary extends PrismaClient {
         },
         where: {
           email,
-          is_logined: isLogined,
         },
       });
+
       return userInfo;
     } catch (error) {
       ClientLogger.error('[Signup] Check is existing email: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new ClientError(
@@ -114,7 +114,7 @@ export class ClientPrismaLibrary extends PrismaClient {
 
   async updateClientLoginStatus(clientUuid: string, isLogined: number) {
     try {
-      const userInfo = await this.client.update({
+      await this.client.update({
         data: {
           is_logined: isLogined,
         },
@@ -122,7 +122,6 @@ export class ClientPrismaLibrary extends PrismaClient {
           uuid: clientUuid,
         },
       });
-      return userInfo;
     } catch (error) {
       ClientLogger.error('[STATUS] User Status Update: %o', {
         error,
@@ -196,7 +195,7 @@ export class ClientPrismaLibrary extends PrismaClient {
         skip: (page - 1) * size,
       });
 
-      ClientLogger.info('[STARRED] Founded Starred News: %o', {
+      ClientLogger.debug('[STARRED] Founded Starred News: %o', {
         totalPosts,
         hackerNewsSize: hackerStarredNews.length,
         geekNewsSize: geekStarredNews.length,

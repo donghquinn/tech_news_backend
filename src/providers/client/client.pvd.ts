@@ -3,7 +3,7 @@ import { comparePassword } from '@libraries/client/decrypt.lib';
 import { cryptPassword } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
-import { AccountManager } from './account-manager.pvd';
+import { AccountManager } from '../auth/account-manager.pvd';
 import { ClientPrismaLibrary } from './client-prisma.pvd';
 
 @Injectable()
@@ -32,7 +32,7 @@ export class ClientProvider {
       return uuid;
     } catch (error) {
       ClientLogger.error('[Signup] Singup New User Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new ClientError(
@@ -45,10 +45,10 @@ export class ClientProvider {
 
   async login(email: string, password: string) {
     try {
-      const userInfo = await this.prisma.selectUserInfoByMail(email, 0);
+      const userInfo = await this.prisma.selectUserInfoByMail(email);
 
       if (userInfo === null) {
-        ClientLogger.info('[LOGIN] No Matching User Found: %o', {
+        ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
           email,
         });
 
@@ -65,7 +65,7 @@ export class ClientProvider {
         throw new ClientError('[LOGIN] Password Matching ', ' Password Matching is Not Match. Reject.');
       }
 
-      this.accountManager.setLoginUser(uuid, email);
+      this.accountManager.setLoginUser(uuid, email, foundPassword);
 
       await this.prisma.updateClientLoginStatus(uuid, 1);
 
@@ -85,7 +85,7 @@ export class ClientProvider {
 
   async logout(clientUuid: string) {
     try {
-      const foundKey = this.accountManager.searchItem(clientUuid);
+      const foundKey = this.accountManager.getItem(clientUuid);
 
       if (foundKey === null) {
         ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
@@ -95,14 +95,11 @@ export class ClientProvider {
         throw new ClientError('[LOGIN] Finding Matching User Info', 'No Matching User Found');
       }
 
-      ClientLogger.debug('[LOGOUT] Found Key Item: %o', {
-        clientUuid,
-        foundKey,
-      });
-
       await this.prisma.updateClientLoginStatus(clientUuid, 0);
 
-      this.accountManager.deleteItem(clientUuid);
+      const deleteItem = this.accountManager.deleteLogoutUser(clientUuid);
+
+      if (!deleteItem) throw new ClientError('[LOGOUT] Logout', 'No Data Found. Ignore.');
 
       return 'Logout Success';
     } catch (error) {
@@ -111,8 +108,8 @@ export class ClientProvider {
       });
 
       throw new ClientError(
-        '[LOGIN] Login',
-        'Login Error. Please try again.',
+        '[LOGIN] Logout',
+        'Logout Error. Please try again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
@@ -120,17 +117,17 @@ export class ClientProvider {
 
   async myPage(clientUuid: string, page: number) {
     try {
-      const foundKey = this.accountManager.searchItem(clientUuid);
+      const foundKey = this.accountManager.getItem(clientUuid);
 
       if (foundKey === null) {
-        ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
+        ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
           clientUuid,
         });
 
-        throw new ClientError('[LOGIN] Finding Matching User Info', 'No Matching User Found');
+        throw new ClientError('[MYPAGE] Finding Matching User Info', 'No Matching User Found');
       }
 
-      ClientLogger.debug('[LOGOUT] Found Key Item: %o', {
+      ClientLogger.debug('[MYPAGE] Found Key Item: %o', {
         clientUuid,
         foundKey,
       });
@@ -145,13 +142,13 @@ export class ClientProvider {
         mlStarredNews,
       };
     } catch (error) {
-      ClientLogger.error('[LOGIN] Login Error: %o', {
+      ClientLogger.error('[MYPAGE] Get My Page Error: %o', {
         error,
       });
 
       throw new ClientError(
-        '[LOGIN] Login',
-        'Login Error. Please try again.',
+        '[MYPAGE] Get My Page',
+        'Get My Page Error. Please try again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
