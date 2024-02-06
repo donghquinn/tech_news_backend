@@ -38,24 +38,30 @@ export class MlPrismaLibrary extends PrismaClient {
     }
   }
 
-  async checkIsMlNewsLiked(uuid: string) {
+  async checkIsMlNewsLiked(postUuid: string, clientUuid: string) {
     try {
-      const isStarred = await this.machineNews.findFirst({
+      const isStarred = await this.ml_Liked.findFirst({
         select: {
-          liked: true,
+          uuid: true,
+          ml_news: {
+            select: {
+              liked: true,
+            },
+          },
         },
         where: {
-          uuid,
+          userUuid: clientUuid,
+          postUuid,
         },
       });
 
       if (isStarred === null) throw new MachineLearningError('[ML] Get Star Info', 'No Star Info Found.');
 
       NewsLogger.debug('[ML] Found Is Starred Info: %o', {
-        isLiked: isStarred.liked,
+        isLiked: isStarred.ml_news.liked,
       });
 
-      return isStarred.liked;
+      return { uuid: isStarred.uuid, isLiked: isStarred.ml_news.liked };
     } catch (error) {
       NewsLogger.error('[ML] Check Hada News Liked Info Error: %o', {
         error,
@@ -69,24 +75,29 @@ export class MlPrismaLibrary extends PrismaClient {
     }
   }
 
-  async updateMlNewsLikedtoUnliked(uuid: string) {
+  async updateMlNewsLikedtoUnliked(likedUuid: string, postUuid: string, clientUuid: string): Promise<void> {
     try {
       NewsLogger.debug('[ML] Give Hada News unStar Request: %o', {
-        uuid,
+        likedUuid,
+        postUuid,
+        clientUuid,
       });
 
-      await this.machineNews.update({
+      await this.ml_Liked.update({
         data: {
-          liked: 0,
+          ml_news: {
+            update: {
+              liked: 0,
+            },
+          },
         },
         where: {
-          uuid,
+          uuid: likedUuid,
+          postUuid,
+          userUuid: clientUuid,
         },
       });
-
       NewsLogger.info('[ML] Unstarred Updated');
-
-      return 0;
     } catch (error) {
       NewsLogger.error('[ML] Update Liked to UnLiked Error: %o', {
         error,
@@ -100,24 +111,30 @@ export class MlPrismaLibrary extends PrismaClient {
     }
   }
 
-  async updateMlNewsLiked(uuid: string) {
+  async updateMlNewsLiked(likedUuid: string, postUuid: string, clientUuid: string): Promise<void> {
     try {
       NewsLogger.debug('[ML] Give Hacker News Star Request: %o', {
-        uuid,
+        likedUuid,
+        postUuid,
+        clientUuid,
       });
 
-      await this.machineNews.update({
+      await this.ml_Liked.update({
         data: {
-          liked: 1,
+          ml_news: {
+            update: {
+              liked: 1,
+            },
+          },
         },
         where: {
-          uuid,
+          uuid: likedUuid,
+          postUuid,
+          userUuid: clientUuid,
         },
       });
 
       NewsLogger.info('[ML] Starred Updated');
-
-      return 0;
     } catch (error) {
       NewsLogger.error('[ML] Update News Liked Error: %o', {
         error,
