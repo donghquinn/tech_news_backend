@@ -10,8 +10,8 @@ export class AccountManager {
     this.userMap = new WeakMap();
   }
 
-  public setLoginUser(uuid: string, email: string) {
-    const isLogined = this.searchItem(uuid);
+  public setLoginUser(uuid: string, email: string, password?: string) {
+    const isLogined = this.searchItem(email);
 
     if (isLogined) {
       ManagerLogger.info('[ACCOUNT] Found Already Logined User Info. Ignore');
@@ -19,12 +19,12 @@ export class AccountManager {
       return;
     }
 
-    this.setItem(uuid, email);
+    this.setItem(email, uuid, password);
 
     const interval = 1000 * 60 * 10;
 
     const timer = setInterval(() => {
-      const isExsit = this.searchItem(uuid);
+      const isExsit = this.searchItem(email);
 
       if (!isExsit) {
         ManagerLogger.info('[ACCOUNT] It is not existing user. Clear Interval.');
@@ -32,21 +32,21 @@ export class AccountManager {
         clearInterval(timer);
       } else {
         ManagerLogger.info('[ACCOUNT] Expiration time. Delete user.');
-        this.deleteItem(uuid);
+        this.deleteItem(email);
       }
     }, interval);
   }
 
-  public searchItem(uuid: string) {
-    const isExist = this.userMap.has({ uuid });
+  public searchItem(email: string) {
+    const isExist = this.userMap.has({ email });
 
     ManagerLogger.info('[ACCOUNT] Found Existing user info');
 
     return isExist;
   }
 
-  public deleteItem(uuid: string) {
-    const isExist = this.searchItem(uuid);
+  public deleteItem(email: string) {
+    const isExist = this.searchItem(email);
 
     if (!isExist) {
       ManagerLogger.info('[ACCOUNT] Not Matchin Data found. Ignore.');
@@ -55,11 +55,17 @@ export class AccountManager {
     }
 
     ManagerLogger.info('[ACCOUNT] Found Existing user info. Delete it');
-    this.userMap.delete({ uuid });
+    this.userMap.delete({ email });
   }
 
-  public setItem(uuid: string, email: string) {
-    this.userMap.set({ uuid }, { email });
+  public setItem(email: string, uuid: string, password?: string) {
+    this.userMap.set({ email }, { uuid, password });
+  }
+
+  public getItem(email: string) {
+    const foundUuid = this.userMap.get( { email } );
+    
+    return foundUuid;
   }
 
   //      public stop() {

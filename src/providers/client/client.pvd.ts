@@ -2,14 +2,16 @@ import { ClientError } from '@errors/client.error';
 import { comparePassword } from '@libraries/client/decrypt.lib';
 import { cryptPassword } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { ClientLogger } from '@utils/logger.util';
-import { AccountManager } from './account-manager.pvd';
+import { AccountManager } from '../auth/account-manager.pvd';
 import { ClientPrismaLibrary } from './client-prisma.pvd';
 
 @Injectable()
 export class ClientProvider {
   constructor(
     private readonly prisma: ClientPrismaLibrary,
+    private readonly jwt: JwtService,
     private readonly accountManager: AccountManager,
   ) {}
 
@@ -111,8 +113,8 @@ export class ClientProvider {
       });
 
       throw new ClientError(
-        '[LOGIN] Login',
-        'Login Error. Please try again.',
+        '[LOGIN] Logout',
+        'Logout Error. Please try again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
@@ -123,14 +125,14 @@ export class ClientProvider {
       const foundKey = this.accountManager.searchItem(clientUuid);
 
       if (foundKey === null) {
-        ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
+        ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
           clientUuid,
         });
 
-        throw new ClientError('[LOGIN] Finding Matching User Info', 'No Matching User Found');
+        throw new ClientError('[MYPAGE] Finding Matching User Info', 'No Matching User Found');
       }
 
-      ClientLogger.debug('[LOGOUT] Found Key Item: %o', {
+      ClientLogger.debug('[MYPAGE] Found Key Item: %o', {
         clientUuid,
         foundKey,
       });
@@ -145,13 +147,13 @@ export class ClientProvider {
         mlStarredNews,
       };
     } catch (error) {
-      ClientLogger.error('[LOGIN] Login Error: %o', {
+      ClientLogger.error('[MYPAGE] Get My Page Error: %o', {
         error,
       });
 
       throw new ClientError(
-        '[LOGIN] Login',
-        'Login Error. Please try again.',
+        '[MYPAGE] Get My Page',
+        'Get My Page Error. Please try again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
