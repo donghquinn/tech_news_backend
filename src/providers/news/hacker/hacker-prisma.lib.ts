@@ -46,7 +46,7 @@ export class HackerPrismaLibrary extends PrismaClient {
 
       if (isStarred === null) throw new HackerError('[Hacker] Get Star Info', 'No Star Info Found.');
 
-      NewsLogger.info('[Hacker] Found Is Starred Info: %o', {
+      NewsLogger.debug('[Hacker] Found Is Starred Info: %o', {
         isLiked: isStarred?.liked,
       });
 
@@ -66,7 +66,7 @@ export class HackerPrismaLibrary extends PrismaClient {
 
   async updateHackerNewsLikedtoUnliked(uuid: string) {
     try {
-      NewsLogger.info('[Hacker] Give Hada News unStar Request: %o', {
+      NewsLogger.debug('[Hacker] Give Hada News unStar Request: %o', {
         uuid,
       });
 
@@ -97,7 +97,7 @@ export class HackerPrismaLibrary extends PrismaClient {
 
   async updateHackerNewsLiked(uuid: string) {
     try {
-      NewsLogger.info('[Hacker] Give Hacker News Star Request: %o', {
+      NewsLogger.debug('[Hacker] Give Hacker News Star Request: %o', {
         uuid,
       });
 
@@ -164,7 +164,7 @@ export class HackerPrismaLibrary extends PrismaClient {
       //   skip: (page - 1) * size,
       // });
 
-      NewsLogger.info('[Hacker] Founded Starred News: %o', {
+      NewsLogger.debug('[Hacker] Founded Starred News: %o', {
         totalPosts,
         newsSize: starredNews.length,
       });
@@ -174,7 +174,7 @@ export class HackerPrismaLibrary extends PrismaClient {
         starredNews,
       };
     } catch (error) {
-      NewsLogger.info('[Hacker] Get Starred News Error: %o', {
+      NewsLogger.error('[Hacker] Get Starred News Error: %o', {
         error,
       });
 

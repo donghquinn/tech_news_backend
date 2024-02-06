@@ -25,7 +25,7 @@ export class MachineLearningProvider {
       return result;
     } catch (error) {
       NewsLogger.error('[ML] Get Latest Machine Learning News Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new MachineLearningError(
@@ -51,7 +51,7 @@ export class MachineLearningProvider {
       return true;
     } catch (error) {
       NewsLogger.error('[ML] Give Star on the ML News Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new MachineLearningError(
@@ -76,7 +76,7 @@ export class MachineLearningProvider {
       return starredNews;
     } catch (error) {
       NewsLogger.error('[ML] Bring Starred ML News Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new MachineLearningError(

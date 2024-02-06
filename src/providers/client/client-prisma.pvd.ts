@@ -48,7 +48,7 @@ export class ClientPrismaLibrary extends PrismaClient {
       return uuid;
     } catch (error) {
       ClientLogger.error('[Signup] Check is existing email: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new ClientError(
@@ -75,7 +75,7 @@ export class ClientPrismaLibrary extends PrismaClient {
       return userInfo;
     } catch (error) {
       ClientLogger.error('[Signup] Check is existing email: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new ClientError(
@@ -196,7 +196,7 @@ export class ClientPrismaLibrary extends PrismaClient {
         skip: (page - 1) * size,
       });
 
-      ClientLogger.info('[STARRED] Founded Starred News: %o', {
+      ClientLogger.debug('[STARRED] Founded Starred News: %o', {
         totalPosts,
         hackerNewsSize: hackerStarredNews.length,
         geekNewsSize: geekStarredNews.length,

@@ -22,7 +22,7 @@ export class GeekPrismaLibrary extends PrismaClient {
       return result;
     } catch (error) {
       NewsLogger.error('[HADA] Bring Geek News Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new PrismaError(
@@ -46,14 +46,14 @@ export class GeekPrismaLibrary extends PrismaClient {
 
       if (isStarred === null) throw new HadaError('[Hada] Get Star Info', 'No Star Info Found.');
 
-      NewsLogger.info('[Hada] Found Is Starred Info: %o', {
+      NewsLogger.debug('[Hada] Found Is Starred Info: %o', {
         isLiked: isStarred?.liked,
       });
 
       return isStarred.liked;
     } catch (error) {
       NewsLogger.error('[Hada] Check Hada News Liked Info Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HadaError(
@@ -66,7 +66,7 @@ export class GeekPrismaLibrary extends PrismaClient {
 
   async updateHadaNewsLikedtoUnliked(uuid: string) {
     try {
-      NewsLogger.info('[HADA] Give Hada News unStar Request: %o', {
+      NewsLogger.debug('[HADA] Give Hada News unStar Request: %o', {
         uuid,
       });
 
@@ -84,7 +84,7 @@ export class GeekPrismaLibrary extends PrismaClient {
       return 0;
     } catch (error) {
       NewsLogger.error('[Hada] Update Liked to UnLiked Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HadaError(
@@ -97,7 +97,7 @@ export class GeekPrismaLibrary extends PrismaClient {
 
   async updateHadaNewsLiked(uuid: string) {
     try {
-      NewsLogger.info('[HADA] Give Hacker News Star Request: %o', {
+      NewsLogger.debug('[HADA] Give Hacker News Star Request: %o', {
         uuid,
       });
 
@@ -115,7 +115,7 @@ export class GeekPrismaLibrary extends PrismaClient {
       return 0;
     } catch (error) {
       NewsLogger.error('[Hada] Update News Liked Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HadaError(
@@ -147,7 +147,7 @@ export class GeekPrismaLibrary extends PrismaClient {
         skip: (page - 1) * size,
       });
 
-      NewsLogger.info('[Hada] Founded Starred News: %o', {
+      NewsLogger.debug('[Hada] Founded Starred News: %o', {
         totalPosts,
         newsSize: starredNews.length,
       });
@@ -158,7 +158,7 @@ export class GeekPrismaLibrary extends PrismaClient {
       };
     } catch (error) {
       NewsLogger.info('[Hada] Get Starred News Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new HadaError(

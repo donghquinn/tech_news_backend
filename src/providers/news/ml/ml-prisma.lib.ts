@@ -27,7 +27,7 @@ export class MlPrismaLibrary extends PrismaClient {
       return result;
     } catch (error) {
       NewsLogger.error('[ML] Bring Geek News Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new PrismaError(
@@ -51,14 +51,14 @@ export class MlPrismaLibrary extends PrismaClient {
 
       if (isStarred === null) throw new MachineLearningError('[ML] Get Star Info', 'No Star Info Found.');
 
-      NewsLogger.info('[ML] Found Is Starred Info: %o', {
+      NewsLogger.debug('[ML] Found Is Starred Info: %o', {
         isLiked: isStarred.liked,
       });
 
       return isStarred.liked;
     } catch (error) {
       NewsLogger.error('[ML] Check Hada News Liked Info Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new MachineLearningError(
@@ -71,7 +71,7 @@ export class MlPrismaLibrary extends PrismaClient {
 
   async updateMlNewsLikedtoUnliked(uuid: string) {
     try {
-      NewsLogger.info('[ML] Give Hada News unStar Request: %o', {
+      NewsLogger.debug('[ML] Give Hada News unStar Request: %o', {
         uuid,
       });
 
@@ -89,7 +89,7 @@ export class MlPrismaLibrary extends PrismaClient {
       return 0;
     } catch (error) {
       NewsLogger.error('[ML] Update Liked to UnLiked Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new MachineLearningError(
@@ -102,7 +102,7 @@ export class MlPrismaLibrary extends PrismaClient {
 
   async updateMlNewsLiked(uuid: string) {
     try {
-      NewsLogger.info('[ML] Give Hacker News Star Request: %o', {
+      NewsLogger.debug('[ML] Give Hacker News Star Request: %o', {
         uuid,
       });
 
@@ -120,7 +120,7 @@ export class MlPrismaLibrary extends PrismaClient {
       return 0;
     } catch (error) {
       NewsLogger.error('[ML] Update News Liked Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new MachineLearningError(
@@ -152,7 +152,7 @@ export class MlPrismaLibrary extends PrismaClient {
         skip: (page - 1) * size,
       });
 
-      NewsLogger.info('[ML] Founded Starred News: %o', {
+      NewsLogger.debug('[ML] Founded Starred News: %o', {
         totalPosts,
         newsSize: starredNews.length,
       });
@@ -163,7 +163,7 @@ export class MlPrismaLibrary extends PrismaClient {
       };
     } catch (error) {
       NewsLogger.info('[ML] Get Starred News Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new MachineLearningError(

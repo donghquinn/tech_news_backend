@@ -32,7 +32,7 @@ export class ClientProvider {
       return uuid;
     } catch (error) {
       ClientLogger.error('[Signup] Singup New User Error: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new ClientError(
@@ -48,7 +48,7 @@ export class ClientProvider {
       const userInfo = await this.prisma.selectUserInfoByMail(email, 0);
 
       if (userInfo === null) {
-        ClientLogger.info('[LOGIN] No Matching User Found: %o', {
+        ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
           email,
         });
 
