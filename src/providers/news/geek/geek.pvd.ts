@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
+import { AccountManager } from 'providers/auth/account-manager.pvd';
 import { HadaNewsReturn } from 'types/geek.type';
 import { GeekPrismaLibrary } from './geek-prisma.lib';
 
@@ -10,7 +11,10 @@ import { GeekPrismaLibrary } from './geek-prisma.lib';
 export class GeekProvider {
   private resultNewsArray: Array<HadaNewsReturn>;
 
-  constructor(private readonly prisma: GeekPrismaLibrary) {
+  constructor(
+    private readonly prisma: GeekPrismaLibrary,
+    private readonly account: AccountManager,
+  ) {
     this.resultNewsArray = [];
   }
 
@@ -76,16 +80,20 @@ export class GeekProvider {
     }
   }
 
-  async giveStar(uuid: string) {
+  async giveStar(postUuid: string, clientUuid: string) {
     try {
-      const isLiked = await this.prisma.checkHadaNewsIsLiked(uuid);
+      const isLogined = this.account.searchItem(clientUuid);
 
-      if (isLiked) {
-        await this.prisma.updateHadaNewsLikedtoUnliked(uuid);
+      if (!isLogined) throw new HadaError('[GEEK] Give Star on the Stars', 'No Logined User Found.');
+
+      const { uuid: likedUuid, liked } = await this.prisma.checkHadaNewsIsLiked(postUuid, clientUuid);
+
+      if (liked) {
+        await this.prisma.updateHadaNewsLikedtoUnliked(likedUuid, postUuid, clientUuid);
       }
 
-      if (!isLiked) {
-        await this.prisma.updateHadaNewsLiked(uuid);
+      if (!liked) {
+        await this.prisma.updateHadaNewsLiked(likedUuid, postUuid, clientUuid);
       }
 
       return true;

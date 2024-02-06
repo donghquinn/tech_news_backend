@@ -33,24 +33,30 @@ export class GeekPrismaLibrary extends PrismaClient {
     }
   }
 
-  async checkHadaNewsIsLiked(uuid: string) {
+  async checkHadaNewsIsLiked(postUuid: string, clientUuid: string) {
     try {
-      const isStarred = await this.geek.findFirst({
+      const isStarred = await this.geek_Liked.findFirst({
         select: {
-          liked: true,
+          uuid: true,
+          geek_news: {
+            select: {
+              liked: true,
+            },
+          },
         },
         where: {
-          uuid,
+          userUuid: clientUuid,
+          postUuid,
         },
       });
 
       if (isStarred === null) throw new HadaError('[Hada] Get Star Info', 'No Star Info Found.');
 
       NewsLogger.debug('[Hada] Found Is Starred Info: %o', {
-        isLiked: isStarred?.liked,
+        isLiked: isStarred.geek_news.liked,
       });
 
-      return isStarred.liked;
+      return { uuid: isStarred.uuid, liked: isStarred.geek_news.liked };
     } catch (error) {
       NewsLogger.error('[Hada] Check Hada News Liked Info Error: %o', {
         error,
@@ -64,18 +70,26 @@ export class GeekPrismaLibrary extends PrismaClient {
     }
   }
 
-  async updateHadaNewsLikedtoUnliked(uuid: string) {
+  async updateHadaNewsLikedtoUnliked(likedUuid: string, postUuid: string, clientUuid: string) {
     try {
       NewsLogger.debug('[HADA] Give Hada News unStar Request: %o', {
-        uuid,
+        likedUuid,
+        postUuid,
+        clientUuid,
       });
 
-      await this.geek.update({
+      await this.geek_Liked.update({
         data: {
-          liked: 0,
+          geek_news: {
+            update: {
+              liked: 0,
+            },
+          },
         },
         where: {
-          uuid,
+          uuid: likedUuid,
+          postUuid,
+          userUuid: clientUuid,
         },
       });
 
@@ -95,18 +109,26 @@ export class GeekPrismaLibrary extends PrismaClient {
     }
   }
 
-  async updateHadaNewsLiked(uuid: string) {
+  async updateHadaNewsLiked(likedUuid: string, postUuid: string, clientUuid: string) {
     try {
       NewsLogger.debug('[HADA] Give Hacker News Star Request: %o', {
-        uuid,
+        likedUuid,
+        postUuid,
+        clientUuid,
       });
 
-      await this.geek.update({
+      await this.geek_Liked.update({
         data: {
-          liked: 1,
+          geek_news: {
+            update: {
+              liked: 1,
+            },
+          },
         },
         where: {
-          uuid,
+          uuid: likedUuid,
+          postUuid,
+          userUuid: clientUuid,
         },
       });
 
