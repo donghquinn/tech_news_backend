@@ -24,3 +24,8 @@ export interface ClientLoginMapItem {
 export interface ClientMyPageRequest {
   uuid: string;
 }
+
+export interface ClientMyPageStarNewsRequest {
+  uuid: string;
+  page: number;
+}

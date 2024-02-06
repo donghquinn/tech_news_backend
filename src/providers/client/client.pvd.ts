@@ -115,7 +115,7 @@ export class ClientProvider {
     }
   }
 
-  async myPage(clientUuid: string, page: number) {
+  async myPage(clientUuid: string) {
     try {
       const foundKey = this.accountManager.getItem(clientUuid);
 
@@ -132,14 +132,116 @@ export class ClientProvider {
         foundKey,
       });
 
-      const { totalPosts, hackerStarredNews, geekStarredNews, mlStarredNews } =
-        await this.prisma.getStarredNewsPagination(page, 10, clientUuid);
+      const email = await this.prisma.getMyPageInfo(clientUuid);
+
+      return email;
+    } catch (error) {
+      ClientLogger.error('[MYPAGE] Get My Page Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[MYPAGE] Get My Page',
+        'Get My Page Error. Please try again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async myStarredMlNews(clientUuid: string, page: number) {
+    try {
+      const foundKey = this.accountManager.getItem(clientUuid);
+
+      if (foundKey === null) {
+        ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
+          clientUuid,
+        });
+
+        throw new ClientError('[MYPAGE] Finding Matching User Info', 'No Matching User Found');
+      }
+
+      ClientLogger.debug('[MYPAGE] Found Key Item: %o', {
+        clientUuid,
+        foundKey,
+      });
+
+      const { totalPosts, mlStarredNews } = await this.prisma.getStarredMlNewsPagination(page, 10, clientUuid);
+
+      return {
+        totalPosts,
+        mlStarredNews,
+      };
+    } catch (error) {
+      ClientLogger.error('[MYPAGE] Get My Page Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[MYPAGE] Get My Page',
+        'Get My Page Error. Please try again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async myStarredHackerNews(clientUuid: string, page: number) {
+    try {
+      const foundKey = this.accountManager.getItem(clientUuid);
+
+      if (foundKey === null) {
+        ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
+          clientUuid,
+        });
+
+        throw new ClientError('[MYPAGE] Finding Matching User Info', 'No Matching User Found');
+      }
+
+      ClientLogger.debug('[MYPAGE] Found Key Item: %o', {
+        clientUuid,
+        foundKey,
+      });
+
+      const { totalPosts, hackerStarredNews } = await this.prisma.getStarredHackerNewsPagination(page, 10, clientUuid);
 
       return {
         totalPosts,
         hackerStarredNews,
+      };
+    } catch (error) {
+      ClientLogger.error('[MYPAGE] Get My Page Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[MYPAGE] Get My Page',
+        'Get My Page Error. Please try again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async myStarredGeekNews(clientUuid: string, page: number) {
+    try {
+      const foundKey = this.accountManager.getItem(clientUuid);
+
+      if (foundKey === null) {
+        ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
+          clientUuid,
+        });
+
+        throw new ClientError('[MYPAGE] Finding Matching User Info', 'No Matching User Found');
+      }
+
+      ClientLogger.debug('[MYPAGE] Found Key Item: %o', {
+        clientUuid,
+        foundKey,
+      });
+
+      const { totalPosts, geekStarredNews } = await this.prisma.getStarredGeekNewsPagination(page, 10, clientUuid);
+
+      return {
+        totalPosts,
         geekStarredNews,
-        mlStarredNews,
       };
     } catch (error) {
       ClientLogger.error('[MYPAGE] Get My Page Error: %o', {
