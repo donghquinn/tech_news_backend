@@ -3,6 +3,7 @@ import { comparePassword } from '@libraries/client/decrypt.lib';
 import { cryptPassword } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
+import { HadaNewsReturn } from 'types/geek.type';
 import { AccountManager } from '../auth/account-manager.pvd';
 import { ClientPrismaLibrary } from './client-prisma.pvd';
 
@@ -115,7 +116,7 @@ export class ClientProvider {
     }
   }
 
-  async myPage(clientUuid: string, page: number) {
+  async myPage(clientUuid: string) {
     try {
       const foundKey = this.accountManager.getItem(clientUuid);
 
@@ -132,14 +133,157 @@ export class ClientProvider {
         foundKey,
       });
 
-      const { totalPosts, hackerStarredNews, geekStarredNews, mlStarredNews } =
-        await this.prisma.getStarredNewsPagination(page, 10, clientUuid);
+      const email = await this.prisma.getMyPageInfo(clientUuid);
+
+      return email;
+    } catch (error) {
+      ClientLogger.error('[MYPAGE] Get My Page Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[MYPAGE] Get My Page',
+        'Get My Page Error. Please try again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async myStarredMlNews(clientUuid: string, page: number) {
+    try {
+      const foundKey = this.accountManager.getItem(clientUuid);
+
+      if (foundKey === null) {
+        ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
+          clientUuid,
+        });
+
+        throw new ClientError('[MYPAGE] Finding Matching User Info', 'No Matching User Found');
+      }
+
+      ClientLogger.debug('[MYPAGE] Found Key Item: %o', {
+        clientUuid,
+        foundKey,
+      });
+
+      const { totalPosts, mlStarredNews } = await this.prisma.getStarredMlNewsPagination(page, 10, clientUuid);
+
+      const mlNews = mlStarredNews.map((item) => item.ml_news);
 
       return {
         totalPosts,
-        hackerStarredNews,
-        geekStarredNews,
-        mlStarredNews,
+        mlNews,
+      };
+    } catch (error) {
+      ClientLogger.error('[MYPAGE] Get My Page Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[MYPAGE] Get My Page',
+        'Get My Page Error. Please try again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async myStarredHackerNews(clientUuid: string, page: number) {
+    try {
+      const foundKey = this.accountManager.getItem(clientUuid);
+
+      if (foundKey === null) {
+        ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
+          clientUuid,
+        });
+
+        throw new ClientError('[MYPAGE] Finding Matching User Info', 'No Matching User Found');
+      }
+
+      ClientLogger.debug('[MYPAGE] Found Key Item: %o', {
+        clientUuid,
+        foundKey,
+      });
+
+      const { totalPosts, hackerStarredNews } = await this.prisma.getStarredHackerNewsPagination(page, 10, clientUuid);
+
+      const hackerNews = hackerStarredNews.map((item) => item.hacker_news);
+
+      return {
+        totalPosts,
+        hackerNews,
+      };
+    } catch (error) {
+      ClientLogger.error('[MYPAGE] Get My Page Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[MYPAGE] Get My Page',
+        'Get My Page Error. Please try again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async myStarredGeekNews(clientUuid: string, page: number) {
+    try {
+      const foundKey = this.accountManager.getItem(clientUuid);
+      const resultNewsArray: Array<HadaNewsReturn> = [];
+
+      if (foundKey === null) {
+        ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
+          clientUuid,
+        });
+
+        throw new ClientError('[MYPAGE] Finding Matching User Info', 'No Matching User Found');
+      }
+
+      ClientLogger.debug('[MYPAGE] Found Key Item: %o', {
+        clientUuid,
+        foundKey,
+      });
+
+      const { totalPosts, geekStarredNews } = await this.prisma.getStarredGeekNewsPagination(page, 10, clientUuid);
+
+      for (let i = 0; i <= geekStarredNews.length - 1; i += 1) {
+        const { post, descLink, uuid, link, founded } = geekStarredNews[i].geek_news;
+
+        const isUrlUndefined = descLink.split('.io/')[1];
+
+        if (isUrlUndefined === 'undefined') {
+          ClientLogger.debug('[GEEK] Found Undefiend Desc Card URL: %o', {
+            title: post,
+            descUrl: descLink,
+            uuid,
+            isUrlUndefined,
+          });
+
+          ClientLogger.debug('[GEEK] Put Original Link into return array: %o', {
+            post,
+            uuid,
+            desc: descLink,
+            originalLink: link,
+          });
+
+          resultNewsArray.push({
+            post,
+            uuid,
+            descLink: link,
+            founded,
+          });
+        } else {
+          resultNewsArray.push({
+            post,
+            uuid,
+            descLink,
+            founded,
+          });
+        }
+      }
+
+      return {
+        totalPosts,
+        resultNewsArray,
       };
     } catch (error) {
       ClientLogger.error('[MYPAGE] Get My Page Error: %o', {

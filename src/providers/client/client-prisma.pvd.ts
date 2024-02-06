@@ -135,10 +135,29 @@ export class ClientPrismaLibrary extends PrismaClient {
     }
   }
 
-  async getStarredNewsPagination(page: number, size: number, userUuid: string) {
+  async getMyPageInfo(clientUuid: string) {
     try {
-      const totalPosts = await this.hackers.count({ where: { liked: 1 } });
+      const result = await this.client.findFirst({
+        select: {
+          email: true,
+        },
+        where: {
+          uuid: clientUuid,
+        },
+      });
 
+      if (result === null) throw new ClientError('[MYPAGE] Get My Page', 'No User Found');
+
+      const { email } = result;
+
+      return email;
+    } catch (error) {
+      throw new ClientError('[MYPAGE] Get My Page', 'Get My Page Error.');
+    }
+  }
+
+  async getStarredHackerNewsPagination(page: number, size: number, userUuid: string) {
+    try {
       const hackerStarredNews = await this.hacker_Liked.findMany({
         select: {
           hacker_news: {
@@ -157,6 +176,32 @@ export class ClientPrismaLibrary extends PrismaClient {
         skip: (page - 1) * size,
       });
 
+      const totalPosts = hackerStarredNews.length;
+
+      ClientLogger.debug('[STARRED] Founded Starred News: %o', {
+        totalPosts,
+        hackerNewsSize: hackerStarredNews.length,
+      });
+
+      return {
+        totalPosts,
+        hackerStarredNews,
+      };
+    } catch (error) {
+      ClientLogger.info('[STARRED] Get Starred News Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[STARRED] Get Starred News',
+        'Get Starred News Error.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async getStarredGeekNewsPagination(page: number, size: number, userUuid: string) {
+    try {
       const geekStarredNews = await this.geek_Liked.findMany({
         select: {
           geek_news: {
@@ -165,7 +210,7 @@ export class ClientPrismaLibrary extends PrismaClient {
               post: true,
               descLink: true,
               founded: true,
-              liked: true,
+              link: true,
             },
           },
         },
@@ -176,6 +221,31 @@ export class ClientPrismaLibrary extends PrismaClient {
         skip: (page - 1) * size,
       });
 
+      const totalPosts = geekStarredNews.length;
+      ClientLogger.debug('[STARRED] Founded Starred News: %o', {
+        totalPosts,
+        geekNewsSize: geekStarredNews.length,
+      });
+
+      return {
+        totalPosts,
+        geekStarredNews,
+      };
+    } catch (error) {
+      ClientLogger.info('[STARRED] Get Starred News Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[STARRED] Get Starred News',
+        'Get Starred News Error.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async getStarredMlNewsPagination(page: number, size: number, userUuid: string) {
+    try {
       const mlStarredNews = await this.ml_Liked.findMany({
         select: {
           ml_news: {
@@ -195,17 +265,15 @@ export class ClientPrismaLibrary extends PrismaClient {
         skip: (page - 1) * size,
       });
 
+      const totalPosts = mlStarredNews.length;
+
       ClientLogger.debug('[STARRED] Founded Starred News: %o', {
         totalPosts,
-        hackerNewsSize: hackerStarredNews.length,
-        geekNewsSize: geekStarredNews.length,
         mlNewsSize: mlStarredNews.length,
       });
 
       return {
         totalPosts,
-        hackerStarredNews,
-        geekStarredNews,
         mlStarredNews,
       };
     } catch (error) {

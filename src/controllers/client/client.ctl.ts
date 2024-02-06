@@ -1,11 +1,17 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { clientLoginValidator } from '@validators/client/login.validator';
 import { clientLogoutValidator } from '@validators/client/logout.validator';
-import { clientMyPageValidator } from '@validators/client/mypage.validator';
+import { clientMyPageStarNewsValidator, clientMyPageValidator } from '@validators/client/mypage.validator';
 import { clientSignupValidator } from '@validators/client/signup.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { ClientProvider } from 'providers/client/client.pvd';
-import { ClientLoginRequest, ClientLogoutRequest, ClientMyPageRequest, ClientSignupRequest } from 'types/client.type';
+import {
+  ClientLoginRequest,
+  ClientLogoutRequest,
+  ClientMyPageRequest,
+  ClientMyPageStarNewsRequest,
+  ClientSignupRequest,
+} from 'types/client.type';
 
 // TODO User 회원가입 / 로그인 / 로그아웃 / 회원 탈퇴 기능 구현
 @Controller('users')
@@ -16,6 +22,9 @@ export class ClientController {
   async signupController(@Body() request: ClientSignupRequest) {
     try {
       const { email, password } = await clientSignupValidator(request);
+
+      if (email.length < 1 || password.length < 1)
+        return new SetErrorResponse('Received User Info Should not be empty');
 
       const message = await this.client.checkEmailandSignup(email, password);
 
@@ -29,6 +38,9 @@ export class ClientController {
   async loginController(@Body() request: ClientLoginRequest) {
     try {
       const { email, password } = await clientLoginValidator(request);
+
+      if (email.length < 1 || password.length < 1)
+        return new SetErrorResponse('Received User Info Should not be empty');
 
       const uuid = await this.client.login(email, password);
 
@@ -52,16 +64,61 @@ export class ClientController {
   }
 
   @Post('myPage')
-  async myPageController(@Body() request: ClientMyPageRequest, @Param('page') page: number) {
+  async myPageController(@Body() request: ClientMyPageRequest) {
     try {
       const { uuid } = await clientMyPageValidator(request);
 
-      const { totalPosts, hackerStarredNews, geekStarredNews, mlStarredNews } = await this.client.myPage(uuid, page);
+      const email = await this.client.myPage(uuid);
+
+      return new SetResponse(200, {
+        email,
+      });
+    } catch (error) {
+      return new SetErrorResponse(error);
+    }
+  }
+
+  @Post('star/hacker')
+  async getHackerStarNewsController(@Body() request: ClientMyPageStarNewsRequest) {
+    try {
+      const { uuid, page } = await clientMyPageStarNewsValidator(request);
+
+      const { totalPosts, hackerNews: hackerStarredNews } = await this.client.myStarredHackerNews(uuid, page);
 
       return new SetResponse(200, {
         totalPosts,
         hackerStarredNews,
+      });
+    } catch (error) {
+      return new SetErrorResponse(error);
+    }
+  }
+
+  @Post('star/geek')
+  async getGeekStarNewsController(@Body() request: ClientMyPageStarNewsRequest) {
+    try {
+      const { uuid, page } = await clientMyPageStarNewsValidator(request);
+
+      const { totalPosts, resultNewsArray: geekStarredNews } = await this.client.myStarredGeekNews(uuid, page);
+
+      return new SetResponse(200, {
+        totalPosts,
         geekStarredNews,
+      });
+    } catch (error) {
+      return new SetErrorResponse(error);
+    }
+  }
+
+  @Post('star/ml')
+  async getMlStarNewsController(@Body() request: ClientMyPageStarNewsRequest) {
+    try {
+      const { uuid, page } = await clientMyPageStarNewsValidator(request);
+
+      const { totalPosts, mlNews: mlStarredNews } = await this.client.myStarredMlNews(uuid, page);
+
+      return new SetResponse(200, {
+        totalPosts,
         mlStarredNews,
       });
     } catch (error) {
