@@ -52,18 +52,26 @@ export class ClientController {
   }
 
   @Post('myPage')
-  async myPageController(@Body() request: ClientMyPageRequest, @Param('page') page: number) {
+  async myPageController ( @Body() request: ClientMyPageRequest,
+    @Param( "page" ) page: number
+  )
+  {
     try {
-      const { uuid } = await clientMyPageValidator(request);
-
-      const { totalPosts, hackerStarredNews, geekStarredNews, mlStarredNews } = await this.client.myPage(uuid, page);
-
-      return new SetResponse(200, {
+      const { uuid } = await clientMyPageValidator( request );
+      
+      const {
         totalPosts,
         hackerStarredNews,
         geekStarredNews,
         mlStarredNews,
-      });
+      } = await this.client.myPage( uuid, page )
+      
+      return new SetResponse( 200, {
+        totalPosts,
+        hackerStarredNews,
+        geekStarredNews,
+        mlStarredNews
+      })
     } catch (error) {
       return new SetErrorResponse(error);
     }
