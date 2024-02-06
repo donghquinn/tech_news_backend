@@ -6,10 +6,10 @@ import { AccountManager } from './account-manager.pvd';
 
 @Injectable()
 export class JwtProvider {
-  constructor (
+  constructor(
     private readonly jwt: JwtService,
-    private readonly account: AccountManager
-  ) { }
+    private readonly account: AccountManager,
+  ) {}
 
   async getAccessToken(email: string, userUuid: string): Promise<string> {
     try {
@@ -30,13 +30,10 @@ export class JwtProvider {
     }
   }
 
-  async signIn(
-    email: string,
-    pass: string,
-  ): Promise<{ access_token: string }> {
-    const userInfo = this.account.getItem( email );
-    
-    if ( userInfo === undefined ) throw new UnauthorizedException();
+  async signIn(email: string, pass: string): Promise<{ access_token: string }> {
+    const userInfo = this.account.getItem(email);
+
+    if (userInfo === undefined) throw new UnauthorizedException();
 
     if (userInfo.password !== pass) {
       throw new UnauthorizedException();

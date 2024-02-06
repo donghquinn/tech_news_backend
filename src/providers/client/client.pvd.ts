@@ -2,7 +2,6 @@ import { ClientError } from '@errors/client.error';
 import { comparePassword } from '@libraries/client/decrypt.lib';
 import { cryptPassword } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { ClientLogger } from '@utils/logger.util';
 import { AccountManager } from '../auth/account-manager.pvd';
 import { ClientPrismaLibrary } from './client-prisma.pvd';
@@ -11,7 +10,6 @@ import { ClientPrismaLibrary } from './client-prisma.pvd';
 export class ClientProvider {
   constructor(
     private readonly prisma: ClientPrismaLibrary,
-    private readonly jwt: JwtService,
     private readonly accountManager: AccountManager,
   ) {}
 
@@ -67,7 +65,7 @@ export class ClientProvider {
         throw new ClientError('[LOGIN] Password Matching ', ' Password Matching is Not Match. Reject.');
       }
 
-      this.accountManager.setLoginUser(uuid, email);
+      this.accountManager.setLoginUser(uuid, email, foundPassword);
 
       await this.prisma.updateClientLoginStatus(uuid, 1);
 
