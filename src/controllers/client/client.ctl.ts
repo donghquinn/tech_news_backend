@@ -23,6 +23,9 @@ export class ClientController {
     try {
       const { email, password } = await clientSignupValidator(request);
 
+      if (email.length < 1 || password.length < 1)
+        return new SetErrorResponse('Received User Info Should not be empty');
+
       const message = await this.client.checkEmailandSignup(email, password);
 
       return new SetResponse(200, { message });
@@ -35,6 +38,9 @@ export class ClientController {
   async loginController(@Body() request: ClientLoginRequest) {
     try {
       const { email, password } = await clientLoginValidator(request);
+
+      if (email.length < 1 || password.length < 1)
+        return new SetErrorResponse('Received User Info Should not be empty');
 
       const uuid = await this.client.login(email, password);
 
@@ -77,7 +83,7 @@ export class ClientController {
     try {
       const { uuid, page } = await clientMyPageStarNewsValidator(request);
 
-      const { totalPosts, hackerStarredNews } = await this.client.myStarredHackerNews(uuid, page);
+      const { totalPosts, hackerNews: hackerStarredNews } = await this.client.myStarredHackerNews(uuid, page);
 
       return new SetResponse(200, {
         totalPosts,
@@ -93,7 +99,7 @@ export class ClientController {
     try {
       const { uuid, page } = await clientMyPageStarNewsValidator(request);
 
-      const { totalPosts, geekStarredNews } = await this.client.myStarredGeekNews(uuid, page);
+      const { totalPosts, resultNewsArray: geekStarredNews } = await this.client.myStarredGeekNews(uuid, page);
 
       return new SetResponse(200, {
         totalPosts,
@@ -109,7 +115,7 @@ export class ClientController {
     try {
       const { uuid, page } = await clientMyPageStarNewsValidator(request);
 
-      const { totalPosts, mlStarredNews } = await this.client.myStarredMlNews(uuid, page);
+      const { totalPosts, mlNews: mlStarredNews } = await this.client.myStarredMlNews(uuid, page);
 
       return new SetResponse(200, {
         totalPosts,

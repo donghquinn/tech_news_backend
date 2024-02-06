@@ -3,6 +3,7 @@ import { comparePassword } from '@libraries/client/decrypt.lib';
 import { cryptPassword } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
+import { HadaNewsReturn } from 'types/geek.type';
 import { AccountManager } from '../auth/account-manager.pvd';
 import { ClientPrismaLibrary } from './client-prisma.pvd';
 
@@ -167,9 +168,11 @@ export class ClientProvider {
 
       const { totalPosts, mlStarredNews } = await this.prisma.getStarredMlNewsPagination(page, 10, clientUuid);
 
+      const mlNews = mlStarredNews.map((item) => item.ml_news);
+
       return {
         totalPosts,
-        mlStarredNews,
+        mlNews,
       };
     } catch (error) {
       ClientLogger.error('[MYPAGE] Get My Page Error: %o', {
@@ -203,9 +206,11 @@ export class ClientProvider {
 
       const { totalPosts, hackerStarredNews } = await this.prisma.getStarredHackerNewsPagination(page, 10, clientUuid);
 
+      const hackerNews = hackerStarredNews.map((item) => item.hacker_news);
+
       return {
         totalPosts,
-        hackerStarredNews,
+        hackerNews,
       };
     } catch (error) {
       ClientLogger.error('[MYPAGE] Get My Page Error: %o', {
@@ -223,6 +228,7 @@ export class ClientProvider {
   async myStarredGeekNews(clientUuid: string, page: number) {
     try {
       const foundKey = this.accountManager.getItem(clientUuid);
+      const resultNewsArray: Array<HadaNewsReturn> = [];
 
       if (foundKey === null) {
         ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
@@ -239,9 +245,45 @@ export class ClientProvider {
 
       const { totalPosts, geekStarredNews } = await this.prisma.getStarredGeekNewsPagination(page, 10, clientUuid);
 
+      for (let i = 0; i <= geekStarredNews.length - 1; i += 1) {
+        const { post, descLink, uuid, link, founded } = geekStarredNews[i].geek_news;
+
+        const isUrlUndefined = descLink.split('.io/')[1];
+
+        if (isUrlUndefined === 'undefined') {
+          ClientLogger.debug('[GEEK] Found Undefiend Desc Card URL: %o', {
+            title: post,
+            descUrl: descLink,
+            uuid,
+            isUrlUndefined,
+          });
+
+          ClientLogger.debug('[GEEK] Put Original Link into return array: %o', {
+            post,
+            uuid,
+            desc: descLink,
+            originalLink: link,
+          });
+
+          resultNewsArray.push({
+            post,
+            uuid,
+            descLink: link,
+            founded,
+          });
+        } else {
+          resultNewsArray.push({
+            post,
+            uuid,
+            descLink,
+            founded,
+          });
+        }
+      }
+
       return {
         totalPosts,
-        geekStarredNews,
+        resultNewsArray,
       };
     } catch (error) {
       ClientLogger.error('[MYPAGE] Get My Page Error: %o', {

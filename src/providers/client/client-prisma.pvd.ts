@@ -210,7 +210,7 @@ export class ClientPrismaLibrary extends PrismaClient {
               post: true,
               descLink: true,
               founded: true,
-              liked: true,
+              link: true,
             },
           },
         },
