@@ -33,8 +33,8 @@ services:
         reservations:
           cpus: '0.15'
           memory: 300M
-    # expose:
-    #   - ${APP_PORT}
+    expose:
+      - ${APP_PORT}
     env_file:
       - .env
     networks:
