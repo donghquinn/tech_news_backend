@@ -1,7 +1,21 @@
 ---
 version: '3.7'
 services:
+  redis:
+    image: redis:7.0.15
+    container_name: gpt_redis
+    expose:
+      - ${REDIS_PORT}
+    volumes:
+      - ./redis.conf:/etc/redis/redis.conf
+      - ./redis_data:/data\
+    command: redis-server --requirepass ${REDIS_PASS}
+    networks:
+      - proxy
+
   backend:
+    depends_on:
+      - redis
     image: ${REGISTRY_URL}
     # build:
     #   context: .

@@ -13,12 +13,12 @@ export interface ClientLogoutRequest {
 }
 
 export interface ClientLoginMapKey {
-  uuid: string;
+  email: string;
 }
 
 export interface ClientLoginMapItem {
   email: string;
-  password?: string;
+  password: string;
 }
 
 export interface ClientMyPageRequest {

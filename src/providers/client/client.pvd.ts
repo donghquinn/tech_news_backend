@@ -66,7 +66,7 @@ export class ClientProvider {
         throw new ClientError('[LOGIN] Password Matching ', ' Password Matching is Not Match. Reject.');
       }
 
-      this.accountManager.setLoginUser(uuid, email, foundPassword);
+      await this.accountManager.setLoginUser(uuid, email, foundPassword);
 
       await this.prisma.updateClientLoginStatus(uuid, 1);
 
@@ -86,7 +86,7 @@ export class ClientProvider {
 
   async logout(clientUuid: string) {
     try {
-      const foundKey = this.accountManager.getItem(clientUuid);
+      const foundKey = await this.accountManager.getItem(clientUuid);
 
       if (foundKey === null) {
         ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
@@ -98,9 +98,9 @@ export class ClientProvider {
 
       await this.prisma.updateClientLoginStatus(clientUuid, 0);
 
-      const deleteItem = this.accountManager.deleteLogoutUser(clientUuid);
+      const deleteItem = await this.accountManager.deleteLogoutUser(clientUuid);
 
-      if (!deleteItem) throw new ClientError('[LOGOUT] Logout', 'No Data Found. Ignore.');
+      if (deleteItem === null) throw new ClientError('[LOGOUT] Logout', 'No Data Found. Ignore.');
 
       return 'Logout Success';
     } catch (error) {
@@ -118,7 +118,7 @@ export class ClientProvider {
 
   async myPage(clientUuid: string) {
     try {
-      const foundKey = this.accountManager.getItem(clientUuid);
+      const foundKey = await this.accountManager.getItem(clientUuid);
 
       if (foundKey === null) {
         ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
@@ -151,7 +151,7 @@ export class ClientProvider {
 
   async myStarredMlNews(clientUuid: string, page: number) {
     try {
-      const foundKey = this.accountManager.getItem(clientUuid);
+      const foundKey = await this.accountManager.getItem(clientUuid);
 
       if (foundKey === null) {
         ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
@@ -189,7 +189,7 @@ export class ClientProvider {
 
   async myStarredHackerNews(clientUuid: string, page: number) {
     try {
-      const foundKey = this.accountManager.getItem(clientUuid);
+      const foundKey = await this.accountManager.getItem(clientUuid);
 
       if (foundKey === null) {
         ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
@@ -227,7 +227,7 @@ export class ClientProvider {
 
   async myStarredGeekNews(clientUuid: string, page: number) {
     try {
-      const foundKey = this.accountManager.getItem(clientUuid);
+      const foundKey = await this.accountManager.getItem(clientUuid);
       const resultNewsArray: Array<HadaNewsReturn> = [];
 
       if (foundKey === null) {
