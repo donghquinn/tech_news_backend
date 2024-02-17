@@ -30,6 +30,10 @@ export class MachineLearningProvider {
       const result = await this.prisma.bringMlNews(startDate, endDate, page, size);
       const total = await this.prisma.mlTotalCount(startDate, endDate, size);
 
+      NewsLogger.info('[ML] Get Total Count: %o', {
+        total,
+      });
+
       return { result, total };
     } catch (error) {
       NewsLogger.error('[ML] Get Latest Machine Learning News Error: %o', {
