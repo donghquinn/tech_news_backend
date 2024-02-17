@@ -48,13 +48,13 @@ export class HackerPrismaLibrary extends PrismaClient {
 
       return Math.ceil(totalCounts / size);
     } catch (error) {
-      NewsLogger.error('[HADA] Bring Total Geek News Count Error: %o', {
+      NewsLogger.error('[HADA] Bring Total Hackers News Count Error: %o', {
         error,
       });
 
       throw new PrismaError(
-        '[HADA] Bring Total Geek News Count',
-        'Bring Total Geek News Count Error. Please Try Again.',
+        '[HADA] Bring Total Hackers News Count',
+        'Bring Total Hackers News Count Error. Please Try Again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
