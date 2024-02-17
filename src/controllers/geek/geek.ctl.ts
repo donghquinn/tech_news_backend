@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Query } from '@nestjs/common';
 import { hadaNewsStarValidator, hadaNewsValidator } from '@validators/hada.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { GeekProvider } from 'providers/news/geek/geek.pvd';
@@ -10,7 +10,7 @@ export class GeekController {
   constructor(private readonly geek: GeekProvider) {}
 
   @Post('/news')
-  async getHadaNews(@Body() request: DailyHadaNewsRequest, @Param() size: number, @Param() page: number) {
+  async getHadaNews(@Body() request: DailyHadaNewsRequest, @Query('page') page: number, @Query('size') size: number) {
     try {
       const { today } = await hadaNewsValidator(request);
 

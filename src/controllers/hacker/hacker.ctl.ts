@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Headers, Query, Param } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Query } from '@nestjs/common';
 import { hackerNewsStarValidator, hackerNewsValidator } from '@validators/hacker.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { HackersNewsProvider } from 'providers/news/hacker/hacker.pvd';
@@ -21,7 +21,11 @@ export class HackerController {
   }
 
   @Post('/news')
-  async getHackerNews(@Body() request: DailyHackerNewsRequest, @Param() page: number, @Param() size: number) {
+  async getHackerNews(
+    @Body() request: DailyHackerNewsRequest,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
     try {
       const { today } = await hackerNewsValidator(request);
 
