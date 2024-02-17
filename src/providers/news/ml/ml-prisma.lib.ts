@@ -22,7 +22,7 @@ export class MlPrismaLibrary extends PrismaClient {
             lte: endDate,
           },
         },
-        take: Number(page),
+        take: Number(size),
         skip: (Number(page) - 1) * Number(size),
       });
 
