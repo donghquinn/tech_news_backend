@@ -10,11 +10,11 @@ export class GeekController {
   constructor(private readonly geek: GeekProvider) {}
 
   @Post('/news')
-  async getHadaNews(@Body() request: DailyHadaNewsRequest) {
+  async getHadaNews(@Body() request: DailyHadaNewsRequest, @Query('page') page: number, @Query('size') size: number) {
     try {
       const { today } = await hadaNewsValidator(request);
 
-      const result = await this.geek.getNews(today);
+      const result = await this.geek.getNews(today, page, size);
 
       return new SetResponse(200, { result });
     } catch (error) {

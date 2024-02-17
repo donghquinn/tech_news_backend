@@ -33,7 +33,7 @@ export class HackersNewsProvider {
     }
   }
 
-  async bringTodayHackerPosts(today: string) {
+  async bringTodayHackerPosts(today: string, page: number, size: number) {
     try {
       const yesterday = moment(today).subtract(1, 'day').toDate();
 
@@ -45,7 +45,7 @@ export class HackersNewsProvider {
         end: endDate,
       });
 
-      const result = await this.prisma.bringHackerNews(startDate, endDate);
+      const result = await this.prisma.bringHackerNews(startDate, endDate, page, size);
 
       return result;
     } catch (error) {
@@ -63,7 +63,7 @@ export class HackersNewsProvider {
 
   async giveStar(postUuid: string, clientUuid: string) {
     try {
-      const isLogined = this.account.getItem(clientUuid);
+      const isLogined = await this.account.getItem(clientUuid);
 
       if (!isLogined) throw new HackerError('[Hackers] Give Star on the Stars', 'No Logined User Found.');
 
