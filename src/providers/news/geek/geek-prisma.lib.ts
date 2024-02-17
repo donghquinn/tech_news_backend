@@ -17,7 +17,7 @@ export class GeekPrismaLibrary extends PrismaClient {
           },
         },
         orderBy: { rank: 'desc' },
-        take: Number(page),
+        take: Number(size),
         skip: (Number(page) - 1) * Number(size),
       });
 
