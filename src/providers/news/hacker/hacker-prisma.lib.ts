@@ -17,8 +17,8 @@ export class HackerPrismaLibrary extends PrismaClient {
           },
         },
         orderBy: { rank: 'desc' },
-        take: size,
-        skip: (page - 1) * size,
+        take: Number(page),
+        skip: (Number(page) - 1) * Number(size),
       });
 
       return result;
