@@ -40,14 +40,20 @@ export class HackersNewsProvider {
       const startDate = startOfDay(new Date(yesterday));
       const endDate = endOfDay(new Date(yesterday));
 
-      NewsLogger.info('[Hacker] YesterDay: %o', {
+      NewsLogger.info('[Hackers] YesterDay: %o', {
         start: startDate,
         end: endDate,
         page,
         size,
       });
 
-      const { result, total } = await this.prisma.bringHackerNews(startDate, endDate, page, size);
+      const result = await this.prisma.bringHackerNews(startDate, endDate, page, size);
+
+      const total = await this.prisma.hackerNewsCount(startDate, endDate, size);
+
+      NewsLogger.info('[Hackers] Get Total Count: %o', {
+        total,
+      });
 
       return { result, total };
     } catch (error) {

@@ -21,6 +21,22 @@ export class HackerPrismaLibrary extends PrismaClient {
         skip: (Number(page) - 1) * Number(size),
       });
 
+      return result;
+    } catch (error) {
+      NewsLogger.error('[ML] Bring Geek News Error: %o', {
+        error,
+      });
+
+      throw new PrismaError(
+        '[ML] Bring Geek News',
+        'Bring Geek News Error. Please Try Again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async hackerNewsCount(startDate: Date, endDate: Date, size: number) {
+    try {
       const totalCounts = await this.hackers.count({
         where: {
           founded: {
@@ -30,15 +46,15 @@ export class HackerPrismaLibrary extends PrismaClient {
         },
       });
 
-      return { result, total: Math.ceil(totalCounts / size) };
+      return Math.ceil(totalCounts / size);
     } catch (error) {
-      NewsLogger.error('[ML] Bring Geek News Error: %o', {
+      NewsLogger.error('[HADA] Bring Total Geek News Count Error: %o', {
         error,
       });
 
       throw new PrismaError(
-        '[ML] Bring Geek News',
-        'Bring Geek News Error. Please Try Again.',
+        '[HADA] Bring Total Geek News Count',
+        'Bring Total Geek News Count Error. Please Try Again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
