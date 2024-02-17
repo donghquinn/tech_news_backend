@@ -45,6 +45,7 @@ export class GeekPrismaLibrary extends PrismaClient {
           },
         },
       });
+
       return Math.ceil(totalCounts / size);
     } catch (error) {
       NewsLogger.error('[HADA] Bring Total Geek News Count Error: %o', {
