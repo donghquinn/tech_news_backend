@@ -53,13 +53,13 @@ export class MlPrismaLibrary extends PrismaClient {
 
       return Math.ceil(totalCounts / size);
     } catch (error) {
-      NewsLogger.error('[ML] Bring Geek News Error: %o', {
+      NewsLogger.error('[ML] Bring Total ML News Error: %o', {
         error,
       });
 
       throw new PrismaError(
-        '[ML] Bring Geek News',
-        'Bring Geek News Error. Please Try Again.',
+        '[ML] Bring Total ML News',
+        'Bring Total ML News Error. Please Try Again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
