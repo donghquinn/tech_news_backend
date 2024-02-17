@@ -6,7 +6,7 @@ import { NewsLogger } from '@utils/logger.util';
 
 @Injectable()
 export class MlPrismaLibrary extends PrismaClient {
-  async bringMlNews(startDate: Date, endDate: Date) {
+  async bringMlNews(startDate: Date, endDate: Date, page: number, size: number) {
     try {
       const result = await this.machineNews.findMany({
         select: {
@@ -22,6 +22,8 @@ export class MlPrismaLibrary extends PrismaClient {
             lte: endDate,
           },
         },
+        take: size,
+        skip: (page - 1) * size,
       });
 
       return result;

@@ -13,7 +13,7 @@ export class MachineLearningProvider {
     private readonly account: AccountManager,
   ) {}
 
-  async bringLatestMachineLearningNews(today: string) {
+  async bringLatestMachineLearningNews(today: string, page: number, size: number) {
     try {
       const yesterday = moment(today).subtract(1, 'day').toDate();
 
@@ -24,7 +24,7 @@ export class MachineLearningProvider {
         start: startDate,
         end: endDate,
       });
-      const result = await this.prisma.bringMlNews(startDate, endDate);
+      const result = await this.prisma.bringMlNews(startDate, endDate, page, size);
 
       return result;
     } catch (error) {
@@ -42,7 +42,7 @@ export class MachineLearningProvider {
 
   async giveStar(postUuid: string, clientUuid: string) {
     try {
-      const isLogined = this.account.getItem(clientUuid);
+      const isLogined = await this.account.getItem(clientUuid);
 
       if (!isLogined) throw new MachineLearningError('[ML] Give Star on the Stars', 'No Logined User Found.');
 

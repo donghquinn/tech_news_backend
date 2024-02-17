@@ -6,7 +6,7 @@ import { NewsLogger } from '@utils/logger.util';
 
 @Injectable()
 export class GeekPrismaLibrary extends PrismaClient {
-  async bringHadaNews(startDate: Date, endDate: Date) {
+  async bringHadaNews(startDate: Date, endDate: Date, page: number, size: number) {
     try {
       const result = await this.geek.findMany({
         select: { uuid: true, post: true, link: true, descLink: true, founded: true, liked: true },
@@ -17,6 +17,8 @@ export class GeekPrismaLibrary extends PrismaClient {
           },
         },
         orderBy: { rank: 'desc' },
+        take: size,
+        skip: (page - 1) * size,
       });
 
       return result;

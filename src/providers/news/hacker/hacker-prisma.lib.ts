@@ -6,7 +6,7 @@ import { NewsLogger } from '@utils/logger.util';
 
 @Injectable()
 export class HackerPrismaLibrary extends PrismaClient {
-  async bringHackerNews(startDate: Date, endDate: Date) {
+  async bringHackerNews(startDate: Date, endDate: Date, page: number, size: number) {
     try {
       const result = await this.hackers.findMany({
         select: { uuid: true, post: true, link: true, founded: true, liked: true },
@@ -17,6 +17,8 @@ export class HackerPrismaLibrary extends PrismaClient {
           },
         },
         orderBy: { rank: 'desc' },
+        take: size,
+        skip: (page - 1) * size,
       });
 
       return result;

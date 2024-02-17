@@ -1,5 +1,5 @@
 import { MachineLearningProvider } from 'providers/news/ml/machine.pvd';
-import { Body, Controller, Get, Post, Headers, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Headers, Query, Param } from '@nestjs/common';
 import { machineLearningValidator, mlNewsStarValidator } from '@validators/ml.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { StarRequest } from 'types/request.type';
@@ -10,11 +10,11 @@ export class MachineLearningController {
   constructor(private readonly mlNews: MachineLearningProvider) {}
 
   @Post('/latest')
-  async getLatestMlNewsController(@Body() request: DailyMlNewsRequest) {
+  async getLatestMlNewsController(@Body() request: DailyMlNewsRequest, @Param() page: number, @Param() size: number) {
     try {
       const { today } = await machineLearningValidator(request);
 
-      const result = await this.mlNews.bringLatestMachineLearningNews(today);
+      const result = await this.mlNews.bringLatestMachineLearningNews(today, page, size);
 
       return new SetResponse(200, { result });
     } catch (error) {

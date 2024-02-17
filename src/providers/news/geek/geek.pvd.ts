@@ -18,7 +18,7 @@ export class GeekProvider {
     this.resultNewsArray = [];
   }
 
-  async getNews(today: string) {
+  async getNews(today: string, page: number, size: number) {
     try {
       const yesterday = moment(today).subtract(1, 'day').toDate();
 
@@ -30,7 +30,7 @@ export class GeekProvider {
         end: endDate,
       });
 
-      const result = await this.prisma.bringHadaNews(startDate, endDate);
+      const result = await this.prisma.bringHadaNews(startDate, endDate, page, size);
 
       for (let i = 0; i <= result.length - 1; i += 1) {
         const isUrlUndefined = result[i].descLink.split('.io/')[1];
@@ -82,7 +82,7 @@ export class GeekProvider {
 
   async giveStar(postUuid: string, clientUuid: string) {
     try {
-      const isLogined = this.account.getItem(clientUuid);
+      const isLogined = await this.account.getItem(clientUuid);
 
       if (!isLogined) throw new HadaError('[GEEK] Give Star on the Stars', 'No Logined User Found.');
 
