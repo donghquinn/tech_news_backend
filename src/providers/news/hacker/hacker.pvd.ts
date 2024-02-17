@@ -47,9 +47,9 @@ export class HackersNewsProvider {
         size,
       });
 
-      const result = await this.prisma.bringHackerNews(startDate, endDate, page, size);
+      const { result, total } = await this.prisma.bringHackerNews(startDate, endDate, page, size);
 
-      return result;
+      return { result, total };
     } catch (error) {
       NewsLogger.error('[Hackers] Bring Hacker News Error: %o', {
         error,

@@ -14,9 +14,9 @@ export class GeekController {
     try {
       const { today } = await hadaNewsValidator(request);
 
-      const result = await this.geek.getNews(today, page, size);
+      const { result, total } = await this.geek.getNews(today, page, size);
 
-      return new SetResponse(200, { result });
+      return new SetResponse(200, { result, total });
     } catch (error) {
       return new SetErrorResponse(error);
     }

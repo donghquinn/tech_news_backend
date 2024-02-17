@@ -29,9 +29,9 @@ export class HackerController {
     try {
       const { today } = await hackerNewsValidator(request);
 
-      const result = await this.hacker.bringTodayHackerPosts(today, page, size);
+      const { result, total } = await this.hacker.bringTodayHackerPosts(today, page, size);
 
-      return new SetResponse(200, { result });
+      return new SetResponse(200, { result, total });
     } catch (error) {
       return new SetErrorResponse(error);
     }
