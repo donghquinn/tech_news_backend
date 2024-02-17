@@ -138,6 +138,10 @@ export class AccountManager {
       await this.redis.set(email, JSON.stringify({ uuid, password }));
       this.keyList.push(email);
     } catch (error) {
+      ManagerLogger.error('[SET] User Info Error: %o', {
+        error,
+      });
+
       throw new RedisError(
         '[SET] User Info',
         'Set User Info',
