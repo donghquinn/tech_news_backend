@@ -27,7 +27,8 @@ export class MachineLearningProvider {
         size,
       });
 
-      const { result, total } = await this.prisma.bringMlNews(startDate, endDate, page, size);
+      const result = await this.prisma.bringMlNews(startDate, endDate, page, size);
+      const total = await this.prisma.mlTotalCount(startDate, endDate, size);
 
       return { result, total };
     } catch (error) {

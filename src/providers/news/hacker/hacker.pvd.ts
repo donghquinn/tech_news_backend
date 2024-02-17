@@ -47,7 +47,9 @@ export class HackersNewsProvider {
         size,
       });
 
-      const { result, total } = await this.prisma.bringHackerNews(startDate, endDate, page, size);
+      const result = await this.prisma.bringHackerNews(startDate, endDate, page, size);
+
+      const total = await this.prisma.hackerNewsCount(startDate, endDate, size);
 
       return { result, total };
     } catch (error) {

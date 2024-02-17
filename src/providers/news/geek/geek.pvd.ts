@@ -32,7 +32,7 @@ export class GeekProvider {
         size,
       });
 
-      const { result, total } = await this.prisma.bringHadaNews(startDate, endDate, page, size);
+      const result = await this.prisma.bringHadaNews(startDate, endDate, page, size);
 
       for (let i = 0; i <= result.length - 1; i += 1) {
         const isUrlUndefined = result[i].descLink.split('.io/')[1];
@@ -67,6 +67,12 @@ export class GeekProvider {
           });
         }
       }
+
+      const total = await this.prisma.geekNewsCount(startDate, endDate, size);
+
+      NewsLogger.info('[GEEK] Get Total Count: %o', {
+        total,
+      });
 
       return { result, total };
     } catch (error) {
