@@ -23,7 +23,10 @@ export class MachineLearningProvider {
       NewsLogger.info('[ML] YesterDay: %o', {
         start: startDate,
         end: endDate,
+        page,
+        size,
       });
+
       const result = await this.prisma.bringMlNews(startDate, endDate, page, size);
 
       return result;

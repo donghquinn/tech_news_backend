@@ -28,6 +28,8 @@ export class GeekProvider {
       NewsLogger.info('[GEEK] YesterDay: %o', {
         start: startDate,
         end: endDate,
+        page,
+        size,
       });
 
       const result = await this.prisma.bringHadaNews(startDate, endDate, page, size);

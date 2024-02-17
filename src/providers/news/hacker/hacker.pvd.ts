@@ -43,6 +43,8 @@ export class HackersNewsProvider {
       NewsLogger.info('[Hacker] YesterDay: %o', {
         start: startDate,
         end: endDate,
+        page,
+        size,
       });
 
       const result = await this.prisma.bringHackerNews(startDate, endDate, page, size);
