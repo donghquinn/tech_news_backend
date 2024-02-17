@@ -27,9 +27,9 @@ export class MachineLearningProvider {
         size,
       });
 
-      const result = await this.prisma.bringMlNews(startDate, endDate, page, size);
+      const { result, total } = await this.prisma.bringMlNews(startDate, endDate, page, size);
 
-      return result;
+      return { result, total };
     } catch (error) {
       NewsLogger.error('[ML] Get Latest Machine Learning News Error: %o', {
         error,

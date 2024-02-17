@@ -21,7 +21,15 @@ export class GeekPrismaLibrary extends PrismaClient {
         skip: (Number(page) - 1) * Number(size),
       });
 
-      return result;
+      const totalCounts = await this.geek.count({
+        where: {
+          founded: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+      return { result, total: Math.ceil(totalCounts / size) };
     } catch (error) {
       NewsLogger.error('[HADA] Bring Geek News Error: %o', {
         error,

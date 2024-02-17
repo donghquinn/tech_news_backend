@@ -32,7 +32,7 @@ export class GeekProvider {
         size,
       });
 
-      const result = await this.prisma.bringHadaNews(startDate, endDate, page, size);
+      const { result, total } = await this.prisma.bringHadaNews(startDate, endDate, page, size);
 
       for (let i = 0; i <= result.length - 1; i += 1) {
         const isUrlUndefined = result[i].descLink.split('.io/')[1];
@@ -68,7 +68,7 @@ export class GeekProvider {
         }
       }
 
-      return result;
+      return { result, total };
     } catch (error) {
       NewsLogger.error('[GEEK] Bring Hada News Error: %o', {
         error,

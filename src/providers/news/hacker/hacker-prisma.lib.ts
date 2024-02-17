@@ -21,7 +21,16 @@ export class HackerPrismaLibrary extends PrismaClient {
         skip: (Number(page) - 1) * Number(size),
       });
 
-      return result;
+      const totalCounts = await this.hackers.count({
+        where: {
+          founded: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+
+      return { result, total: Math.ceil(totalCounts / size) };
     } catch (error) {
       NewsLogger.error('[ML] Bring Geek News Error: %o', {
         error,

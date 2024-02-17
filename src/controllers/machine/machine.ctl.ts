@@ -18,9 +18,9 @@ export class MachineLearningController {
     try {
       const { today } = await machineLearningValidator(request);
 
-      const result = await this.mlNews.bringLatestMachineLearningNews(today, page, size);
+      const { result, total } = await this.mlNews.bringLatestMachineLearningNews(today, page, size);
 
-      return new SetResponse(200, { result });
+      return new SetResponse(200, { result, total });
     } catch (error) {
       return new SetErrorResponse(error);
     }
