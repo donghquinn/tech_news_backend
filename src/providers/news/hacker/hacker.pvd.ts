@@ -52,7 +52,6 @@ export class HackersNewsProvider {
       const total = await this.prisma.hackerNewsCount(startDate, endDate, size);
 
       NewsLogger.info('[Hackers] Get Total Count: %o', {
-        result,
         total,
       });
 

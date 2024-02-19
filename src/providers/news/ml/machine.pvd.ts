@@ -31,7 +31,6 @@ export class MachineLearningProvider {
       const total = await this.prisma.mlTotalCount(startDate, endDate, size);
 
       NewsLogger.info('[ML] Get Total Count: %o', {
-        result,
         total,
       });
 
