@@ -71,7 +71,6 @@ export class GeekProvider {
       const total = await this.prisma.geekNewsCount(startDate, endDate, size);
 
       NewsLogger.info('[GEEK] Get Total Count: %o', {
-        result,
         total,
       });
 
