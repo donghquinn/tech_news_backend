@@ -10,6 +10,7 @@
     "start": "NODE_ENV=production node --max-old-space-size=700 -r ts-node/register --loader ts-paths-esm-loader --experimental-specifier-resolution=node  ./src/main.js",
     "build": "NODE_ENV=production tsc --project tsconfig.json --diagnostics  -p tsconfig.json",
     "dev": "NODE_ENV=development node --max-old-space-size=700 -r ts-node/register --loader ts-paths-esm-loader --experimental-specifier-resolution=node  ./src/main.ts",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
     "schema": "prisma generate",
     "migrate": "prisma migrate dev",
     "db:update": "prisma db push"
@@ -35,11 +36,14 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
     "@types/cookie-parser": "^1",
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20.11.19",
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",
+    "dotenv": "^16.4.5",
     "eslint": "^8.56.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.1.0",
@@ -47,6 +51,7 @@
     "eslint-plugin-import": "^2.29.1",
     "jest": "^29.7.0",
     "prettier": "^3.2.5",
+    "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "ts-paths-esm-loader": "^1.4.3",
     "tsconfig-paths": "^4.2.0",
