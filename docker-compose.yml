@@ -3,7 +3,7 @@ version: '3.7'
 services:
   redis:
     image: redis:7.0.15
-    container_name: gpt_redis
+    container_name: news_redis
     expose:
       - ${REDIS_PORT}
     volumes:

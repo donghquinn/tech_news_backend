@@ -19,7 +19,7 @@ export const bootstrap = async () => {
 
   const corsOptions: CorsOptions = {
     origin: 'https://scrape.donghyuns.com',
-    allowedHeaders: [ 'GET', 'POST', "Content-Type", "key" ],
+    allowedHeaders: ['GET', 'POST', 'Content-Type', 'key'],
     optionsSuccessStatus: 204,
     preflightContinue: false,
   };

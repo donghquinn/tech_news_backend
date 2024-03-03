@@ -1,8 +1,9 @@
 import { ClientError } from '@errors/client.error';
-import { comparePassword } from '@libraries/client/decrypt.lib';
+import { comparePassword, decrypt } from '@libraries/client/decrypt.lib';
 import { cryptData } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
+import { clearIntervalAsync, setIntervalAsync } from 'set-interval-async';
 import { HadaNewsReturn } from 'types/geek.type';
 import { AccountManager } from '../auth/account-manager.pvd';
 import { ClientPrismaLibrary } from './client-prisma.pvd';
@@ -66,9 +67,53 @@ export class ClientProvider {
         throw new ClientError('[LOGIN] Password Matching ', ' Password Matching is Not Match. Reject.');
       }
 
-      await this.accountManager.setLoginUser(email, uuid, foundPassword);
+      // Set User Info into REDIS
+      const { encodedData: encodedEmail, encodedToken: encodedEmailToken } = cryptData(email);
 
-      await this.prisma.updateClientLoginStatus(uuid, 1);
+      ClientLogger.debug('[ACCOUNT] Searching User Info: %o', {
+        encodedEmail,
+      });
+
+      const isLogined = await this.accountManager.getItem(encodedEmail);
+
+      if (isLogined === null) {
+        await this.accountManager.setItem(encodedEmail, encodedEmailToken, uuid, password);
+
+        ClientLogger.info('[ACCOUNT] Set Finished');
+
+        return encodedEmail;
+      }
+
+      ClientLogger.debug('[ACCOUNT] Found User Key: %o', {
+        uuid,
+      });
+
+      const interval = 1000 * 60 * 60;
+
+      const timer = setIntervalAsync(async () => {
+        const isExsit = await this.accountManager.getItem(encodedEmail);
+
+        if (isExsit === null) {
+          ClientLogger.info('[ACCOUNT] It is not existing user. Clear Interval.');
+
+          ClientLogger.debug('[ACCOUNT] Client Map Inspection: %o', {
+            isExsit,
+            uuid,
+          });
+
+          clearIntervalAsync(timer);
+        } else {
+          ClientLogger.info('[ACCOUNT] Expiration time. Delete user.');
+
+          ClientLogger.debug('[ACCOUNT] Client Map Inspection: %o', {
+            uuid,
+          });
+
+          await this.accountManager.deleteItem(encodedEmail);
+        }
+      }, interval);
+
+      await this.prisma.updateClientLoginStatus(email, uuid, 1);
 
       return uuid;
     } catch (error) {
@@ -84,25 +129,29 @@ export class ClientProvider {
     }
   }
 
-  async logout(clientUuid: string) {
+  async logout(encodedEmail: string) {
     try {
-      const foundKey = await this.accountManager.getItem(clientUuid);
+      const foundKey = await this.accountManager.getItem(encodedEmail);
 
       if (foundKey === null) {
         ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
-          clientUuid,
+          encodedEmail,
         });
 
         throw new ClientError('[LOGIN] Finding Matching User Info', 'No Matching User Found');
       }
 
-      await this.prisma.updateClientLoginStatus(clientUuid, 0);
+      const { token, uuid } = foundKey;
 
-      const deleteItem = await this.accountManager.deleteLogoutUser(clientUuid);
+      const email = decrypt(encodedEmail, token);
+
+      await this.prisma.updateClientLoginStatus(email, uuid, 0);
+
+      const deleteItem = await this.accountManager.deleteItem(encodedEmail);
 
       if (deleteItem === null) throw new ClientError('[LOGOUT] Logout', 'No Data Found. Ignore.');
 
-      return 'Logout Success';
+      return 'Logout';
     } catch (error) {
       ClientLogger.error('[LOGIN] Login Error: %o', {
         error,

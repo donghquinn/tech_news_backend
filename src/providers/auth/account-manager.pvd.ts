@@ -1,9 +1,7 @@
 import { RedisError } from '@errors/redis.error';
-import { cryptData } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger, ManagerLogger } from '@utils/logger.util';
 import { RedisClientType, createClient } from 'redis';
-import { clearIntervalAsync, setIntervalAsync } from 'set-interval-async';
 import { ClientLoginItem } from 'types/client.type';
 
 @Injectable()
@@ -12,19 +10,35 @@ export class AccountManager {
 
   private keyList: Array<string>;
 
-  private redisUrl: string;
-
   constructor() {
     // eslint-disable-next-line max-len
-    this.redisUrl = `redis://${process.env.REDIS_USER}:${process.env.REDIS_PASS}@${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`;
+    // this.redisUrl = `redis://${process.env.REDIS_USER}:${process.env.REDIS_PASS}@${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`;
 
     this.redis = createClient({
-      url: this.redisUrl,
+      url: process.env.REDIS_HOST,
       username: process.env.REDIS_USER,
       password: process.env.REDIS_PASS,
     });
 
     this.keyList = [];
+  }
+
+  public async start() {
+    try {
+      await this.redis.connect();
+
+      ManagerLogger.info('[START] Redis Connected');
+    } catch (error) {
+      ManagerLogger.error('[START] Redis Connected Error: %o', {
+        error,
+      });
+
+      throw new RedisError(
+        '[START] Redis Connected',
+        'Redis Connected Error.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
   }
 
   /**
@@ -34,83 +48,6 @@ export class AccountManager {
    * @param password
    * @returns
    */
-  public async setLoginUser(email: string, uuid: string, password: string) {
-    const { encodedData: encodedEmail, encodedToken: encodedEmailToken } = cryptData(email);
-
-    const isLogined = await this.getItem(encodedEmail);
-
-    ManagerLogger.debug('[ACCOUNT] Searching User Info: %o', {
-      isLogined,
-      encodedEmail,
-    });
-
-    if (isLogined === null) {
-      this.keyList.push(encodedEmail);
-      await this.setItem(encodedEmail, encodedEmailToken, uuid, password);
-
-      if (this.keyList.length >= 5000) {
-        ClientLogger.debug('[AccountManager] keyList maximum reached. shift()');
-        this.keyList.shift();
-      }
-
-      ClientLogger.info('[ACCOUNT] Set Finished');
-
-      return encodedEmail;
-    }
-
-    ManagerLogger.debug('[ACCOUNT] Found User Key: %o', {
-      uuid,
-    });
-
-    const interval = 1000 * 60 * 10;
-
-    const timer = setIntervalAsync(async () => {
-      const isExsit = await this.getItem(encodedEmail);
-
-      if (isExsit === null) {
-        ManagerLogger.info('[ACCOUNT] It is not existing user. Clear Interval.');
-
-        ManagerLogger.debug('[ACCOUNT] Client Map Inspection: %o', {
-          isExsit,
-          uuid,
-        });
-
-        clearIntervalAsync(timer);
-      } else {
-        ManagerLogger.info('[ACCOUNT] Expiration time. Delete user.');
-
-        ManagerLogger.debug('[ACCOUNT] Client Map Inspection: %o', {
-          uuid,
-        });
-
-        await this.deleteItem(encodedEmail);
-      }
-    }, interval);
-
-    return encodedEmail;
-  }
-
-  public async deleteLogoutUser(encodedEmail: string) {
-    ManagerLogger.debug('[ACCOUNT] Client Data: %o', {
-      encodedEmail,
-    });
-
-    const isExist = await this.getItem(encodedEmail);
-
-    if (isExist === null) {
-      ManagerLogger.info('[ACCOUNT] Not Matchin Data found. Ignore.');
-
-      return false;
-    }
-
-    await this.deleteItem(encodedEmail);
-
-    ManagerLogger.debug('[ACCOUNT] Client Map Delete Inspection: %o', {
-      encodedEmail,
-    });
-
-    return true;
-  }
 
   public async deleteItem(encodedEmail: string) {
     try {
@@ -122,13 +59,6 @@ export class AccountManager {
 
         ManagerLogger.info('[DELETE] Deleted User Info from Key List and Cache Data');
       }
-
-      ManagerLogger.debug('[DELETE] Client Map Inspection: %o', {
-        encodedEmail,
-        index,
-        // map: this.userMap,
-        userKey: this.keyList,
-      });
     } catch (error) {
       ManagerLogger.error('[DELETE] Delete User Item Error: %o', {
         error,
@@ -144,6 +74,15 @@ export class AccountManager {
 
   public async setItem(encodedEmail: string, encodedToken: string, uuid: string, password: string) {
     try {
+      if (this.keyList.length >= 5000) {
+        ClientLogger.debug('[AccountManager] keyList maximum reached. shift()');
+        this.keyList.shift();
+      }
+
+      const isKeyExist = this.keyList.findIndex((item) => item === encodedEmail);
+
+      if (isKeyExist > -1) return false;
+
       const setItem: ClientLoginItem = {
         token: encodedToken,
         uuid,
@@ -153,6 +92,8 @@ export class AccountManager {
       // this.userMap.set( key, { uuid, address, privateKey, pkToken } );
       this.keyList.push(encodedEmail);
       await this.redis.set(encodedEmail, JSON.stringify(setItem));
+
+      return true;
     } catch (error) {
       ManagerLogger.error('[SET] User Info Error: %o', {
         error,
