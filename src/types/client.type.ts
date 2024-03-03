@@ -9,7 +9,7 @@ export interface ClientLoginRequest {
 }
 
 export interface ClientLogoutRequest {
-  uuid: string;
+  email: string;
 }
 
 export interface ClientLoginMapKey {
@@ -28,7 +28,7 @@ export interface ClientLoginItem {
 }
 
 export interface ClientMyPageRequest {
-  uuid: string;
+  email: string;
 }
 
 export interface ClientMyPageStarNewsRequest {

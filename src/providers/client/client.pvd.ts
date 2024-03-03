@@ -165,26 +165,29 @@ export class ClientProvider {
     }
   }
 
-  async myPage(clientUuid: string) {
+  async myPage(encodedEmail: string) {
     try {
-      const foundKey = await this.accountManager.getItem(clientUuid);
+      const foundKey = await this.accountManager.getItem(encodedEmail);
 
       if (foundKey === null) {
         ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
-          clientUuid,
+          encodedEmail,
         });
 
         throw new ClientError('[MYPAGE] Finding Matching User Info', 'No Matching User Found');
       }
 
       ClientLogger.debug('[MYPAGE] Found Key Item: %o', {
-        clientUuid,
+        encodedEmail,
         foundKey,
       });
 
-      const email = await this.prisma.getMyPageInfo(clientUuid);
+      const { token, uuid } = foundKey;
+      const email = decrypt(encodedEmail, token);
 
-      return email;
+      const result = await this.prisma.getMyPageInfo(email, uuid);
+
+      return result;
     } catch (error) {
       ClientLogger.error('[MYPAGE] Get My Page Error: %o', {
         error,

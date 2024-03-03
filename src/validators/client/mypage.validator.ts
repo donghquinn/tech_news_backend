@@ -6,7 +6,7 @@ import { z } from 'zod';
 export const clientMyPageValidator = async (request: ClientMyPageRequest) => {
   try {
     const scheme = z.object({
-      uuid: z.string(),
+      email: z.string(),
     });
 
     const parsed = await scheme.parseAsync(request);
