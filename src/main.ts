@@ -1,4 +1,5 @@
 import { Logger } from '@nestjs/common';
+import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from 'app.module';
@@ -16,8 +17,13 @@ export const bootstrap = async () => {
 
   const port = Number(process.env.APP_PORT);
 
+  const corsOptions: CorsOptions = {
+    origin: 'https://scrape.donghyuns.com',
+    allowedHeaders: ['GET', 'POST'],
+  };
+
   app.use(helmet());
-  app.enableCors();
+  app.enableCors(corsOptions);
   app.enableVersioning();
   app.useBodyParser('json');
   app.enableShutdownHooks();
