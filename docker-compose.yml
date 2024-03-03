@@ -10,6 +10,7 @@ services:
       - ./redis.conf:/etc/redis/redis.conf
       - ./redis_data:/data\
     command: redis-server --requirepass ${REDIS_PASS}
+    restart: always
     networks:
       - proxy
 
