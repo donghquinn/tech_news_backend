@@ -42,9 +42,9 @@ export class ClientController {
       if (email.length < 1 || password.length < 1)
         return new SetErrorResponse('Received User Info Should not be empty');
 
-      const uuid = await this.client.login(email, password);
+      const encodedEmail = await this.client.login(email, password);
 
-      return new SetResponse(200, { uuid });
+      return new SetResponse(200, { email: encodedEmail });
     } catch (error) {
       return new SetErrorResponse(error);
     }
