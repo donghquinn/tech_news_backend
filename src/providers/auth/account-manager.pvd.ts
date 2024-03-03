@@ -55,8 +55,9 @@ export class AccountManager {
 
       if (index > -1) {
         this.keyList.splice(index, 1);
+        await this.redis.connect();
         await this.redis.del(encodedEmail);
-
+        await this.redis.disconnect();
         ManagerLogger.info('[DELETE] Deleted User Info from Key List and Cache Data');
       }
     } catch (error) {
@@ -91,7 +92,9 @@ export class AccountManager {
 
       // this.userMap.set( key, { uuid, address, privateKey, pkToken } );
       this.keyList.push(encodedEmail);
+      await this.redis.connect();
       await this.redis.set(encodedEmail, JSON.stringify(setItem));
+      await this.redis.disconnect();
 
       return true;
     } catch (error) {
@@ -122,7 +125,9 @@ export class AccountManager {
 
       ManagerLogger.info('[GET] Found key from keyList');
 
+      await this.redis.connect();
       const gotItem = await this.redis.get(key);
+      await this.redis.disconnect();
 
       if (gotItem === null) return null;
 

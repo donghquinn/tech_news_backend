@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from 'app.module';
 import helmet from 'helmet';
+import { AccountManager } from 'providers/auth/account-manager.pvd';
 import { shutdown } from 'utils/shutdown.utils';
 
 process.env.TZ = 'Asia/Seoul';
@@ -16,6 +17,8 @@ export const bootstrap = async () => {
 
   const port = Number(process.env.APP_PORT);
 
+  const accountManager = new AccountManager();
+  await accountManager.start();
   // const corsOptions: CorsOptions = {
   //   origin: 'https://scrape.donghyuns.com',
   //   allowedHeaders: ['GET', 'POST', 'Content-Type', 'key'],
