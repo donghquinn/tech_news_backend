@@ -2,16 +2,18 @@
 *.env
 node_modules
 coverage-ts
+
 test
 *.test.*
+
+jest.config.ts
+
 npm-debug.log
 .codedov.yml
 .github
 .eslintrc.json
 .prettierrc
 example.env
-
-*.test.*
 
 migrations
 .eslintrc.json
