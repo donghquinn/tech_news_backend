@@ -145,6 +145,7 @@ export class ClientPrismaLibrary extends PrismaClient {
               postUuid: true,
               ml_news: {
                 select: {
+                  uuid: true,
                   title: true,
                   link: true,
                   founded: true,
@@ -157,6 +158,7 @@ export class ClientPrismaLibrary extends PrismaClient {
             select: {
               geek_news: {
                 select: {
+                  uuid: true,
                   post: true,
                   link: true,
                   descLink: true,
@@ -170,6 +172,7 @@ export class ClientPrismaLibrary extends PrismaClient {
             select: {
               hacker_news: {
                 select: {
+                  uuid: true,
                   post: true,
                   link: true,
                   founded: true,

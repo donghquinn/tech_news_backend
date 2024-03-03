@@ -115,7 +115,7 @@ export class ClientProvider {
 
       await this.prisma.updateClientLoginStatus(email, uuid, 1);
 
-      return uuid;
+      return encodedEmail;
     } catch (error) {
       ClientLogger.error('[LOGIN] Login Error: %o', {
         error,
@@ -186,6 +186,10 @@ export class ClientProvider {
       const email = decrypt(encodedEmail, token);
 
       const result = await this.prisma.getMyPageInfo(email, uuid);
+
+      ClientLogger.info('[MYPAGE] My Starred News: %o', {
+        result,
+      });
 
       return result;
     } catch (error) {
