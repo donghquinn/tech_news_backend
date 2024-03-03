@@ -1,5 +1,4 @@
 import { Logger } from '@nestjs/common';
-import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from 'app.module';
@@ -21,15 +20,15 @@ export const bootstrap = async () => {
   const accountManager = new AccountManager();
   await accountManager.start();
   
-  const corsOptions: CorsOptions = {
-    origin: 'https://scrape.donghyuns.com',
-    allowedHeaders: ['GET', 'POST', 'Content-Type', 'key'],
-    optionsSuccessStatus: 204,
-    preflightContinue: false,
-  };
+  // const corsOptions: CorsOptions = {
+  //   origin: 'https://scrape.donghyuns.com',
+  //   allowedHeaders: ['GET', 'POST', 'Content-Type', 'key'],
+  //   optionsSuccessStatus: 204,
+  //   preflightContinue: false,
+  // };
 
   app.use(helmet());
-  app.enableCors(corsOptions);
+  app.enableCors();
   app.enableVersioning();
   app.useBodyParser('json');
   app.enableShutdownHooks();

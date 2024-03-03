@@ -63,7 +63,7 @@ export class ClientController {
     }
   }
 
-  @Post('myPage')
+  @Post('mypage')
   async myPageController(@Body() request: ClientMyPageRequest) {
     try {
       const { email: encodedEmail } = await clientMyPageValidator(request);
