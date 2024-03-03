@@ -112,13 +112,14 @@ export class ClientPrismaLibrary extends PrismaClient {
     }
   }
 
-  async updateClientLoginStatus(clientUuid: string, isLogined: number) {
+  async updateClientLoginStatus(email: string, clientUuid: string, isLogined: number) {
     try {
       await this.client.update({
         data: {
           is_logined: isLogined,
         },
         where: {
+          email,
           uuid: clientUuid,
         },
       });
@@ -135,22 +136,57 @@ export class ClientPrismaLibrary extends PrismaClient {
     }
   }
 
-  async getMyPageInfo(clientUuid: string) {
+  async getMyPageInfo(email: string, clientUuid: string) {
     try {
       const result = await this.client.findFirst({
         select: {
-          email: true,
+          liked_ml_posts: {
+            select: {
+              postUuid: true,
+              ml_news: {
+                select: {
+                  title: true,
+                  link: true,
+                  founded: true,
+                },
+              },
+            },
+          },
+
+          liked_geek_posts: {
+            select: {
+              geek_news: {
+                select: {
+                  post: true,
+                  link: true,
+                  descLink: true,
+                  founded: true,
+                },
+              },
+            },
+          },
+
+          liked_hacker_posts: {
+            select: {
+              hacker_news: {
+                select: {
+                  post: true,
+                  link: true,
+                  founded: true,
+                },
+              },
+            },
+          },
         },
         where: {
+          email,
           uuid: clientUuid,
         },
       });
 
       if (result === null) throw new ClientError('[MYPAGE] Get My Page', 'No User Found');
 
-      const { email } = result;
-
-      return email;
+      return result;
     } catch (error) {
       throw new ClientError('[MYPAGE] Get My Page', 'Get My Page Error.');
     }

@@ -3,13 +3,14 @@ version: '3.7'
 services:
   redis:
     image: redis:7.0.15
-    container_name: gpt_redis
+    container_name: news_redis
     expose:
       - ${REDIS_PORT}
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
       - ./redis_data:/data\
     command: redis-server --requirepass ${REDIS_PASS}
+    restart: always
     networks:
       - proxy
 
@@ -33,6 +34,8 @@ services:
         reservations:
           cpus: '0.15'
           memory: 300M
+    # ports:
+    #   - 5500:5500
     expose:
       - ${APP_PORT}
     env_file:

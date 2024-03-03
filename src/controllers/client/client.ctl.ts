@@ -53,11 +53,11 @@ export class ClientController {
   @Post('logout')
   async logoutController(@Body() request: ClientLogoutRequest) {
     try {
-      const { uuid: clientUuid } = await clientLogoutValidator(request);
+      const { email: encodedEmail } = await clientLogoutValidator(request);
 
-      const uuid = await this.client.logout(clientUuid);
+      const message = await this.client.logout(encodedEmail);
 
-      return new SetResponse(200, { uuid });
+      return new SetResponse(200, { message });
     } catch (error) {
       return new SetErrorResponse(error);
     }
@@ -66,12 +66,12 @@ export class ClientController {
   @Post('myPage')
   async myPageController(@Body() request: ClientMyPageRequest) {
     try {
-      const { uuid } = await clientMyPageValidator(request);
+      const { email: encodedEmail } = await clientMyPageValidator(request);
 
-      const email = await this.client.myPage(uuid);
+      const results = await this.client.myPage(encodedEmail);
 
       return new SetResponse(200, {
-        email,
+        results,
       });
     } catch (error) {
       return new SetErrorResponse(error);
