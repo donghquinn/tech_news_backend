@@ -21,6 +21,12 @@ export interface ClientLoginMapItem {
   password: string;
 }
 
+export interface ClientLoginItem {
+  token: string;
+  uuid: string;
+  password: string;
+}
+
 export interface ClientMyPageRequest {
   uuid: string;
 }

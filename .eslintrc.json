@@ -34,5 +34,13 @@
         "multiline-ternary": ["error", "always-multiline"],
         "@typescript-eslint/no-floating-promises": ["off"],
         "@typescript-eslint/no-unused-vars": ["error"]
+    },
+    "overrides": [
+    {
+      "files": ["tests/**/*", "*.test.*"],
+      "env": {
+        "jest": true
+      }
     }
+  ]
 }

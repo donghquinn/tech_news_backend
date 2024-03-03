@@ -1,6 +1,6 @@
 import { ClientError } from '@errors/client.error';
 import { comparePassword } from '@libraries/client/decrypt.lib';
-import { cryptPassword } from '@libraries/client/encrypt.lib';
+import { cryptData } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
 import { HadaNewsReturn } from 'types/geek.type';
@@ -24,7 +24,7 @@ export class ClientProvider {
         email,
       });
 
-      const { encodedPassword, passwordToken } = cryptPassword(password);
+      const { encodedData: encodedPassword, encodedToken: passwordToken } = cryptData(password);
 
       const uuid = await this.prisma.insertNewClient(email, encodedPassword, passwordToken);
 
@@ -66,7 +66,7 @@ export class ClientProvider {
         throw new ClientError('[LOGIN] Password Matching ', ' Password Matching is Not Match. Reject.');
       }
 
-      await this.accountManager.setLoginUser(uuid, email, foundPassword);
+      await this.accountManager.setLoginUser(email, uuid, foundPassword);
 
       await this.prisma.updateClientLoginStatus(uuid, 1);
 
