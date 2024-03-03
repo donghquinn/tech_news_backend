@@ -21,4 +21,6 @@ prisma/migrations/*
 !.yarn/cache
 
 redis.conf
-redis.data
+redis_data
+
+coverage
