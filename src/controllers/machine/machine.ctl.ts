@@ -10,7 +10,7 @@ export class MachineLearningController {
   constructor(private readonly mlNews: MachineLearningProvider) {}
 
   @Post('/latest')
-  async getLatestMlNewsController(
+  async mlGetLatestNewsController(
     @Body() request: DailyMlNewsRequest,
     @Query('page') page: number,
     @Query('size') size: number,

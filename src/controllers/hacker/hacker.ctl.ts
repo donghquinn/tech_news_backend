@@ -10,7 +10,7 @@ export class HackerController {
   constructor(private readonly hacker: HackersNewsProvider) {}
 
   @Post('/news')
-  async getHackerNews(
+  async hackerGetLatestNewsController(
     @Body() request: DailyHackerNewsRequest,
     @Query('page') page: number,
     @Query('size') size: number,
@@ -27,7 +27,7 @@ export class HackerController {
   }
 
   @Post('/star')
-  async giveStarNews(@Body() request: StarRequest) {
+  async hackerGiveStarController(@Body() request: StarRequest) {
     try {
       const { uuid: PostUuid, email } = await hackerNewsStarValidator(request);
 

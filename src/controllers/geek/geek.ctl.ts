@@ -10,7 +10,11 @@ export class GeekController {
   constructor(private readonly geek: GeekProvider) {}
 
   @Post('/news')
-  async getHadaNews(@Body() request: DailyHadaNewsRequest, @Query('page') page: number, @Query('size') size: number) {
+  async geekGetLatestNewsController(
+    @Body() request: DailyHadaNewsRequest,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
     try {
       const { today } = await hadaNewsValidator(request);
 
@@ -23,7 +27,7 @@ export class GeekController {
   }
 
   @Post('/star')
-  async giveStarNews(@Body() request: StarRequest) {
+  async geekGiveStarController(@Body() request: StarRequest) {
     try {
       const { uuid: postUuid, email } = await hadaNewsStarValidator(request);
 
@@ -36,7 +40,7 @@ export class GeekController {
   }
 
   @Post('/unstar')
-  async unStarNews(@Body() request: StarRequest) {
+  async geekUnStarController(@Body() request: StarRequest) {
     try {
       const { uuid: postUuid, email } = await hadaNewsUnStarValidator(request);
 
