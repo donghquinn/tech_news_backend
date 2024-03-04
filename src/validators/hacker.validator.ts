@@ -26,7 +26,7 @@ export const hackerNewsValidator = async (request: DailyHackerNewsRequest) => {
 
 export const hackerNewsStarValidator = async (request: StarRequest) => {
   try {
-    const scheme = z.object({ uuid: z.string() });
+    const scheme = z.object({ uuid: z.string(), email: z.string() });
 
     const validated = await scheme.parseAsync(request);
 

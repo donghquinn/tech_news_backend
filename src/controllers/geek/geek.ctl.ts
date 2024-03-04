@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { hadaNewsStarValidator, hadaNewsValidator } from '@validators/hada.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { GeekProvider } from 'providers/news/geek/geek.pvd';
@@ -23,11 +23,11 @@ export class GeekController {
   }
 
   @Post('/star')
-  async giveStarNews(@Body() request: StarRequest, @Headers('Authorization') clientUuid: string) {
+  async giveStarNews(@Body() request: StarRequest) {
     try {
-      const { uuid: postUuid } = await hadaNewsStarValidator(request);
+      const { uuid: postUuid, email } = await hadaNewsStarValidator(request);
 
-      const result = await this.geek.giveStar(postUuid, clientUuid);
+      const result = await this.geek.giveStar(postUuid, email);
 
       return new SetResponse(200, { result });
     } catch (error) {
