@@ -46,7 +46,7 @@ export const hadaNewsStarValidator = async (request: StarRequest) => {
 
 export const hadaNewsUnStarValidator = async (request: StarRequest) => {
   try {
-    const scheme = z.object({ uuid: z.string(), isStarred: z.boolean() });
+    const scheme = z.object({ uuid: z.string(), email: z.string() });
 
     const validated = await scheme.parseAsync(request);
 

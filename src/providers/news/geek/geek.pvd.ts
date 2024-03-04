@@ -88,7 +88,7 @@ export class GeekProvider {
     }
   }
 
-  async giveStar(postUuid: string, email: string) {
+  async giveStar(postUuid: string, email: string): Promise<void> {
     try {
       const isLogined = await this.account.getItem(email);
 
@@ -97,15 +97,9 @@ export class GeekProvider {
       const { uuid: clientUuid } = isLogined;
       const { uuid: likedUuid, liked } = await this.prisma.checkHadaNewsIsLiked(postUuid, clientUuid);
 
-      if (liked) {
-        await this.prisma.updateHadaNewsLikedtoUnliked(likedUuid, postUuid, clientUuid);
-      }
-
       if (!liked) {
         await this.prisma.updateHadaNewsLiked(likedUuid, postUuid, clientUuid);
       }
-
-      return true;
     } catch (error) {
       NewsLogger.error('[GEEK] Star Update Error: %o', {
         error,
@@ -119,26 +113,26 @@ export class GeekProvider {
     }
   }
 
-  async bringStarredNews(page: number, size: number) {
+  async unStar(postUuid: string, email: string): Promise<void> {
     try {
-      const pageNumber = typeof page === 'number' ? page : Number(page);
-      const sizeNumber = typeof size === 'number' ? size : Number(size);
+      const isLogined = await this.account.getItem(email);
 
-      NewsLogger.info('[GEEK] Request to get Starred Hacker News');
+      if (isLogined === null) throw new HadaError('[GEEK] Give Star on the Stars', 'No Logined User Found.');
 
-      const starredNews = await this.prisma.getStarredHadaNewsPagination(pageNumber, sizeNumber);
+      const { uuid: clientUuid } = isLogined;
+      const { uuid: likedUuid, liked } = await this.prisma.checkHadaNewsIsLiked(postUuid, clientUuid);
 
-      NewsLogger.info('[GEEK] Founded Starred News');
+      if (liked) await this.prisma.updateHadaNewsLikedtoUnliked(likedUuid, postUuid, clientUuid);
 
-      return starredNews;
+      NewsLogger.info('[GEEK] Finished UnStar Geek News');
     } catch (error) {
-      NewsLogger.error('[GEEK] Get Starred Update Error: %o', {
+      NewsLogger.error('[GEEK] Finished UnStar Geek News Error: %o', {
         error,
       });
 
       throw new HadaError(
-        '[GEEK] Bring Starred Hacker News',
-        'Failed to Bring Starred Hacker News. Please Try Again.',
+        '[GEEK] Finished UnStar Geek News',
+        'Failed to Finished UnStar Geek News. Please Try Again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
