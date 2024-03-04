@@ -4,7 +4,7 @@ import { DailyHadaNewsRequest } from 'types/geek.type';
 import { StarRequest } from 'types/request.type';
 import { z } from 'zod';
 
-export const hadaNewsValidator = async (request: DailyHadaNewsRequest) => {
+export const geekNewsValidator = async (request: DailyHadaNewsRequest) => {
   try {
     const scheme = z.object({ today: z.string() });
 
@@ -12,19 +12,19 @@ export const hadaNewsValidator = async (request: DailyHadaNewsRequest) => {
 
     return validated;
   } catch (error) {
-    Logger.error('[Hada] Hada News Request Validation Error: %o', {
+    Logger.error('[GEEK] Geek News Request Validation Error: %o', {
       error,
     });
 
     throw new ValidatorError(
-      '[Hada] Hada News Request Validator',
-      'Hada News Request Validator Failed. Please Check the request',
+      '[GEEK] Geek News Request Validator',
+      'Geek News Request Validator Failed. Please Check the request',
       error instanceof Error ? error : new Error(JSON.stringify(error)),
     );
   }
 };
 
-export const hadaNewsStarValidator = async (request: StarRequest) => {
+export const geekNewsStarValidator = async (request: StarRequest) => {
   try {
     const scheme = z.object({ uuid: z.string(), email: z.string() });
 
@@ -32,19 +32,19 @@ export const hadaNewsStarValidator = async (request: StarRequest) => {
 
     return validated;
   } catch (error) {
-    Logger.error('[Hada] Star Request Validator Error: %o', {
+    Logger.error('[GEEK] Star Request Validator Error: %o', {
       error,
     });
 
     throw new ValidatorError(
-      '[Hada] Star Request Validator',
+      '[GEEK] Star Request Validator',
       'Failed to Star. Please Check the request Body.',
       error instanceof Error ? error : new Error(JSON.stringify(error)),
     );
   }
 };
 
-export const hadaNewsUnStarValidator = async (request: StarRequest) => {
+export const geekNewsUnStarValidator = async (request: StarRequest) => {
   try {
     const scheme = z.object({ uuid: z.string(), email: z.string() });
 
@@ -52,12 +52,12 @@ export const hadaNewsUnStarValidator = async (request: StarRequest) => {
 
     return validated;
   } catch (error) {
-    Logger.error('[Hada] Unstar Request Validator Error: %o', {
+    Logger.error('[GEEK] Unstar Request Validator Error: %o', {
       error,
     });
 
     throw new ValidatorError(
-      '[Hada] Unstar Request Validator',
+      '[GEEK] Unstar Request Validator',
       'Failed to Unstar. Please Check the request Body.',
       error instanceof Error ? error : new Error(JSON.stringify(error)),
     );

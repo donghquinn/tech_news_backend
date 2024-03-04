@@ -27,7 +27,7 @@
       "@errors/*": ["errors/*"]
     }
   },
-  "include": ["src/**/*", "jest.config.ts"],
+  "include": ["src/**/*", "jest.config.ts", "test/**/*"],
   "exclude": ["node_modules"],
   "ts-node": {
     "files": true
