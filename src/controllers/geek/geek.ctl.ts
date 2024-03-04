@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Post, Query } from '@nestjs/common';
 import { hadaNewsStarValidator, hadaNewsValidator } from '@validators/hada.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { GeekProvider } from 'providers/news/geek/geek.pvd';
@@ -48,14 +48,14 @@ export class GeekController {
   //   }
   // }
 
-  @Get('/starred')
-  async getStarredBbc(@Query('page') page: number, @Query('size') size: number) {
-    try {
-      const result = await this.geek.bringStarredNews(page, size);
+  // @Get('/starred')
+  // async getStarredBbc(@Query('page') page: number, @Query('size') size: number) {
+  //   try {
+  //     const result = await this.geek.bringStarredNews(page, size);
 
-      return new SetResponse(200, { result });
-    } catch (error) {
-      return new SetErrorResponse(error);
-    }
-  }
+  //     return new SetResponse(200, { result });
+  //   } catch (error) {
+  //     return new SetErrorResponse(error);
+  //   }
+  // }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Post, Query } from '@nestjs/common';
 import { machineLearningValidator, mlNewsStarValidator } from '@validators/ml.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { MachineLearningProvider } from 'providers/news/ml/machine.pvd';
@@ -39,14 +39,14 @@ export class MachineLearningController {
     }
   }
 
-  @Get('/starred')
-  async getStarredBbc(@Query('page') page: number, @Query('size') size: number) {
-    try {
-      const result = await this.mlNews.bringStarredNews(page, size);
+  // @Get('/starred')
+  // async getStarredBbc(@Query('page') page: number, @Query('size') size: number) {
+  //   try {
+  //     const result = await this.mlNews.bringStarredNews(page, size);
 
-      return new SetResponse(200, { result });
-    } catch (error) {
-      return new SetErrorResponse(error);
-    }
-  }
+  //     return new SetResponse(200, { result });
+  //   } catch (error) {
+  //     return new SetErrorResponse(error);
+  //   }
+  // }
 }

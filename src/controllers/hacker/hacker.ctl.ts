@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Post, Query } from '@nestjs/common';
 import { hackerNewsStarValidator, hackerNewsValidator } from '@validators/hacker.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { HackersNewsProvider } from 'providers/news/hacker/hacker.pvd';
@@ -8,17 +8,6 @@ import { StarRequest } from 'types/request.type';
 @Controller('hacker')
 export class HackerController {
   constructor(private readonly hacker: HackersNewsProvider) {}
-
-  @Get('/count')
-  async getHackerCount() {
-    try {
-      const count = await this.hacker.getHackerNewsCount();
-
-      return new SetResponse(200, { count });
-    } catch (error) {
-      return new SetErrorResponse(error);
-    }
-  }
 
   @Post('/news')
   async getHackerNews(
@@ -63,14 +52,14 @@ export class HackerController {
   //   }
   // }
 
-  @Get('/starred')
-  async getStarredBbc(@Query('page') page: number, @Query('size') size: number) {
-    try {
-      const result = await this.hacker.bringStarredNews(page, size);
+  // @Get('/starred')
+  // async getStarredBbc(@Query('page') page: number, @Query('size') size: number) {
+  //   try {
+  //     const result = await this.hacker.bringStarredNews(page, size);
 
-      return new SetResponse(200, { result });
-    } catch (error) {
-      return new SetErrorResponse(error);
-    }
-  }
+  //     return new SetResponse(200, { result });
+  //   } catch (error) {
+  //     return new SetErrorResponse(error);
+  //   }
+  // }
 }
