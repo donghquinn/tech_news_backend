@@ -9,7 +9,7 @@ import { StarRequest } from 'types/request.type';
 export class MachineLearningController {
   constructor(private readonly mlNews: MachineLearningProvider) {}
 
-  @Post('/latest')
+  @Post('/news')
   async mlGetLatestNewsController(
     @Body() request: DailyMlNewsRequest,
     @Query('page') page: number,
