@@ -69,7 +69,7 @@ export class HackersNewsProvider {
     }
   }
 
-  async giveStar(postUuid: string, email: string) {
+  async giveStar(postUuid: string, email: string): Promise<void> {
     try {
       const isLogined = await this.account.getItem(email);
 
@@ -78,15 +78,7 @@ export class HackersNewsProvider {
       const { uuid: clientUuid } = isLogined;
       const { uuid: likedUuid, isLiked } = await this.prisma.checkHackerNewsIsLiked(postUuid, clientUuid);
 
-      if (isLiked) {
-        await this.prisma.updateHackerNewsLikedtoUnliked(likedUuid, postUuid, clientUuid);
-      }
-
-      if (!isLiked) {
-        await this.prisma.updateHackerNewsLiked(likedUuid, postUuid, clientUuid);
-      }
-
-      return true;
+      if (!isLiked) await this.prisma.updateHackerNewsLiked(likedUuid, postUuid, clientUuid);
     } catch (error) {
       NewsLogger.error('[Hackers] Star Update Error: %o', {
         error,
@@ -101,29 +93,26 @@ export class HackersNewsProvider {
   }
 
   // Pagination
-  async bringStarredNews(page: number, size: number) {
+  async unStar(postUuid: string, email: string) {
     try {
-      const pageNumber = typeof page === 'number' ? page : Number(page);
-      const sizeNumber = typeof size === 'number' ? size : Number(size);
+      const isLogined = await this.account.getItem(email);
 
-      NewsLogger.info('[Hackers] Request to get Starred Hacker News: %o', {
-        pageNumber,
-        sizeNumber,
-      });
+      if (!isLogined) throw new HackerError('[Hackers] Give Star on the Stars', 'No Logined User Found.');
 
-      const tempUserUuid = '123';
+      const { uuid: clientUuid } = isLogined;
+      const { uuid: likedUuid, isLiked } = await this.prisma.checkHackerNewsIsLiked(postUuid, clientUuid);
 
-      const starredNews = await this.prisma.getStarredHackerNewsPagination(page, size, tempUserUuid);
+      if (isLiked) await this.prisma.updateHackerNewsLikedtoUnliked(likedUuid, postUuid, clientUuid);
 
-      return starredNews;
+      NewsLogger.info('[Hackers] Unstar Hacker News Finished');
     } catch (error) {
-      NewsLogger.error('[Hackers] Get Starred Update Error: %o', {
+      NewsLogger.error('[Hackers] Unstar Hacker News Error: %o', {
         error,
       });
 
       throw new HackerError(
-        '[Hackers] Bring Starred Hacker News',
-        'Failed to Bring Starred Hacker News',
+        '[Hackers] Unstar Hacker News',
+        'Failed to Unstar Hacker News',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }

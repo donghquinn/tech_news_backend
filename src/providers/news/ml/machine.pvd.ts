@@ -20,7 +20,7 @@ export class MachineLearningProvider {
       const startDate = startOfDay(new Date(yesterday));
       const endDate = endOfDay(new Date(yesterday));
 
-      NewsLogger.info('[ML] YesterDay: %o', {
+      NewsLogger.debug('[ML] YesterDay: %o', {
         start: startDate,
         end: endDate,
         page,
@@ -48,7 +48,7 @@ export class MachineLearningProvider {
     }
   }
 
-  async giveStar(postUuid: string, email: string) {
+  async giveStar(postUuid: string, email: string): Promise<void> {
     try {
       const isLogined = await this.account.getItem(email);
 
@@ -60,12 +60,6 @@ export class MachineLearningProvider {
       if (!isLiked) {
         await this.prisma.updateMlNewsLiked(likedUuid, postUuid, clientUuid);
       }
-
-      if (isLiked) {
-        await this.prisma.updateMlNewsLikedtoUnliked(likedUuid, postUuid, clientUuid);
-      }
-
-      return true;
     } catch (error) {
       NewsLogger.error('[ML] Give Star on the ML News Error: %o', {
         error,
@@ -79,26 +73,28 @@ export class MachineLearningProvider {
     }
   }
 
-  async bringStarredNews(page: number, size: number) {
+  async unStar(postUuid: string, email: string): Promise<void> {
     try {
-      const pageNumber = typeof page === 'number' ? page : Number(page);
-      const sizeNumber = typeof size === 'number' ? size : Number(size);
+      const isLogined = await this.account.getItem(email);
 
-      NewsLogger.info('[ML] Request to get Starred ML News');
+      if (isLogined === null) throw new MachineLearningError('[ML] UnStar on the Stars', 'No Logined User Found.');
 
-      const starredNews = await this.prisma.getStarredMlNewsPagination(pageNumber, sizeNumber);
+      const { uuid: clientUuid } = isLogined;
+      const { uuid: likedUuid, isLiked } = await this.prisma.checkIsMlNewsLiked(postUuid, clientUuid);
 
-      NewsLogger.info('[ML] Founded Starred News');
+      if (isLiked) {
+        await this.prisma.updateMlNewsLikedtoUnliked(likedUuid, postUuid, clientUuid);
+      }
 
-      return starredNews;
+      NewsLogger.info('[ML] Unstar News Finished');
     } catch (error) {
-      NewsLogger.error('[ML] Bring Starred ML News Error: %o', {
+      NewsLogger.error('[ML] Unstar ML News Error: %o', {
         error,
       });
 
       throw new MachineLearningError(
-        'Bring Starred ML News',
-        'Failed to Bring Starred ML News',
+        'Unstar ML News',
+        'Failed to Unstar ML News',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }

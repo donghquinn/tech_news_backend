@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { machineLearningValidator, mlNewsStarValidator } from '@validators/ml.validator';
+import { Body, Controller, Post, Query } from '@nestjs/common';
+import { machineLearningValidator, mlNewsStarValidator, mlNewsUnStarValidator } from '@validators/ml.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { MachineLearningProvider } from 'providers/news/ml/machine.pvd';
 import { DailyMlNewsRequest } from 'types/ml.type';
@@ -10,7 +10,7 @@ export class MachineLearningController {
   constructor(private readonly mlNews: MachineLearningProvider) {}
 
   @Post('/latest')
-  async getLatestMlNewsController(
+  async mlGetLatestNewsController(
     @Body() request: DailyMlNewsRequest,
     @Query('page') page: number,
     @Query('size') size: number,
@@ -27,24 +27,26 @@ export class MachineLearningController {
   }
 
   @Post('/star')
-  async giveStarNews(@Body() request: StarRequest) {
+  async mlGiveStarController(@Body() request: StarRequest) {
     try {
       const { uuid: postUuid, email } = await mlNewsStarValidator(request);
 
-      const result = await this.mlNews.giveStar(postUuid, email);
+      await this.mlNews.giveStar(postUuid, email);
 
-      return new SetResponse(200, { result });
+      return new SetResponse(200, { message: 'success' });
     } catch (error) {
       return new SetErrorResponse(error);
     }
   }
 
-  @Get('/starred')
-  async getStarredBbc(@Query('page') page: number, @Query('size') size: number) {
+  @Post('/unstar')
+  async mlUnStarController(@Body() request: StarRequest) {
     try {
-      const result = await this.mlNews.bringStarredNews(page, size);
+      const { uuid: postUuid, email } = await mlNewsUnStarValidator(request);
 
-      return new SetResponse(200, { result });
+      await this.mlNews.unStar(postUuid, email);
+
+      return new SetResponse(200, { message: 'success' });
     } catch (error) {
       return new SetErrorResponse(error);
     }

@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { hadaNewsStarValidator, hadaNewsValidator } from '@validators/hada.validator';
+import { Body, Controller, Post, Query } from '@nestjs/common';
+import { hadaNewsStarValidator, hadaNewsUnStarValidator, hadaNewsValidator } from '@validators/hada.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { GeekProvider } from 'providers/news/geek/geek.pvd';
 import { DailyHadaNewsRequest } from 'types/geek.type';
@@ -10,7 +10,11 @@ export class GeekController {
   constructor(private readonly geek: GeekProvider) {}
 
   @Post('/news')
-  async getHadaNews(@Body() request: DailyHadaNewsRequest, @Query('page') page: number, @Query('size') size: number) {
+  async geekGetLatestNewsController(
+    @Body() request: DailyHadaNewsRequest,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
     try {
       const { today } = await hadaNewsValidator(request);
 
@@ -23,39 +27,39 @@ export class GeekController {
   }
 
   @Post('/star')
-  async giveStarNews(@Body() request: StarRequest) {
+  async geekGiveStarController(@Body() request: StarRequest) {
     try {
       const { uuid: postUuid, email } = await hadaNewsStarValidator(request);
 
-      const result = await this.geek.giveStar(postUuid, email);
+      await this.geek.giveStar(postUuid, email);
 
-      return new SetResponse(200, { result });
+      return new SetResponse(200, { message: 'success' });
     } catch (error) {
       return new SetErrorResponse(error);
     }
   }
 
-  // @Post('/unstar')
-  // async unStarNews(@Body() request: StarRequest) {
-  //   try {
-  //     const { uuid } = await starValidator(request);
+  @Post('/unstar')
+  async geekUnStarController(@Body() request: StarRequest) {
+    try {
+      const { uuid: postUuid, email } = await hadaNewsUnStarValidator(request);
 
-  //     const result = await this.hacker.unStar(uuid);
+      await this.geek.unStar(postUuid, email);
+
+      return new SetResponse(200, { message: 'success' });
+    } catch (error) {
+      return new SetErrorResponse(error);
+    }
+  }
+
+  // @Get('/starred')
+  // async getStarredBbc(@Query('page') page: number, @Query('size') size: number) {
+  //   try {
+  //     const result = await this.geek.bringStarredNews(page, size);
 
   //     return new SetResponse(200, { result });
   //   } catch (error) {
-  //     return new SetErrorResponse(500, { error });
+  //     return new SetErrorResponse(error);
   //   }
   // }
-
-  @Get('/starred')
-  async getStarredBbc(@Query('page') page: number, @Query('size') size: number) {
-    try {
-      const result = await this.geek.bringStarredNews(page, size);
-
-      return new SetResponse(200, { result });
-    } catch (error) {
-      return new SetErrorResponse(error);
-    }
-  }
 }

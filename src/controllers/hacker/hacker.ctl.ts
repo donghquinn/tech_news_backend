@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { hackerNewsStarValidator, hackerNewsValidator } from '@validators/hacker.validator';
+import { Body, Controller, Post, Query } from '@nestjs/common';
+import { hackerNewsStarValidator, hackerNewsUnStarValidator, hackerNewsValidator } from '@validators/hacker.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { HackersNewsProvider } from 'providers/news/hacker/hacker.pvd';
 import { DailyHackerNewsRequest } from 'types/hackers.type';
@@ -9,19 +9,8 @@ import { StarRequest } from 'types/request.type';
 export class HackerController {
   constructor(private readonly hacker: HackersNewsProvider) {}
 
-  @Get('/count')
-  async getHackerCount() {
-    try {
-      const count = await this.hacker.getHackerNewsCount();
-
-      return new SetResponse(200, { count });
-    } catch (error) {
-      return new SetErrorResponse(error);
-    }
-  }
-
   @Post('/news')
-  async getHackerNews(
+  async hackerGetLatestNewsController(
     @Body() request: DailyHackerNewsRequest,
     @Query('page') page: number,
     @Query('size') size: number,
@@ -38,39 +27,39 @@ export class HackerController {
   }
 
   @Post('/star')
-  async giveStarNews(@Body() request: StarRequest) {
+  async hackerGiveStarController(@Body() request: StarRequest) {
     try {
       const { uuid: PostUuid, email } = await hackerNewsStarValidator(request);
 
-      const result = await this.hacker.giveStar(PostUuid, email);
+      await this.hacker.giveStar(PostUuid, email);
 
-      return new SetResponse(200, { result });
+      return new SetResponse(200, { message: 'success' });
     } catch (error) {
       return new SetErrorResponse(error);
     }
   }
 
-  // @Post('/unstar')
-  // async unStarNews(@Body() request: StarRequest) {
-  //   try {
-  //     const { uuid } = await starValidator(request);
+  @Post('/unstar')
+  async hackerUnStarController(@Body() request: StarRequest) {
+    try {
+      const { uuid: postUuid, email } = await hackerNewsUnStarValidator(request);
 
-  //     const result = await this.hacker.unStar(uuid);
+      await this.hacker.unStar(postUuid, email);
+
+      return new SetResponse(200, { message: 'success' });
+    } catch (error) {
+      return new SetErrorResponse(error);
+    }
+  }
+
+  // @Get('/starred')
+  // async getStarredBbc(@Query('page') page: number, @Query('size') size: number) {
+  //   try {
+  //     const result = await this.hacker.bringStarredNews(page, size);
 
   //     return new SetResponse(200, { result });
   //   } catch (error) {
-  //     return new SetErrorResponse(500, { error });
+  //     return new SetErrorResponse(error);
   //   }
   // }
-
-  @Get('/starred')
-  async getStarredBbc(@Query('page') page: number, @Query('size') size: number) {
-    try {
-      const result = await this.hacker.bringStarredNews(page, size);
-
-      return new SetResponse(200, { result });
-    } catch (error) {
-      return new SetErrorResponse(error);
-    }
-  }
 }
