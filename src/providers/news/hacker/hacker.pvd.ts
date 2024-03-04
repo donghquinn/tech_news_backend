@@ -69,12 +69,13 @@ export class HackersNewsProvider {
     }
   }
 
-  async giveStar(postUuid: string, clientUuid: string) {
+  async giveStar(postUuid: string, email: string) {
     try {
-      const isLogined = await this.account.getItem(clientUuid);
+      const isLogined = await this.account.getItem(email);
 
       if (!isLogined) throw new HackerError('[Hackers] Give Star on the Stars', 'No Logined User Found.');
 
+      const { uuid: clientUuid } = isLogined;
       const { uuid: likedUuid, isLiked } = await this.prisma.checkHackerNewsIsLiked(postUuid, clientUuid);
 
       if (isLiked) {

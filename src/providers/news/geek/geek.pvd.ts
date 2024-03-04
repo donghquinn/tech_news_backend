@@ -88,12 +88,13 @@ export class GeekProvider {
     }
   }
 
-  async giveStar(postUuid: string, clientUuid: string) {
+  async giveStar(postUuid: string, email: string) {
     try {
-      const isLogined = await this.account.getItem(clientUuid);
+      const isLogined = await this.account.getItem(email);
 
-      if (!isLogined) throw new HadaError('[GEEK] Give Star on the Stars', 'No Logined User Found.');
+      if (isLogined === null) throw new HadaError('[GEEK] Give Star on the Stars', 'No Logined User Found.');
 
+      const { uuid: clientUuid } = isLogined;
       const { uuid: likedUuid, liked } = await this.prisma.checkHadaNewsIsLiked(postUuid, clientUuid);
 
       if (liked) {
