@@ -9,7 +9,7 @@ import { StarRequest } from 'types/request.type';
 export class MachineLearningController {
   constructor(private readonly mlNews: MachineLearningProvider) {}
 
-  @Post('/news')
+  @Post('news')
   async mlGetLatestNewsController(
     @Body() request: DailyMlNewsRequest,
     @Query('page') page: number,
@@ -26,7 +26,7 @@ export class MachineLearningController {
     }
   }
 
-  @Post('/star')
+  @Post('star')
   async mlGiveStarController(@Body() request: StarRequest) {
     try {
       const { uuid: postUuid, email } = await mlNewsStarValidator(request);
@@ -39,7 +39,7 @@ export class MachineLearningController {
     }
   }
 
-  @Post('/unstar')
+  @Post('unstar')
   async mlUnStarController(@Body() request: StarRequest) {
     try {
       const { uuid: postUuid, email } = await mlNewsUnStarValidator(request);

@@ -9,7 +9,7 @@ import { StarRequest } from 'types/request.type';
 export class GeekController {
   constructor(private readonly geek: GeekProvider) {}
 
-  @Post('/news')
+  @Post('news')
   async geekGetLatestNewsController(
     @Body() request: DailyHadaNewsRequest,
     @Query('page') page: number,
@@ -26,7 +26,7 @@ export class GeekController {
     }
   }
 
-  @Post('/star')
+  @Post('star')
   async geekGiveStarController(@Body() request: StarRequest) {
     try {
       const { uuid: postUuid, email } = await hadaNewsStarValidator(request);
@@ -39,7 +39,7 @@ export class GeekController {
     }
   }
 
-  @Post('/unstar')
+  @Post('unstar')
   async geekUnStarController(@Body() request: StarRequest) {
     try {
       const { uuid: postUuid, email } = await hadaNewsUnStarValidator(request);

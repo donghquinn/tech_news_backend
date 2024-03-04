@@ -9,7 +9,7 @@ import { StarRequest } from 'types/request.type';
 export class HackerController {
   constructor(private readonly hacker: HackersNewsProvider) {}
 
-  @Post('/news')
+  @Post('news')
   async hackerGetLatestNewsController(
     @Body() request: DailyHackerNewsRequest,
     @Query('page') page: number,
@@ -26,7 +26,7 @@ export class HackerController {
     }
   }
 
-  @Post('/star')
+  @Post('star')
   async hackerGiveStarController(@Body() request: StarRequest) {
     try {
       const { uuid: PostUuid, email } = await hackerNewsStarValidator(request);
@@ -39,7 +39,7 @@ export class HackerController {
     }
   }
 
-  @Post('/unstar')
+  @Post('unstar')
   async hackerUnStarController(@Body() request: StarRequest) {
     try {
       const { uuid: postUuid, email } = await hackerNewsUnStarValidator(request);
