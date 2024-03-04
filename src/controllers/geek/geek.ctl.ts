@@ -1,5 +1,5 @@
 import { Body, Controller, Post, Query } from '@nestjs/common';
-import { hadaNewsStarValidator, hadaNewsUnStarValidator, hadaNewsValidator } from '@validators/hada.validator';
+import { geekNewsStarValidator, geekNewsUnStarValidator, geekNewsValidator } from '@validators/geek.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { GeekProvider } from 'providers/news/geek/geek.pvd';
 import { DailyHadaNewsRequest } from 'types/geek.type';
@@ -16,7 +16,7 @@ export class GeekController {
     @Query('size') size: number,
   ) {
     try {
-      const { today } = await hadaNewsValidator(request);
+      const { today } = await geekNewsValidator(request);
 
       const { result, total } = await this.geek.getNews(today, page, size);
 
@@ -29,7 +29,7 @@ export class GeekController {
   @Post('star')
   async geekGiveStarController(@Body() request: StarRequest) {
     try {
-      const { uuid: postUuid, email } = await hadaNewsStarValidator(request);
+      const { uuid: postUuid, email } = await geekNewsStarValidator(request);
 
       await this.geek.giveStar(postUuid, email);
 
@@ -42,7 +42,7 @@ export class GeekController {
   @Post('unstar')
   async geekUnStarController(@Body() request: StarRequest) {
     try {
-      const { uuid: postUuid, email } = await hadaNewsUnStarValidator(request);
+      const { uuid: postUuid, email } = await geekNewsUnStarValidator(request);
 
       await this.geek.unStar(postUuid, email);
 

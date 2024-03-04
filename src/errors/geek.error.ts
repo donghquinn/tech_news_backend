@@ -1,4 +1,4 @@
-export class HadaError extends Error {
+export class GeekError extends Error {
   type: string;
 
   constructor(type: string, message: string, cause?: Error) {
@@ -6,7 +6,7 @@ export class HadaError extends Error {
 
     this.type = type;
 
-    this.name = '[Hada Error]';
+    this.name = '[Geek Error]';
 
     this.cause = cause;
   }

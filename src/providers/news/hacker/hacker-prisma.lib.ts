@@ -1,5 +1,4 @@
 import { HackerError } from '@errors/hacker.error';
-import { PrismaError } from '@errors/prisma.error';
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { NewsLogger } from '@utils/logger.util';
@@ -23,12 +22,12 @@ export class HackerPrismaLibrary extends PrismaClient {
 
       return result;
     } catch (error) {
-      NewsLogger.error('[ML] Bring Geek News Error: %o', {
+      NewsLogger.error('[HACKER] Bring Hacker News Error: %o', {
         error,
       });
 
-      throw new PrismaError(
-        '[ML] Bring Geek News',
+      throw new HackerError(
+        '[HACKER] Bring Hacker News',
         'Bring Geek News Error. Please Try Again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
@@ -48,12 +47,12 @@ export class HackerPrismaLibrary extends PrismaClient {
 
       return Math.ceil(totalCounts / size);
     } catch (error) {
-      NewsLogger.error('[HADA] Bring Total Hackers News Count Error: %o', {
+      NewsLogger.error('[HACKER] Bring Total Hackers News Count Error: %o', {
         error,
       });
 
-      throw new PrismaError(
-        '[HADA] Bring Total Hackers News Count',
+      throw new HackerError(
+        '[HACKER] Bring Total Hackers News Count',
         'Bring Total Hackers News Count Error. Please Try Again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
@@ -77,20 +76,20 @@ export class HackerPrismaLibrary extends PrismaClient {
         },
       });
 
-      if (isStarred === null) throw new HackerError('[Hacker] Get Star Info', 'No Star Info Found.');
+      if (isStarred === null) throw new HackerError('[HACKER] Get Star Info', 'No Star Info Found.');
 
-      NewsLogger.debug('[Hacker] Found Is Starred Info: %o', {
+      NewsLogger.debug('[HACKER] Found Is Starred Info: %o', {
         isLiked: isStarred.hacker_news.liked,
       });
 
       return { uuid: isStarred.uuid, isLiked: isStarred.hacker_news.liked };
     } catch (error) {
-      NewsLogger.error('[Hacker] Check Hada News Liked Info Error: %o', {
+      NewsLogger.error('[HACKER] Check Hacker News Liked Info Error: %o', {
         error,
       });
 
       throw new HackerError(
-        '[Hacker] Check Hada News Liked Info',
+        '[HACKER] Check Hacker News Liked Info',
         'Check Hada News Liked Info Error.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
@@ -99,7 +98,7 @@ export class HackerPrismaLibrary extends PrismaClient {
 
   async updateHackerNewsLikedtoUnliked(likedUuid: string, postUuid: string, clientUuid: string): Promise<void> {
     try {
-      NewsLogger.debug('[Hacker] Give Hada News unStar Request: %o', {
+      NewsLogger.debug('[HACKER] Give Hacker News unStar Request: %o', {
         likedUuid,
         postUuid,
         clientUuid,
@@ -119,14 +118,14 @@ export class HackerPrismaLibrary extends PrismaClient {
           userUuid: clientUuid,
         },
       });
-      NewsLogger.info('[Hacker] Unstarred Updated');
+      NewsLogger.info('[HACKER] Unstarred Updated');
     } catch (error) {
-      NewsLogger.error('[Hacker] Update Liked to UnLiked Error: %o', {
+      NewsLogger.error('[HACKER] Update Liked to UnLiked Error: %o', {
         error,
       });
 
       throw new HackerError(
-        '[Hacker] Update Liked to UnLiked',
+        '[HACKER] Update Liked to UnLiked',
         'Update Liked to UnLiked Error.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
@@ -135,7 +134,7 @@ export class HackerPrismaLibrary extends PrismaClient {
 
   async updateHackerNewsLiked(likedUuid: string, postUuid: string, clientUuid: string): Promise<void> {
     try {
-      NewsLogger.debug('[Hacker] Give Hacker News Star Request: %o', {
+      NewsLogger.debug('[HACKER] Give Hacker News Star Request: %o', {
         likedUuid,
         postUuid,
         clientUuid,
@@ -156,14 +155,14 @@ export class HackerPrismaLibrary extends PrismaClient {
         },
       });
 
-      NewsLogger.info('[Hacker] Starred Updated');
+      NewsLogger.info('[HACKER] Starred Updated');
     } catch (error) {
-      NewsLogger.error('[Hacker] Update News Liked Error: %o', {
+      NewsLogger.error('[HACKER] Update News Liked Error: %o', {
         error,
       });
 
       throw new HackerError(
-        '[Hacker] Update News Liked',
+        '[HACKER] Update News Liked',
         'Update News Liked Error.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
@@ -208,7 +207,7 @@ export class HackerPrismaLibrary extends PrismaClient {
       //   skip: (page - 1) * size,
       // });
 
-      NewsLogger.debug('[Hacker] Founded Starred News: %o', {
+      NewsLogger.debug('[HACKER] Founded Starred News: %o', {
         totalPosts,
         newsSize: starredNews.length,
       });
@@ -218,12 +217,12 @@ export class HackerPrismaLibrary extends PrismaClient {
         starredNews,
       };
     } catch (error) {
-      NewsLogger.error('[Hacker] Get Starred News Error: %o', {
+      NewsLogger.error('[HACKER] Get Starred News Error: %o', {
         error,
       });
 
       throw new HackerError(
-        '[Hacker] Get Starred News',
+        '[HACKER] Get Starred News',
         'Get Starred News Error.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );

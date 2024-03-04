@@ -1,7 +1,7 @@
 import { AuthError } from '@errors/auth.error';
 import { ClientError } from '@errors/client.error';
 import { HackerError } from '@errors/hacker.error';
-import { HadaError } from '@errors/hada.error';
+import { HadaError } from '@errors/geek.error';
 import { MachineLearningError } from '@errors/machine.error';
 import { PrismaError } from '@errors/prisma.error';
 import { ValidatorError } from '@errors/validator.error';

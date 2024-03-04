@@ -1,4 +1,4 @@
-import { HadaError } from '@errors/hada.error';
+import { GeekError } from '@errors/geek.error';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
@@ -32,7 +32,7 @@ export class GeekProvider {
         size,
       });
 
-      const result = await this.prisma.bringHadaNews(startDate, endDate, page, size);
+      const result = await this.prisma.bringGeekNews(startDate, endDate, page, size);
 
       for (let i = 0; i <= result.length - 1; i += 1) {
         const isUrlUndefined = result[i].descLink.split('.io/')[1];
@@ -80,7 +80,7 @@ export class GeekProvider {
         error,
       });
 
-      throw new HadaError(
+      throw new GeekError(
         '[GEEK] Bring news',
         'Bring Hada News Error. Please Try Again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
@@ -92,20 +92,20 @@ export class GeekProvider {
     try {
       const isLogined = await this.account.getItem(email);
 
-      if (isLogined === null) throw new HadaError('[GEEK] Give Star on the Stars', 'No Logined User Found.');
+      if (isLogined === null) throw new GeekError('[GEEK] Give Star on the Stars', 'No Logined User Found.');
 
       const { uuid: clientUuid } = isLogined;
-      const { uuid: likedUuid, liked } = await this.prisma.checkHadaNewsIsLiked(postUuid, clientUuid);
+      const { uuid: likedUuid, liked } = await this.prisma.checkGeekNewsIsLiked(postUuid, clientUuid);
 
       if (!liked) {
-        await this.prisma.updateHadaNewsLiked(likedUuid, postUuid, clientUuid);
+        await this.prisma.updateGeekNewsLiked(likedUuid, postUuid, clientUuid);
       }
     } catch (error) {
       NewsLogger.error('[GEEK] Star Update Error: %o', {
         error,
       });
 
-      throw new HadaError(
+      throw new GeekError(
         '[GEEK] Give Star on the news',
         'Failed to vie star news',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
@@ -117,12 +117,12 @@ export class GeekProvider {
     try {
       const isLogined = await this.account.getItem(email);
 
-      if (isLogined === null) throw new HadaError('[GEEK] Give Star on the Stars', 'No Logined User Found.');
+      if (isLogined === null) throw new GeekError('[GEEK] Give Star on the Stars', 'No Logined User Found.');
 
       const { uuid: clientUuid } = isLogined;
-      const { uuid: likedUuid, liked } = await this.prisma.checkHadaNewsIsLiked(postUuid, clientUuid);
+      const { uuid: likedUuid, liked } = await this.prisma.checkGeekNewsIsLiked(postUuid, clientUuid);
 
-      if (liked) await this.prisma.updateHadaNewsLikedtoUnliked(likedUuid, postUuid, clientUuid);
+      if (liked) await this.prisma.updateGeekNewsLikedtoUnliked(likedUuid, postUuid, clientUuid);
 
       NewsLogger.info('[GEEK] Finished UnStar Geek News');
     } catch (error) {
@@ -130,7 +130,7 @@ export class GeekProvider {
         error,
       });
 
-      throw new HadaError(
+      throw new GeekError(
         '[GEEK] Finished UnStar Geek News',
         'Failed to Finished UnStar Geek News. Please Try Again.',
         error instanceof Error ? error : new Error(JSON.stringify(error)),

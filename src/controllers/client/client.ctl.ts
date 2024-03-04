@@ -44,7 +44,6 @@ export class ClientController {
 
       const encodedEmail = await this.client.login(email, password);
 
-      
       return new SetResponse(200, { email: encodedEmail });
     } catch (error) {
       return new SetErrorResponse(error);
