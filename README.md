@@ -33,7 +33,7 @@
 
 - Login Function is Work-In-Progress with frontend.
 
-<img src="erd_news.png"/>
+<img src="images/erd_news.png"/>
 <em>E-R Diagram</em>
 
 ---
