@@ -2,27 +2,36 @@
 
 - Scrape Page: https://scrape.donghyuns.com
 
-## Data ERD
-
-- Login Function is Work-In-Progress with frontend.
-
-<img src="erd_news.png"/>
-<em>E-R Diagram</em>
-
 ## Hacker News
 
 - Original URL: https://news.ycombinator.com
 - Hacker News 1~30위
+
+<img src="hacker.png"/>
+<em>Hacker News</em>
 
 ## ML News
 
 - Original URL: https://allainews.com/?ref=mlnews
 - Machine Learning 관련 뉴스
 
+<img src="ml.png" />
+<em>Machine Learning News</em>
+
 ## Geek News
 
 - Original URL: https://news.hada.io
 - Geek News
+
+<img src="geek.png" />
+<em>Geek News</em>
+
+## Data ERD
+
+- Login Function is Work-In-Progress with frontend.
+
+<img src="erd_news.png"/>
+<em>E-R Diagram</em>
 
 ---
 
