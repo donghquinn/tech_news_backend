@@ -36,6 +36,33 @@
 <img src="images/erd_news.png"/>
 <em>E-R Diagram</em>
 
+## 환경변수 설정
+
+각각 서비스 구동에 필요한 환경변수와 db에 사용할 환경변수를 작성한다.
+
+- .env
+  - APP_PORT=
+  - DATABASE_URL="postgresql://user:password@DB_SERVER_IP:DB_PORT/DB_NAME?schema=public"
+
+  - SESSION_SECRET=
+  - SECRET_KEY=
+  - AUTH_KEY=
+
+  - REDIS_HOST="redis://user:password@redis_server:port"
+  - REDIS_PORT=
+  - REDIS_TIMEOUT=
+
+  - REDIS_USER=
+  - REDIS_PASS=
+
+  - GMAIL_USER=
+  - GMAIL_PASSWORD=
+
+- .postgres.env
+  - POSTGRES_USER=user
+  - POSTGRES_PASSWORD=password
+  - POSTGRES_DB=DB_NAME
+
 ---
 
 --- Legacy ---
@@ -78,20 +105,6 @@
       yarn run db:update
       ```
 
-## 환경변수 설정
-
-각각 서비스 구동에 필요한 환경변수와 db에 사용할 환경변수를 작성한다.
-
-- .env
-  - APP_PORT=
-  - DATABASE_URL="postgresql://user:password@DB_SERVER_IP:DB_PORT/DB_NAME?schema=public"
-  - SESSION_SECRET=
-  - AUTH_KEY=
-
-- .postgres.env
-  - POSTGRES_USER=user
-  - POSTGRES_PASSWORD=password
-  - POSTGRES_DB=DB_NAME
 
 ## 구동
 
