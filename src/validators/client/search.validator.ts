@@ -1,6 +1,6 @@
+import { Logger } from '@utils/logger.util';
 import { ValidatorError } from 'errors/validator.error';
-import { SearchEmailRequest, SearchPasswordRequest, ValidatePasswordKeyRequest } from 'types/search.type';
-import { Logger } from 'utils/logger.utils';
+import { SearchEmailRequest, SearchPasswordRequest, ValidatePasswordKeyRequest } from 'types/password.type';
 import { z } from 'zod';
 
 export const searchEmailRequestValidator = async (request: SearchEmailRequest) => {

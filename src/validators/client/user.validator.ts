@@ -1,6 +1,7 @@
+import { Logger } from '@utils/logger.util';
 import { ValidatorError } from 'errors/validator.error';
 import { ChangePasswordRequest, ChangeTitleRequest } from 'types/user.type';
-import { Logger } from 'utils/logger.utils';
+
 import { z } from 'zod';
 
 export const changePasswordValidator = async (request: ChangePasswordRequest) => {
