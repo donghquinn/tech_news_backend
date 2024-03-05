@@ -2,12 +2,15 @@
 
 - Scrape Page: https://scrape.donghyuns.com
 
+<img src="images/landing.png"/>
+<em>Landing Page</em>
+
 ## Hacker News
 
 - Original URL: https://news.ycombinator.com
 - Hacker News 1~30위
 
-<img src="hacker.png"/>
+<img src="images/hacker.png"/>
 <em>Hacker News</em>
 
 ## ML News
@@ -15,7 +18,7 @@
 - Original URL: https://allainews.com/?ref=mlnews
 - Machine Learning 관련 뉴스
 
-<img src="ml.png" />
+<img src="images/ml.png" />
 <em>Machine Learning News</em>
 
 ## Geek News
@@ -23,7 +26,7 @@
 - Original URL: https://news.hada.io
 - Geek News
 
-<img src="geek.png" />
+<img src="images/geek.png" />
 <em>Geek News</em>
 
 ## Data ERD
