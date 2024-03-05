@@ -1,18 +1,27 @@
-# Data Scraping
+# Tech News Backend
+
+- Scrape Page: https://scrape.donghyuns.com
+
+## Data ERD
+
+- Login Function is Work-In-Progress with frontend.
+
+<img src="erd_news.png"/>
+<em>E-R Diagram</em>
 
 ## Hacker News
 
-- URL: https://news.ycombinator.com
+- Original URL: https://news.ycombinator.com
 - Hacker News 1~30위
 
 ## ML News
 
-- URL: https://allainews.com/?ref=mlnews
+- Original URL: https://allainews.com/?ref=mlnews
 - Machine Learning 관련 뉴스
 
 ## Geek News
 
-- URL: https://news.hada.io
+- Original URL: https://news.hada.io
 - Geek News
 
 ---
@@ -39,13 +48,13 @@
     로컬에 npm/yarn과 prisma를 설치한다
     로컬이 아니더라도 작업할 환경에서
 
-    ```
+    ```shell
     npm run migrate
     ```
 
     혹은
 
-    ```
+    ```shell
     yarn run migrate
     ```
 
@@ -53,7 +62,7 @@
 
     * 이미 실행 중에 데이터베이스 스키마가 변경되었을 떄
 
-      ```
+      ```shell
       yarn run db:update
       ```
 
@@ -76,12 +85,12 @@
 
     후에 db 컨테이너 구동
 
-    ```
+    ```shell
     sudo docker-compose up -d db
     ```
 
     그 후에 백엔드 컨테이너 구동
 
-    ```
+    ```shell
     sudo docker-compose up -d backend
     ```
