@@ -13,7 +13,6 @@
 <img src="images/hacker.png"/>
 <em>Hacker News</em>
 
-
 ## ML News
 
 - Original URL: https://allainews.com/?ref=mlnews
@@ -81,29 +80,29 @@
 
 ## 환경변수 설정
 
-    각각 서비스 구동에 필요한 환경변수와 db에 사용할 환경변수를 작성한다.
+각각 서비스 구동에 필요한 환경변수와 db에 사용할 환경변수를 작성한다.
 
-    - .env
-      > APP_PORT=
-      > DATABASE_URL="postgresql://user:password@DB_SERVER_IP:DB_PORT/DB_NAME?schema=public"
-      > SESSION_SECRET=
-      > AUTH_KEY=
+- .env
+  - APP_PORT=
+  - DATABASE_URL="postgresql://user:password@DB_SERVER_IP:DB_PORT/DB_NAME?schema=public"
+  - SESSION_SECRET=
+  - AUTH_KEY=
 
-    - .postgres.env
-      > POSTGRES_USER=user
-      > POSTGRES_PASSWORD=password
-      > POSTGRES_DB=DB_NAME
+- .postgres.env
+  - POSTGRES_USER=user
+  - POSTGRES_PASSWORD=password
+  - POSTGRES_DB=DB_NAME
 
 ## 구동
 
-    후에 db 컨테이너 구동
+  후에 db 컨테이너 구동
 
-    ```shell
-    sudo docker-compose up -d db
-    ```
+```shell
+  sudo docker-compose up -d db
+```
 
-    그 후에 백엔드 컨테이너 구동
+그 후에 백엔드 컨테이너 구동
 
-    ```shell
-    sudo docker-compose up -d backend
-    ```
+```shell
+  sudo docker-compose up -d backend
+  ```
