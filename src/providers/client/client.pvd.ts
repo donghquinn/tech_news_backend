@@ -1,8 +1,12 @@
-import { ClientError } from '@errors/client.error';
+import { ClientError, NoUserError } from '@errors/client.error';
+import { NoValidateKeyError, PasswordError } from '@errors/password.error';
 import { comparePassword, decrypt } from '@libraries/client/decrypt.lib';
 import { cryptData } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
+import { createSearchPasswordMailcontent } from '@utils/mail.utils';
+import { randomBytes } from 'crypto';
+import { MailerProvider } from 'providers/mailer.pvd';
 import { clearIntervalAsync, setIntervalAsync } from 'set-interval-async';
 import { HadaNewsReturn } from 'types/geek.type';
 import { AccountManager } from '../auth/account-manager.pvd';
@@ -13,9 +17,10 @@ export class ClientProvider {
   constructor(
     private readonly prisma: ClientPrismaLibrary,
     private readonly accountManager: AccountManager,
+    private readonly mailer: MailerProvider,
   ) {}
 
-  async checkEmailandSignup(email: string, password: string) {
+  async checkEmailandSignup(email: string, password: string, name: string) {
     try {
       await this.prisma.checkIsEmailExist(email);
 
@@ -27,7 +32,7 @@ export class ClientProvider {
 
       const { encodedData: encodedPassword, encodedToken: passwordToken } = cryptData(password);
 
-      const uuid = await this.prisma.insertNewClient(email, encodedPassword, passwordToken);
+      const uuid = await this.prisma.insertNewClient(email, name, encodedPassword, passwordToken);
 
       ClientLogger.info('[Signup] Data Insert Success');
 
@@ -47,7 +52,7 @@ export class ClientProvider {
 
   async login(email: string, password: string) {
     try {
-      const userInfo = await this.prisma.selectUserInfoByMail(email);
+      const userInfo = await this.prisma.selectUserInfo(email);
 
       if (userInfo === null) {
         ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
@@ -349,6 +354,140 @@ export class ClientProvider {
       throw new ClientError(
         '[MYPAGE] Get My Page',
         'Get My Page Error. Please try again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async searchPassword(email: string, name: string) {
+    try {
+      // 찾기
+      const result = await this.prisma.selectUserInfo(email, name);
+
+      if (result === null) throw new NoUserError('[SEARCH_PASS] Search Password', 'No User Found');
+
+      // TODO String Encoding
+      const randomKey = randomBytes(8).toString('hex');
+      // const { encodedData: encodedPassword, dataToken: passwordToken } = cryptData(randomPassword);
+
+      const mailContent = createSearchPasswordMailcontent(randomKey);
+
+      const { password, password_token: token } = result;
+
+      await this.accountManager.setTempData(randomKey, email, password, token);
+
+      await this.mailer.sendMail(email, 'Search Password', mailContent);
+
+      ClientLogger.debug('[SEARCH_PASS] Sent New Password Complete');
+
+      return 'Sent';
+    } catch (error) {
+      ClientLogger.error('[SEARCH_PASS] Search Password Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[SEARCH_PASS] Search Password',
+        'Search Password Error',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async validateSearchingPasswordKey(tempKey: string) {
+    try {
+      // 찾기
+      const tempItem = await this.accountManager.getTempData(tempKey);
+
+      if (tempItem === null)
+        throw new NoValidateKeyError('[VALIDATE_KEY] Validate Password Searching Key', 'No Matching Key Found');
+
+      const { password, token } = tempItem;
+
+      const rawPassword = decrypt(password, token);
+
+      ClientLogger.debug('[VALIDATE_KEY] Validate Password Searching Key Complete');
+
+      return rawPassword;
+    } catch (error) {
+      ClientLogger.error('[VALIDATE_KEY] Validate Password Searching Key Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[VALIDATE_KEY] Validate Password Searching Key',
+        'Validate Password Searching Key Error',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async searchEmail(name: string) {
+    try {
+      const result = await this.prisma.findEmail(name);
+
+      if (result === null) throw new NoUserError('[SEARCH_EMAIL] Find Email', 'No Matching Data Found');
+
+      const { email } = result;
+
+      ClientLogger.debug('[SEARCH_EMAIL] Finding Email Complete');
+
+      return email;
+    } catch (error) {
+      ClientLogger.error('[SEARCH_EMAIL] Finding Email Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[SEARCH_EMAIL] Finding Email',
+        'Finding Email Error',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async changePassword(encodedEmail: string, password: string, newPassword: string) {
+    try {
+      const loginInfo = await this.accountManager.getItem(encodedEmail);
+
+      if (loginInfo === null) throw new NoUserError('[CHANGE_PASS] Change Password', 'No User Data Found');
+
+      const { token: redisToken } = loginInfo;
+
+      const email = decrypt(encodedEmail, redisToken);
+
+      // 찾기
+      const result = await this.prisma.selectUserInfo(email);
+
+      if (result === null) {
+        ClientLogger.error('[CHANGE_PASS] Error. No matching User Found.: %o', {
+          email,
+        });
+
+        throw new NoUserError('[CHANGE_PASS] Login', 'No Matching Info. Please Make sure you Logged Out Before.');
+      }
+
+      const { password: dbPassword, password_token: token, uuid } = result;
+
+      const isMatch = comparePassword(password, dbPassword, token);
+
+      if (!isMatch) throw new PasswordError('[CHANGE_PASS] Changing Password', 'Password Is Not Match');
+
+      const { encodedData: encodedPassword, encodedToken: passwordToken } = cryptData(newPassword);
+
+      await this.prisma.updateNewPassword(uuid, encodedPassword, passwordToken);
+
+      ClientLogger.debug('[CHANGE_PASS] Changing Password Complete');
+
+      return 'success';
+    } catch (error) {
+      ClientLogger.error('[CHANGE_PASS] Change Password Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[CHANGE_PASS] Change Password',
+        'Change Password Error',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
