@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ClientLogger, ManagerLogger } from '@utils/logger.util';
 import { RedisClientType, createClient } from 'redis';
 import { ClientLoginItem } from 'types/client.type';
+import { ValidateKeyItem } from 'types/password.type';
 
 @Injectable()
 export class AccountManager {
@@ -147,6 +148,63 @@ export class AccountManager {
     }
   }
 
+  async setTempData(tempKey: string, email: string, password: string, token: string) {
+    try {
+      await this.redis.connect();
+
+      const validateItem: ValidateKeyItem = {
+        email,
+        password,
+        token,
+      };
+
+      await this.redis.set(tempKey, JSON.stringify(validateItem), {
+        EX: 60 * 3,
+      });
+
+      await this.redis.disconnect();
+
+      return true;
+    } catch (error) {
+      ManagerLogger.error('[VALIDATE_KEY] Set Temp Key Error: %o', {
+        error,
+      });
+
+      throw new RedisError(
+        '[VALIDATE_KEY] Set Temp Key',
+        'Set Temp Key Error',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async getTempData(tempKey: string) {
+    try {
+      await this.redis.connect();
+
+      const result = await this.redis.get(tempKey);
+
+      if (result === null) return null;
+
+      const returnData = JSON.parse(result) as ValidateKeyItem;
+
+      await this.redis.del(tempKey);
+
+      await this.redis.disconnect();
+
+      return returnData;
+    } catch (error) {
+      ManagerLogger.error('[VALIDATE_KEY] Get Temp Key Error: %o', {
+        error,
+      });
+
+      throw new RedisError(
+        '[ VALIDATE_KEY ] Get Temp Key',
+        'Get Temp Key Error',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
   //      public stop() {
   //     if (this.isListening) {
   //       this.isListening = false;

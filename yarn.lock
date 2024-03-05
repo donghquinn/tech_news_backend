@@ -1323,6 +1323,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/nodemailer@npm:^6.4.14":
+  version: 6.4.14
+  resolution: "@types/nodemailer@npm:6.4.14"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10/0f7e93a7fda5cc72ca3214ad2780fc251f7dcfb9a5b2d0616927fa4a700c82b024ce0a5134dfac52429f4d08429d1af027002e9ed385bd3cb6224c890598bf03
+  languageName: node
+  linkType: hard
+
 "@types/qs@npm:*":
   version: 6.9.12
   resolution: "@types/qs@npm:6.9.12"
@@ -5108,6 +5117,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nodemailer@npm:^6.9.11":
+  version: 6.9.11
+  resolution: "nodemailer@npm:6.9.11"
+  checksum: 10/6e049d8931f2f3c7af3a871132d9d6013a4229dc011acffb940d1b99bba64144bc3048c23d6daa4a4bb9f706dc9350ceb6679dcaf7658be1fd5094d10f3261ea
+  languageName: node
+  linkType: hard
+
 "nopt@npm:^7.0.0":
   version: 7.2.0
   resolution: "nopt@npm:7.2.0"
@@ -6266,6 +6282,7 @@ __metadata:
     "@types/express": "npm:^4.17.21"
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.11.24"
+    "@types/nodemailer": "npm:^6.4.14"
     "@typescript-eslint/eslint-plugin": "npm:^7.1.0"
     "@typescript-eslint/parser": "npm:^7.1.0"
     cookie-parser: "npm:^1.4.6"
@@ -6281,6 +6298,7 @@ __metadata:
     jest: "npm:^29.7.0"
     moment-timezone: "npm:^0.5.43"
     node-fetch: "npm:^3.3.2"
+    nodemailer: "npm:^6.9.11"
     prettier: "npm:^3.2.5"
     prisma: "npm:^5.10.2"
     redis: "npm:^4.6.13"

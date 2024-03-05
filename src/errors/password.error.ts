@@ -1,24 +1,24 @@
-export class ClientError extends Error {
+export class PasswordError extends Error {
   type: string;
 
   constructor(type: string, message: string, cause?: Error) {
     super(message);
 
-    this.type = type;
+    this.name = '[Password Error]';
 
-    this.name = '[Client Error]';
+    this.type = type;
 
     this.cause = cause;
   }
 }
 
-export class NoUserError extends Error {
+export class NoValidateKeyError extends Error {
   type: string;
 
   constructor(type: string, message: string, cause?: Error) {
     super(message);
 
-    this.name = '[No User Error]';
+    this.name = '[Validate Key Error]';
 
     this.type = type;
 

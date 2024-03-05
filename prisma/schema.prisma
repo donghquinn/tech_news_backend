@@ -13,6 +13,7 @@ datasource db {
 model Client{
   uuid String @id @default(uuid())
   email String @unique
+  name String
   password String
   password_token String
   is_logined Int  @default(0)

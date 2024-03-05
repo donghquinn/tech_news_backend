@@ -35,11 +35,12 @@ export class ClientPrismaLibrary extends PrismaClient {
     }
   }
 
-  async insertNewClient(email: string, encodedPassword: string, passwordToken: string) {
+  async insertNewClient(email: string, name: string, encodedPassword: string, passwordToken: string) {
     try {
       const { uuid } = await this.client.create({
         data: {
           email,
+          name,
           password: encodedPassword,
           password_token: passwordToken,
         },
@@ -59,7 +60,7 @@ export class ClientPrismaLibrary extends PrismaClient {
     }
   }
 
-  async selectUserInfoByMail(email: string) {
+  async selectUserInfo(email: string, name?: string) {
     try {
       const userInfo = await this.client.findFirst({
         select: {
@@ -69,6 +70,7 @@ export class ClientPrismaLibrary extends PrismaClient {
         },
         where: {
           email,
+          name,
         },
       });
 
@@ -323,6 +325,55 @@ export class ClientPrismaLibrary extends PrismaClient {
       throw new ClientError(
         '[STARRED] Get Starred News',
         'Get Starred News Error.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async findEmail(name: string) {
+    try {
+      const result = await this.client.findFirst({
+        select: {
+          email: true,
+        },
+        where: {
+          name,
+        },
+      });
+
+      return result;
+    } catch (error) {
+      ClientLogger.error('[CHANGE_PASS] Update New Password Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[CHANGE_PASS] Update New Password',
+        'Update New Password Error',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
+  async updateNewPassword(userUuid: string, newEncodedPassword: string, newEncodedToken: string) {
+    try {
+      await this.client.update({
+        data: {
+          password: newEncodedPassword,
+          password_token: newEncodedToken,
+        },
+        where: {
+          uuid: userUuid,
+        },
+      });
+    } catch (error) {
+      ClientLogger.error('[CHANGE_PASS] Update New Password Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[CHANGE_PASS] Update New Password',
+        'Update New Password Error',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
