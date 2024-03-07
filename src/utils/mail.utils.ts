@@ -2,7 +2,7 @@ export const createSearchPasswordMailcontent = (rawPassword: string) =>
   `
     <div>
         <fieldset>
-         <p>New Password: </p> ${rawPassword}
+         <p>Validate Key: </p> ${rawPassword}
         </fieldset>
     </div>
 `;
