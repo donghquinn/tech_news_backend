@@ -9,9 +9,9 @@ import { ClientStarProvider } from 'providers/client/star.pvd';
 import { AccountManagerModule } from './account.module';
 import { ClientPrismaModule } from './client-prisma.module';
 
-@Module({
+@Module( {
+  controllers: [ClientController, ClientSearchController, ClientStarController],
   providers: [ClientProvider, ClientSearchProvider, ClientStarProvider],
   imports: [AccountManagerModule, ClientPrismaModule, MailerModule],
-  controllers: [ClientController, ClientSearchController, ClientStarController],
 })
 export class ClientModule {}
