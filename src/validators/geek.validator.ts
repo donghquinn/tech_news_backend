@@ -1,10 +1,10 @@
 import { ValidatorError } from '@errors/validator.error';
 import { Logger } from '@utils/logger.util';
-import { DailyHadaNewsRequest } from 'types/geek.type';
+import { DailyGeekNewsRequest } from 'types/geek.type';
 import { StarRequest } from 'types/request.type';
 import { z } from 'zod';
 
-export const geekNewsValidator = async (request: DailyHadaNewsRequest) => {
+export const geekNewsValidator = async (request: DailyGeekNewsRequest) => {
   try {
     const scheme = z.object({ today: z.string() });
 

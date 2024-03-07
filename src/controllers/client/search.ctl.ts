@@ -5,12 +5,12 @@ import {
   validatePasswordTempKeyRequestValidator,
 } from '@validators/client/search.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
-import { ClientProvider } from 'providers/client/client.pvd';
+import { ClientSearchProvider } from 'providers/client/search.pvd';
 import { SearchEmailRequest, SearchPasswordRequest, ValidatePasswordKeyRequest } from 'types/password.type';
 
 @Controller('users/search')
 export class ClientSearchController {
-  constructor(private readonly client: ClientProvider) {}
+  constructor(private readonly client: ClientSearchProvider) {}
 
   @Post('email')
   async searchEmailController(@Body() request: SearchEmailRequest) {

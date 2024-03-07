@@ -1,12 +1,12 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { clientMyPageStarNewsValidator } from '@validators/client/mypage.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
-import { ClientProvider } from 'providers/client/client.pvd';
+import { ClientStarProvider } from 'providers/client/star.pvd';
 import { ClientMyPageStarNewsRequest } from 'types/client.type';
 
 @Controller('users/star')
 export class ClientStarController {
-  constructor(private readonly client: ClientProvider) {}
+  constructor(private readonly client: ClientStarProvider) {}
 
   @Post('star/hacker')
   async getHackerStarNewsController(@Body() request: ClientMyPageStarNewsRequest) {

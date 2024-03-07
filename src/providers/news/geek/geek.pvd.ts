@@ -4,12 +4,12 @@ import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
 import { AccountManager } from 'providers/auth/account-manager.pvd';
-import { HadaNewsReturn } from 'types/geek.type';
+import { GeekNewsReturn } from 'types/geek.type';
 import { GeekPrismaLibrary } from './geek-prisma.lib';
 
 @Injectable()
 export class GeekProvider {
-  private resultNewsArray: Array<HadaNewsReturn>;
+  private resultNewsArray: Array<GeekNewsReturn>;
 
   constructor(
     private readonly prisma: GeekPrismaLibrary,

@@ -2,7 +2,7 @@ import { Body, Controller, Post, Query } from '@nestjs/common';
 import { geekNewsStarValidator, geekNewsUnStarValidator, geekNewsValidator } from '@validators/geek.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { GeekProvider } from 'providers/news/geek/geek.pvd';
-import { DailyHadaNewsRequest } from 'types/geek.type';
+import { DailyGeekNewsRequest } from 'types/geek.type';
 import { StarRequest } from 'types/request.type';
 
 @Controller('geek')
@@ -11,7 +11,7 @@ export class GeekController {
 
   @Post('news')
   async geekGetLatestNewsController(
-    @Body() request: DailyHadaNewsRequest,
+    @Body() request: DailyGeekNewsRequest,
     @Query('page') page: number,
     @Query('size') size: number,
   ) {
