@@ -378,4 +378,25 @@ export class ClientPrismaLibrary extends PrismaClient {
       );
     }
   }
+
+  async findUser(email: string, name?: string) {
+    try {
+      const result = await this.client.findFirst({
+        where: { email, name },
+        select: { uuid: true, password: true, password_token: true },
+      });
+
+      return result;
+    } catch (error) {
+      ClientLogger.error('[LOGOUT] Find User Error: %o', {
+        error,
+      });
+
+      throw new ClientError(
+        '[LOGOUT] Find User',
+        'Find User Error',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
 }
