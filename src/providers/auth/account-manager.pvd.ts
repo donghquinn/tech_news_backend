@@ -92,9 +92,12 @@ export class AccountManager {
       };
 
       // this.userMap.set( key, { uuid, address, privateKey, pkToken } );
-      this.keyList.push(encodedEmail);
+      this.keyList.push( encodedEmail );
+      
       await this.redis.connect();
-      await this.redis.set(encodedEmail, JSON.stringify(setItem));
+      await this.redis.set( encodedEmail, JSON.stringify( setItem ), {
+        EX: 60 * 60,
+      });
       await this.redis.disconnect();
 
       return true;

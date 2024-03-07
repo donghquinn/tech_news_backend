@@ -49,9 +49,9 @@ export class ClientSearchController {
     try {
       const { tempKey } = await validatePasswordTempKeyRequestValidator(request);
 
-      const message = await this.client.validateSearchingPasswordKey(tempKey);
+      const password = await this.client.validateSearchingPasswordKey(tempKey);
 
-      return new SetResponse(200, { message });
+      return new SetResponse(200, { password });
     } catch (error) {
       return new SetErrorResponse(error);
     }
