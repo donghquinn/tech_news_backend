@@ -366,7 +366,6 @@ export class ClientProvider {
 
       if (result === null) throw new NoUserError('[SEARCH_PASS] Search Password', 'No User Found');
 
-      // TODO String Encoding
       const randomKey = randomBytes(8).toString('hex');
       // const { encodedData: encodedPassword, dataToken: passwordToken } = cryptData(randomPassword);
 

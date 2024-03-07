@@ -16,7 +16,7 @@ model Client{
   name String
   password String
   password_token String
-  is_logined Int  @default(0)
+  is_logined Boolean @default(false)
   signed_in DateTime @default(now())
   logined DateTime @updatedAt
   liked_hacker_posts Hacker_Liked[]
