@@ -1,5 +1,7 @@
-import { ClientLogger } from '@utils/logger.util';
+import { CryptoError } from '@errors/crypto.error';
+import { ClientLogger, Logger } from '@utils/logger.util';
 import { createDecipheriv } from 'crypto';
+import CryptoJS from 'crypto-js';
 
 export const decrypt = (encryptedString: string, token: string): string => {
   const secretKey = process.env.SECRET_KEY!;
@@ -24,4 +26,34 @@ export const comparePassword = (receivedPassword: string, encodedPassword: strin
   });
 
   return receivedPassword === decryptedPassword;
+};
+
+/**
+ *
+ * @param encryptedData 암호화 된 원본 패스워드 복호화
+ * @returns 원본 패스워드
+ */
+export const decryptPassword = (encryptedData: string): string => {
+  const secretKey = process.env.CIPHER_KEY;
+
+  try {
+    if (!secretKey) {
+      throw new CryptoError('[DECRYPT] Cipher Key Validation', 'Secret key is undefined');
+    }
+
+    const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
+    const originalText = bytes.toString(CryptoJS.enc.Utf8);
+
+    return originalText;
+  } catch (error) {
+    Logger.error('[DECRYPT] Decrypt Encrypted Data Error:', {
+      error,
+    });
+
+    throw new CryptoError(
+      '[DECRYPT] Decrypt encrypted data',
+      'Failed to decrypt data',
+      error instanceof Error ? error : new Error(JSON.stringify(error)),
+    );
+  }
 };
