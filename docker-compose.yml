@@ -17,10 +17,10 @@ services:
   backend:
     depends_on:
       - redis
-    # image: ${REGISTRY_URL}
-    build:
-      context: .
-      dockerfile: ./Dockerfile-deploy
+    image: ${REGISTRY_URL}
+    # build:
+    #   context: .
+    #   dockerfile: ./Dockerfile-deploy
     container_name: news_miner
     restart: unless-stopped
     volumes:
@@ -34,10 +34,10 @@ services:
         reservations:
           cpus: '0.15'
           memory: 300M
-    ports:
-      - 5500:5500
-    # expose:
-    #   - ${APP_PORT}
+    # ports:
+    #   - 5500:5500
+    expose:
+      - ${APP_PORT}
     env_file:
       - .env
     networks:
