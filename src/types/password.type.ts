@@ -16,3 +16,10 @@ export interface ValidateKeyItem {
   password: string;
   token: string;
 }
+
+export interface SearchChangePasswordRequest {
+  email: string;
+  name: string;
+  password: string;
+  newPassword: string;
+}
