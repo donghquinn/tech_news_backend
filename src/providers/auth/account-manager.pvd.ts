@@ -151,6 +151,16 @@ export class AccountManager {
     }
   }
 
+  /**
+   * 패스워드 찾기 위한 키 검증 용
+   * 
+   * 메일로 전송된 인증 키 검증 위해 임시적으로 REDIS에 세팅 - 제한시간 3분
+   * @param tempKey 생성된 임의 난수 키
+   * @param email 해당되는 이메일
+   * @param password 해당되는 암호화 된 패스워드
+   * @param token 해당되는 패스워드 복호화 토큰
+   * @returns 
+   */
   async setTempData(tempKey: string, email: string, password: string, token: string) {
     try {
       await this.redis.connect();
@@ -181,6 +191,13 @@ export class AccountManager {
     }
   }
 
+  /**
+   * 패스워드 찾기 위한 키 검증용
+   * 
+   * 메일로 전송된 검증 키를 받아 찾기
+   * @param tempKey 전송된 임의 난수 검증 키
+   * @returns 
+   */
   async getTempData(tempKey: string) {
     try {
       await this.redis.connect();
@@ -208,36 +225,4 @@ export class AccountManager {
       );
     }
   }
-  //      public stop() {
-  //     if (this.isListening) {
-  //       this.isListening = false;
-
-  //       // Account lock 이 전부 풀릴 때까지 대기
-  //       for (;;) {
-  //         // 등록된 주소와 mutex 조회
-  //         const items = this.keyList
-  //           .map((item) => ({ address: item.address, ...this.getItem(item.address) }))
-  //           .filter((item) => item.mutex !== null);
-
-  //         // 등록된 주소가 없을 경우 안전하게 끝낼 수 있음
-  //         if (!items.length) break;
-
-  //         // 그렇지 않을 경우 락 여부를 확인해야 함
-  //         for (let i = 0; i < items.length; i += 1) {
-  //           const item = items[i];
-
-  //           if (item?.mutex?.isLocked()) {
-  //             Logger.info('[AccountManager] Waiting for address in use(locked): %o', item.address);
-
-  //             // 1초 대기
-  //             // SIGTERM 핸들러는 비동기 코드 resolve 가 되지 않으므로 then() 으로 기다림
-  //             setTimeout(1000).then(() =>
-  //                  Logger.info ('[AccountManager] Waited 1 second for address: %o', item.address ));
-  //           }
-  //         }
-  //       }
-
-  //       TxLogger.info('[AccountManager] Address lock cleared, safe to shutdown.');
-  //     }
-  //   }
 }
