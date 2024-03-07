@@ -1,4 +1,4 @@
-export interface HadaNewsReturn {
+export interface GeekNewsReturn {
   uuid: string;
   post: string;
   descLink: string;
@@ -6,7 +6,7 @@ export interface HadaNewsReturn {
   originalLink?: string;
 }
 
-export interface DailyHadaNewsReturn {
+export interface DailyGeekNewsReturn {
   uuid: string;
   post: string;
   descLink: string;
@@ -14,6 +14,6 @@ export interface DailyHadaNewsReturn {
   liked: number;
 }
 
-export interface DailyHadaNewsRequest {
+export interface DailyGeekNewsRequest {
   today: string;
 }

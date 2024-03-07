@@ -114,7 +114,7 @@ export class ClientPrismaLibrary extends PrismaClient {
     }
   }
 
-  async updateClientLoginStatus(email: string, clientUuid: string, isLogined: number) {
+  async updateClientLoginStatus(email: string, clientUuid: string, isLogined: boolean) {
     try {
       await this.client.update({
         data: {

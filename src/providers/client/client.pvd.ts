@@ -1,14 +1,11 @@
 import { ClientError, NoUserError } from '@errors/client.error';
-import { NoValidateKeyError, PasswordError } from '@errors/password.error';
+import { PasswordError } from '@errors/password.error';
 import { comparePassword, decrypt } from '@libraries/client/decrypt.lib';
 import { cryptData } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
-import { createSearchPasswordMailcontent } from '@utils/mail.utils';
-import { randomBytes } from 'crypto';
 import { MailerProvider } from 'providers/mailer.pvd';
 import { clearIntervalAsync, setIntervalAsync } from 'set-interval-async';
-import { HadaNewsReturn } from 'types/geek.type';
 import { AccountManager } from '../auth/account-manager.pvd';
 import { ClientPrismaLibrary } from './client-prisma.pvd';
 
@@ -118,7 +115,7 @@ export class ClientProvider {
         }
       }, interval);
 
-      await this.prisma.updateClientLoginStatus(email, uuid, 1);
+      await this.prisma.updateClientLoginStatus(email, uuid, true);
 
       return encodedEmail;
     } catch (error) {
@@ -150,7 +147,7 @@ export class ClientProvider {
 
       const email = decrypt(encodedEmail, token);
 
-      await this.prisma.updateClientLoginStatus(email, uuid, 0);
+      await this.prisma.updateClientLoginStatus(email, uuid, false);
 
       const deleteItem = await this.accountManager.deleteItem(encodedEmail);
 
@@ -205,242 +202,6 @@ export class ClientProvider {
       throw new ClientError(
         '[MYPAGE] Get My Page',
         'Get My Page Error. Please try again.',
-        error instanceof Error ? error : new Error(JSON.stringify(error)),
-      );
-    }
-  }
-
-  async myStarredMlNews(clientUuid: string, page: number) {
-    try {
-      const foundKey = await this.accountManager.getItem(clientUuid);
-
-      if (foundKey === null) {
-        ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
-          clientUuid,
-        });
-
-        throw new ClientError('[MYPAGE] Finding Matching User Info', 'No Matching User Found');
-      }
-
-      ClientLogger.debug('[MYPAGE] Found Key Item: %o', {
-        clientUuid,
-        foundKey,
-      });
-
-      const { totalPosts, mlStarredNews } = await this.prisma.getStarredMlNewsPagination(page, 10, clientUuid);
-
-      const mlNews = mlStarredNews.map((item) => item.ml_news);
-
-      return {
-        totalPosts,
-        mlNews,
-      };
-    } catch (error) {
-      ClientLogger.error('[MYPAGE] Get My Page Error: %o', {
-        error,
-      });
-
-      throw new ClientError(
-        '[MYPAGE] Get My Page',
-        'Get My Page Error. Please try again.',
-        error instanceof Error ? error : new Error(JSON.stringify(error)),
-      );
-    }
-  }
-
-  async myStarredHackerNews(clientUuid: string, page: number) {
-    try {
-      const foundKey = await this.accountManager.getItem(clientUuid);
-
-      if (foundKey === null) {
-        ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
-          clientUuid,
-        });
-
-        throw new ClientError('[MYPAGE] Finding Matching User Info', 'No Matching User Found');
-      }
-
-      ClientLogger.debug('[MYPAGE] Found Key Item: %o', {
-        clientUuid,
-        foundKey,
-      });
-
-      const { totalPosts, hackerStarredNews } = await this.prisma.getStarredHackerNewsPagination(page, 10, clientUuid);
-
-      const hackerNews = hackerStarredNews.map((item) => item.hacker_news);
-
-      return {
-        totalPosts,
-        hackerNews,
-      };
-    } catch (error) {
-      ClientLogger.error('[MYPAGE] Get My Page Error: %o', {
-        error,
-      });
-
-      throw new ClientError(
-        '[MYPAGE] Get My Page',
-        'Get My Page Error. Please try again.',
-        error instanceof Error ? error : new Error(JSON.stringify(error)),
-      );
-    }
-  }
-
-  async myStarredGeekNews(clientUuid: string, page: number) {
-    try {
-      const foundKey = await this.accountManager.getItem(clientUuid);
-      const resultNewsArray: Array<HadaNewsReturn> = [];
-
-      if (foundKey === null) {
-        ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
-          clientUuid,
-        });
-
-        throw new ClientError('[MYPAGE] Finding Matching User Info', 'No Matching User Found');
-      }
-
-      ClientLogger.debug('[MYPAGE] Found Key Item: %o', {
-        clientUuid,
-        foundKey,
-      });
-
-      const { totalPosts, geekStarredNews } = await this.prisma.getStarredGeekNewsPagination(page, 10, clientUuid);
-
-      for (let i = 0; i <= geekStarredNews.length - 1; i += 1) {
-        const { post, descLink, uuid, link, founded } = geekStarredNews[i].geek_news;
-
-        const isUrlUndefined = descLink.split('.io/')[1];
-
-        if (isUrlUndefined === 'undefined') {
-          ClientLogger.debug('[GEEK] Found Undefiend Desc Card URL: %o', {
-            title: post,
-            descUrl: descLink,
-            uuid,
-            isUrlUndefined,
-          });
-
-          ClientLogger.debug('[GEEK] Put Original Link into return array: %o', {
-            post,
-            uuid,
-            desc: descLink,
-            originalLink: link,
-          });
-
-          resultNewsArray.push({
-            post,
-            uuid,
-            descLink: link,
-            founded,
-          });
-        } else {
-          resultNewsArray.push({
-            post,
-            uuid,
-            descLink,
-            founded,
-          });
-        }
-      }
-
-      return {
-        totalPosts,
-        resultNewsArray,
-      };
-    } catch (error) {
-      ClientLogger.error('[MYPAGE] Get My Page Error: %o', {
-        error,
-      });
-
-      throw new ClientError(
-        '[MYPAGE] Get My Page',
-        'Get My Page Error. Please try again.',
-        error instanceof Error ? error : new Error(JSON.stringify(error)),
-      );
-    }
-  }
-
-  async searchPassword(email: string, name: string) {
-    try {
-      // 찾기
-      const result = await this.prisma.selectUserInfo(email, name);
-
-      if (result === null) throw new NoUserError('[SEARCH_PASS] Search Password', 'No User Found');
-
-      // TODO String Encoding
-      const randomKey = randomBytes(8).toString('hex');
-      // const { encodedData: encodedPassword, dataToken: passwordToken } = cryptData(randomPassword);
-
-      const mailContent = createSearchPasswordMailcontent(randomKey);
-
-      const { password, password_token: token } = result;
-
-      await this.accountManager.setTempData(randomKey, email, password, token);
-
-      await this.mailer.sendMail(email, 'Search Password', mailContent);
-
-      ClientLogger.debug('[SEARCH_PASS] Sent New Password Complete');
-
-      return 'Sent';
-    } catch (error) {
-      ClientLogger.error('[SEARCH_PASS] Search Password Error: %o', {
-        error,
-      });
-
-      throw new ClientError(
-        '[SEARCH_PASS] Search Password',
-        'Search Password Error',
-        error instanceof Error ? error : new Error(JSON.stringify(error)),
-      );
-    }
-  }
-
-  async validateSearchingPasswordKey(tempKey: string) {
-    try {
-      // 찾기
-      const tempItem = await this.accountManager.getTempData(tempKey);
-
-      if (tempItem === null)
-        throw new NoValidateKeyError('[VALIDATE_KEY] Validate Password Searching Key', 'No Matching Key Found');
-
-      const { password, token } = tempItem;
-
-      const rawPassword = decrypt(password, token);
-
-      ClientLogger.debug('[VALIDATE_KEY] Validate Password Searching Key Complete');
-
-      return rawPassword;
-    } catch (error) {
-      ClientLogger.error('[VALIDATE_KEY] Validate Password Searching Key Error: %o', {
-        error,
-      });
-
-      throw new ClientError(
-        '[VALIDATE_KEY] Validate Password Searching Key',
-        'Validate Password Searching Key Error',
-        error instanceof Error ? error : new Error(JSON.stringify(error)),
-      );
-    }
-  }
-
-  async searchEmail(name: string) {
-    try {
-      const result = await this.prisma.findEmail(name);
-
-      if (result === null) throw new NoUserError('[SEARCH_EMAIL] Find Email', 'No Matching Data Found');
-
-      const { email } = result;
-
-      ClientLogger.debug('[SEARCH_EMAIL] Finding Email Complete');
-
-      return email;
-    } catch (error) {
-      ClientLogger.error('[SEARCH_EMAIL] Finding Email Error: %o', {
-        error,
-      });
-
-      throw new ClientError(
-        '[SEARCH_EMAIL] Finding Email',
-        'Finding Email Error',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
