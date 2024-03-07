@@ -24,3 +24,8 @@ images
 *.png
 
 README.md
+.github
+Dockerfile
+example*
+LICENSE
+README.md
