@@ -5,11 +5,12 @@ import { MailerModule } from '@modules/mailer.module';
 import { Module } from '@nestjs/common';
 import { ClientProvider } from 'providers/client/client.pvd';
 import { ClientSearchProvider } from 'providers/client/search.pvd';
+import { ClientStarProvider } from 'providers/client/star.pvd';
 import { AccountManagerModule } from './account.module';
 import { ClientPrismaModule } from './client-prisma.module';
 
 @Module({
-  providers: [ClientProvider, ClientSearchProvider],
+  providers: [ClientProvider, ClientSearchProvider, ClientStarProvider],
   imports: [AccountManagerModule, ClientPrismaModule, MailerModule],
   controllers: [ClientController, ClientSearchController, ClientStarController],
 })
