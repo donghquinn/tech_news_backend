@@ -6,7 +6,11 @@ import { z } from 'zod';
 
 export const changePasswordValidator = async (request: ChangePasswordRequest) => {
   try {
-    const scheme = z.object({ email: z.string(), password: z.string(), newPassword: z.string() });
+    const scheme = z.object({
+      email: z.string().email(),
+      password: z.string().min(5, 'Old Password is Too Short'),
+      newPassword: z.string().min(5, 'New Password is Too Short'),
+    });
 
     const parse = await scheme.parseAsync(request);
 

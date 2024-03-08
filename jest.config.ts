@@ -7,8 +7,10 @@ const config: JestConfigWithTsJest = {
   testEnvironment: 'node',
   verbose: true,
   moduleNameMapper: {
+    '^@errors/(.*)$': 'errors/$1',
     '^@utils/(.*)$': 'utils/$1',
     '^@libraries/(.*)$': 'libraries/$1',
+    '^@validators/(.*)$': 'validators/$1',
   },
   transform: {
     '^.+\\.ts?$': [

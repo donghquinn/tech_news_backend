@@ -10,7 +10,7 @@ import { z } from 'zod';
 
 export const searchEmailRequestValidator = async (request: SearchEmailRequest) => {
   try {
-    const scheme = z.object({ name: z.string() });
+    const scheme = z.object({ name: z.string().min(1) });
 
     const parse = await scheme.parseAsync(request);
 
@@ -31,7 +31,7 @@ export const searchEmailRequestValidator = async (request: SearchEmailRequest) =
 
 export const searchPasswordRequestValidator = async (request: SearchPasswordRequest) => {
   try {
-    const scheme = z.object({ email: z.string(), name: z.string() });
+    const scheme = z.object({ email: z.string().email('It should be Email Format'), name: z.string().min(1) });
 
     const parse = await scheme.parseAsync(request);
 
@@ -52,7 +52,7 @@ export const searchPasswordRequestValidator = async (request: SearchPasswordRequ
 
 export const validatePasswordTempKeyRequestValidator = async (request: ValidatePasswordKeyRequest) => {
   try {
-    const scheme = z.object({ tempKey: z.string() });
+    const scheme = z.object({ tempKey: z.string().min(5) });
 
     const parse = await scheme.parseAsync(request);
 
@@ -73,7 +73,12 @@ export const validatePasswordTempKeyRequestValidator = async (request: ValidateP
 
 export const validateSearchPasswordRequestValidator = async (request: SearchChangePasswordRequest) => {
   try {
-    const scheme = z.object({ email: z.string(), name: z.string(), password: z.string(), newPassword: z.string() });
+    const scheme = z.object({
+      email: z.string().email('It should be Email Format'),
+      name: z.string().min(1),
+      password: z.string().min(5, 'Old Password is Too Short'),
+      newPassword: z.string().min(5, 'New Password is Too Short'),
+    });
 
     const parse = await scheme.parseAsync(request);
 
