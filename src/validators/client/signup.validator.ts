@@ -8,7 +8,7 @@ export const clientSignupValidator = async (request: ClientSignupRequest) => {
     const scheme = z.object({
       email: z.string().email("It's Not Email Format"),
       password: z.string().min(5, 'Password is Too Short'),
-      name: z.string(),
+      name: z.string().min(1),
     });
 
     const parsed = await scheme.parseAsync(request);
