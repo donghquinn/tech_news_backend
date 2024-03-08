@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-underscore-dangle */
 import { GeekError } from '@errors/geek.error';
 import { Injectable } from '@nestjs/common';
@@ -10,14 +11,10 @@ import { GeekPrismaLibrary } from './geek-prisma.lib';
 
 @Injectable()
 export class GeekProvider {
-  private resultNewsArray: Array<GeekNewsReturn>;
-
   constructor(
     private readonly prisma: GeekPrismaLibrary,
     private readonly account: AccountManager,
-  ) {
-    this.resultNewsArray = [];
-  }
+  ) {}
 
   async getNews(today: string, page: number, size: number) {
     try {
@@ -35,43 +32,29 @@ export class GeekProvider {
 
       const result = await this.prisma.bringGeekNews(startDate, endDate, page, size);
 
-      for (let i = 0; i <= result.length - 1; i += 1) {
-        const isUrlUndefined = result[i].descLink.split('.io/')[1];
+      const returnData: Array<GeekNewsReturn> = result.map((item) => {
+        const isUrlUndefined = item.descLink.split('.io/')[1];
 
-        if (isUrlUndefined === 'undefined') {
-          NewsLogger.debug('[GEEK] Found Undefiend Desc Card URL: %o', {
-            title: result[i].post,
-            descUrl: result[i].descLink,
-            uuid: result[i].uuid,
-            likedCount: result[i]._count.liked_model,
-            isUrlUndefined,
-          });
+        const { post, descLink, uuid, link, _count, founded } = item;
+        const { liked_model: likedCount } = _count;
 
-          NewsLogger.debug('[GEEK] Put Original Link into return array: %o', {
-            post: result[i].post,
-            uuid: result[i].uuid,
-            desc: result[i].descLink,
-            originalLink: result[i].link,
-            likedCount: result[i]._count.liked_model,
-          });
+        if (isUrlUndefined === 'undefined')
+          return {
+            post,
+            uuid,
+            descLink: link,
+            founded,
+            likedCount,
+          };
 
-          this.resultNewsArray.push({
-            post: result[i].post,
-            uuid: result[i].uuid,
-            descLink: result[i].link,
-            founded: result[i].founded,
-            likedCount: result[i]._count.liked_model,
-          });
-        } else {
-          this.resultNewsArray.push({
-            post: result[i].post,
-            uuid: result[i].uuid,
-            descLink: result[i].descLink,
-            founded: result[i].founded,
-            likedCount: result[i]._count.liked_model,
-          });
-        }
-      }
+        return {
+          post,
+          uuid,
+          descLink,
+          founded,
+          likedCount,
+        };
+      });
 
       const total = await this.prisma.geekNewsCount(startDate, endDate, size);
 
@@ -79,7 +62,7 @@ export class GeekProvider {
         total,
       });
 
-      return { result: this.resultNewsArray, total };
+      return { result: returnData, total };
     } catch (error) {
       NewsLogger.error('[GEEK] Bring Hada News Error: %o', {
         error,
