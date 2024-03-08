@@ -92,10 +92,10 @@ export class AccountManager {
       };
 
       // this.userMap.set( key, { uuid, address, privateKey, pkToken } );
-      this.keyList.push( encodedEmail );
-      
+      this.keyList.push(encodedEmail);
+
       await this.redis.connect();
-      await this.redis.set( encodedEmail, JSON.stringify( setItem ), {
+      await this.redis.set(encodedEmail, JSON.stringify(setItem), {
         EX: 60 * 60,
       });
       await this.redis.disconnect();
@@ -153,13 +153,13 @@ export class AccountManager {
 
   /**
    * 패스워드 찾기 위한 키 검증 용
-   * 
+   *
    * 메일로 전송된 인증 키 검증 위해 임시적으로 REDIS에 세팅 - 제한시간 3분
    * @param tempKey 생성된 임의 난수 키
    * @param email 해당되는 이메일
    * @param password 해당되는 암호화 된 패스워드
    * @param token 해당되는 패스워드 복호화 토큰
-   * @returns 
+   * @returns
    */
   async setTempData(tempKey: string, email: string, password: string, token: string) {
     try {
@@ -193,10 +193,10 @@ export class AccountManager {
 
   /**
    * 패스워드 찾기 위한 키 검증용
-   * 
+   *
    * 메일로 전송된 검증 키를 받아 찾기
    * @param tempKey 전송된 임의 난수 검증 키
-   * @returns 
+   * @returns
    */
   async getTempData(tempKey: string) {
     try {

@@ -1,4 +1,4 @@
-import { bootstrap } from "server";
+import { bootstrap } from 'server';
 
 process.env.TZ = 'Asia/Seoul';
 

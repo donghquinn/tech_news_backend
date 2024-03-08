@@ -8,7 +8,7 @@ import { ClientMyPageStarNewsRequest } from 'types/client.type';
 export class ClientStarController {
   constructor(private readonly client: ClientStarProvider) {}
 
-  @Post('star/hacker')
+  @Post('hacker')
   async getHackerStarNewsController(@Body() request: ClientMyPageStarNewsRequest) {
     try {
       const { uuid, page } = await clientMyPageStarNewsValidator(request);
@@ -24,7 +24,7 @@ export class ClientStarController {
     }
   }
 
-  @Post('star/geek')
+  @Post('geek')
   async getGeekStarNewsController(@Body() request: ClientMyPageStarNewsRequest) {
     try {
       const { uuid, page } = await clientMyPageStarNewsValidator(request);
@@ -40,7 +40,7 @@ export class ClientStarController {
     }
   }
 
-  @Post('star/ml')
+  @Post('ml')
   async getMlStarNewsController(@Body() request: ClientMyPageStarNewsRequest) {
     try {
       const { uuid, page } = await clientMyPageStarNewsValidator(request);
