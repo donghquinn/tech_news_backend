@@ -6,8 +6,8 @@ import { z } from 'zod';
 export const clientSignupValidator = async (request: ClientSignupRequest) => {
   try {
     const scheme = z.object({
-      email: z.string(),
-      password: z.string(),
+      email: z.string().email("It's Not Email Format"),
+      password: z.string().min(5, 'Password is Too Short'),
       name: z.string(),
     });
 
