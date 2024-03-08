@@ -15,6 +15,11 @@ export class MlPrismaLibrary extends PrismaClient {
           title: true,
           link: true,
           founded: true,
+          _count: {
+            select: {
+              liked_model: true,
+            },
+          },
         },
         where: {
           founded: {
@@ -72,7 +77,7 @@ export class MlPrismaLibrary extends PrismaClient {
           uuid: true,
           ml_news: {
             select: {
-              liked: true,
+              uuid: true,
             },
           },
         },
@@ -82,13 +87,7 @@ export class MlPrismaLibrary extends PrismaClient {
         },
       });
 
-      if (isStarred === null) throw new MachineLearningError('[ML] Get Star Info', 'No Star Info Found.');
-
-      NewsLogger.debug('[ML] Found Is Starred Info: %o', {
-        isLiked: isStarred.ml_news.liked,
-      });
-
-      return { uuid: isStarred.uuid, isLiked: isStarred.ml_news.liked };
+      return isStarred;
     } catch (error) {
       NewsLogger.error('[ML] Check Hada News Liked Info Error: %o', {
         error,
@@ -102,7 +101,7 @@ export class MlPrismaLibrary extends PrismaClient {
     }
   }
 
-  async updateMlNewsLikedtoUnliked(likedUuid: string, postUuid: string, clientUuid: string): Promise<void> {
+  async deleteMlNewsLiked(likedUuid: string, postUuid: string, clientUuid: string): Promise<void> {
     try {
       NewsLogger.debug('[ML] Give Hada News unStar Request: %o', {
         likedUuid,
@@ -110,20 +109,14 @@ export class MlPrismaLibrary extends PrismaClient {
         clientUuid,
       });
 
-      await this.ml_Liked.update({
-        data: {
-          ml_news: {
-            update: {
-              liked: 0,
-            },
-          },
-        },
+      await this.ml_Liked.delete({
         where: {
           uuid: likedUuid,
           postUuid,
           userUuid: clientUuid,
         },
       });
+
       NewsLogger.info('[ML] Unstarred Updated');
     } catch (error) {
       NewsLogger.error('[ML] Update Liked to UnLiked Error: %o', {
@@ -138,26 +131,18 @@ export class MlPrismaLibrary extends PrismaClient {
     }
   }
 
-  async updateMlNewsLiked(likedUuid: string, postUuid: string, clientUuid: string): Promise<void> {
+  async createMlNewsLiked(postUuid: string, clientUuid: string): Promise<void> {
     try {
       NewsLogger.debug('[ML] Give Hacker News Star Request: %o', {
-        likedUuid,
         postUuid,
         clientUuid,
       });
 
-      await this.ml_Liked.update({
+      await this.ml_Liked.create({
         data: {
-          ml_news: {
-            update: {
-              liked: 1,
-            },
-          },
-        },
-        where: {
-          uuid: likedUuid,
           postUuid,
           userUuid: clientUuid,
+          newsPlatform: 'ML',
         },
       });
 
@@ -175,22 +160,33 @@ export class MlPrismaLibrary extends PrismaClient {
     }
   }
 
-  async getStarredMlNewsPagination(page: number, size: number) {
+  async getStarredMlNewsPagination(page: number, size: number, userUuid: string) {
     try {
-      const totalPosts = await this.machineNews.count({ where: { liked: 1 } });
+      const totalPosts = await this.ml_Liked.count({
+        where: {
+          userUuid,
+        },
+      });
 
-      const starredNews = await this.machineNews.findMany({
+      const starredNews = await this.ml_Liked.findMany({
         select: {
           uuid: true,
-          title: true,
-          link: true,
-          founded: true,
+          ml_news: {
+            select: {
+              uuid: true,
+              title: true,
+              link: true,
+              founded: true,
+            },
+          },
         },
         orderBy: {
-          founded: 'desc',
+          ml_news: {
+            founded: 'desc',
+          },
         },
         where: {
-          liked: 1,
+          userUuid,
         },
         take: size,
         skip: (page - 1) * size,

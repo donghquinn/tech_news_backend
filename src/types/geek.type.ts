@@ -3,6 +3,7 @@ export interface GeekNewsReturn {
   post: string;
   descLink: string;
   founded: Date;
+  likedCount?: number;
   originalLink?: string;
 }
 

@@ -8,7 +8,18 @@ export class GeekPrismaLibrary extends PrismaClient {
   async bringGeekNews(startDate: Date, endDate: Date, page: number, size: number) {
     try {
       const result = await this.geek.findMany({
-        select: { uuid: true, post: true, link: true, descLink: true, founded: true, liked: true },
+        select: {
+          uuid: true,
+          post: true,
+          link: true,
+          descLink: true,
+          founded: true,
+          _count: {
+            select: {
+              liked_model: true,
+            },
+          },
+        },
         where: {
           founded: {
             gte: startDate,
@@ -66,7 +77,7 @@ export class GeekPrismaLibrary extends PrismaClient {
           uuid: true,
           geek_news: {
             select: {
-              liked: true,
+              uuid: true,
             },
           },
         },
@@ -78,11 +89,7 @@ export class GeekPrismaLibrary extends PrismaClient {
 
       if (isStarred === null) throw new GeekError('[GEEK] Get Star Info', 'No Star Info Found.');
 
-      NewsLogger.debug('[GEEK] Found Is Starred Info: %o', {
-        isLiked: isStarred.geek_news.liked,
-      });
-
-      return { uuid: isStarred.uuid, liked: isStarred.geek_news.liked };
+      return isStarred;
     } catch (error) {
       NewsLogger.error('[GEEK] Check Hada News Liked Info Error: %o', {
         error,
@@ -96,7 +103,7 @@ export class GeekPrismaLibrary extends PrismaClient {
     }
   }
 
-  async updateGeekNewsLikedtoUnliked(likedUuid: string, postUuid: string, clientUuid: string) {
+  async deleteGeekNewsLiked(likedUuid: string, postUuid: string, clientUuid: string) {
     try {
       NewsLogger.debug('[GEEK] Give Hada News unStar Request: %o', {
         likedUuid,
@@ -104,18 +111,11 @@ export class GeekPrismaLibrary extends PrismaClient {
         clientUuid,
       });
 
-      await this.geek_Liked.update({
-        data: {
-          geek_news: {
-            update: {
-              liked: 0,
-            },
-          },
-        },
+      await this.geek_Liked.delete({
         where: {
           uuid: likedUuid,
-          postUuid,
           userUuid: clientUuid,
+          postUuid,
         },
       });
 
@@ -135,26 +135,18 @@ export class GeekPrismaLibrary extends PrismaClient {
     }
   }
 
-  async updateGeekNewsLiked(likedUuid: string, postUuid: string, clientUuid: string) {
+  async createGeekNewsLiked(postUuid: string, clientUuid: string) {
     try {
       NewsLogger.debug('[GEEK] Give Hacker News Star Request: %o', {
-        likedUuid,
         postUuid,
         clientUuid,
       });
 
-      await this.geek_Liked.update({
+      await this.geek_Liked.create({
         data: {
-          geek_news: {
-            update: {
-              liked: 1,
-            },
-          },
-        },
-        where: {
-          uuid: likedUuid,
-          postUuid,
           userUuid: clientUuid,
+          postUuid,
+          newsPlatform: 'Geek',
         },
       });
 

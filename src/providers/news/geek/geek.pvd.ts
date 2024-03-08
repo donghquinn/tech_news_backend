@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { GeekError } from '@errors/geek.error';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
@@ -42,6 +43,7 @@ export class GeekProvider {
             title: result[i].post,
             descUrl: result[i].descLink,
             uuid: result[i].uuid,
+            likedCount: result[i]._count.liked_model,
             isUrlUndefined,
           });
 
@@ -50,6 +52,7 @@ export class GeekProvider {
             uuid: result[i].uuid,
             desc: result[i].descLink,
             originalLink: result[i].link,
+            likedCount: result[i]._count.liked_model,
           });
 
           this.resultNewsArray.push({
@@ -57,6 +60,7 @@ export class GeekProvider {
             uuid: result[i].uuid,
             descLink: result[i].link,
             founded: result[i].founded,
+            likedCount: result[i]._count.liked_model,
           });
         } else {
           this.resultNewsArray.push({
@@ -64,6 +68,7 @@ export class GeekProvider {
             uuid: result[i].uuid,
             descLink: result[i].descLink,
             founded: result[i].founded,
+            likedCount: result[i]._count.liked_model,
           });
         }
       }
@@ -74,7 +79,7 @@ export class GeekProvider {
         total,
       });
 
-      return { result, total };
+      return { result: this.resultNewsArray, total };
     } catch (error) {
       NewsLogger.error('[GEEK] Bring Hada News Error: %o', {
         error,
@@ -95,9 +100,11 @@ export class GeekProvider {
       if (isLogined === null) throw new GeekError('[GEEK] Give Star on the Stars', 'No Logined User Found.');
 
       const { uuid: clientUuid } = isLogined;
-      const { uuid: likedUuid, liked } = await this.prisma.checkGeekNewsIsLiked(postUuid, clientUuid);
 
-      if (!liked) await this.prisma.updateGeekNewsLiked(likedUuid, postUuid, clientUuid);
+      const isStarred = await this.prisma.checkGeekNewsIsLiked(postUuid, clientUuid);
+      const { geek_news: isLiked } = isStarred;
+
+      if (isLiked === undefined) await this.prisma.createGeekNewsLiked(postUuid, clientUuid);
     } catch (error) {
       NewsLogger.error('[GEEK] Star Update Error: %o', {
         error,
@@ -118,9 +125,12 @@ export class GeekProvider {
       if (isLogined === null) throw new GeekError('[GEEK] Give Star on the Stars', 'No Logined User Found.');
 
       const { uuid: clientUuid } = isLogined;
-      const { uuid: likedUuid, liked } = await this.prisma.checkGeekNewsIsLiked(postUuid, clientUuid);
+      const isStarred = await this.prisma.checkGeekNewsIsLiked(postUuid, clientUuid);
 
-      if (liked) await this.prisma.updateGeekNewsLikedtoUnliked(likedUuid, postUuid, clientUuid);
+      const { geek_news: isLiked } = isStarred;
+
+      const { uuid: likedUuid } = isLiked;
+      if (likedUuid) await this.prisma.deleteGeekNewsLiked(likedUuid, postUuid, clientUuid);
 
       NewsLogger.info('[GEEK] Finished UnStar Geek News');
     } catch (error) {

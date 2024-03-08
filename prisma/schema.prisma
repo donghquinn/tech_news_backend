@@ -62,7 +62,6 @@ model Hackers {
   rank    Int
   post    String
   link    String
-  liked   Int   @default(0)
   liked_model Hacker_Liked[]
   founded DateTime
 }
@@ -74,7 +73,6 @@ model Geek {
   post    String
   descLink String
   link    String
-  liked   Int   @default(0)
   liked_model Geek_Liked[]
   founded DateTime
 }
@@ -84,7 +82,6 @@ model MachineNews {
   category String
   title    String
   link     String
-  liked    Int   @default(0)
   liked_model Ml_Liked[]
   founded  DateTime
 }
