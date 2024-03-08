@@ -55,11 +55,13 @@ export class MachineLearningProvider {
       if (!isLogined) throw new MachineLearningError('[ML] Give Star on the Stars', 'No Logined User Found.');
 
       const { uuid: clientUuid } = isLogined;
-      const { uuid: likedUuid, isLiked } = await this.prisma.checkIsMlNewsLiked(postUuid, clientUuid);
+      const isStarred = await this.prisma.checkIsMlNewsLiked(postUuid, clientUuid);
 
-      if (!isLiked) {
-        await this.prisma.updateMlNewsLiked(likedUuid, postUuid, clientUuid);
-      }
+      if (isStarred === null) throw new MachineLearningError('[ML] Get Star Info', 'No Star Info Found.');
+
+      const { ml_news: isLiked } = isStarred;
+
+      if (isLiked === undefined) await this.prisma.createMlNewsLiked(postUuid, clientUuid);
     } catch (error) {
       NewsLogger.error('[ML] Give Star on the ML News Error: %o', {
         error,
@@ -80,11 +82,13 @@ export class MachineLearningProvider {
       if (isLogined === null) throw new MachineLearningError('[ML] UnStar on the Stars', 'No Logined User Found.');
 
       const { uuid: clientUuid } = isLogined;
-      const { uuid: likedUuid, isLiked } = await this.prisma.checkIsMlNewsLiked(postUuid, clientUuid);
+      const isStarred = await this.prisma.checkIsMlNewsLiked(postUuid, clientUuid);
 
-      if (isLiked) {
-        await this.prisma.updateMlNewsLikedtoUnliked(likedUuid, postUuid, clientUuid);
-      }
+      if (isStarred === null) throw new MachineLearningError('[ML] Get Star Info', 'No Star Info Found.');
+
+      const { ml_news: isLiked } = isStarred;
+
+      if (isLiked.uuid) await this.prisma.deleteMlNewsLiked(isLiked.uuid, postUuid, clientUuid);
 
       NewsLogger.info('[ML] Unstar News Finished');
     } catch (error) {

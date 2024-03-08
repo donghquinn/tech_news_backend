@@ -76,9 +76,13 @@ export class HackersNewsProvider {
       if (!isLogined) throw new HackerError('[Hackers] Give Star on the Stars', 'No Logined User Found.');
 
       const { uuid: clientUuid } = isLogined;
-      const { uuid: likedUuid, isLiked } = await this.prisma.checkHackerNewsIsLiked(postUuid, clientUuid);
+      const isStarred = await this.prisma.checkHackerNewsIsLiked(postUuid, clientUuid);
 
-      if (!isLiked) await this.prisma.updateHackerNewsLiked(likedUuid, postUuid, clientUuid);
+      if (isStarred === null) throw new HackerError('[HACKER] Get Star Info', 'No Star Info Found.');
+
+      const { hacker_news: isLiked } = isStarred;
+
+      if (isLiked.uuid === undefined) await this.prisma.createHackerNewsLiked(postUuid, clientUuid);
     } catch (error) {
       NewsLogger.error('[Hackers] Star Update Error: %o', {
         error,
@@ -100,9 +104,13 @@ export class HackersNewsProvider {
       if (!isLogined) throw new HackerError('[Hackers] Give Star on the Stars', 'No Logined User Found.');
 
       const { uuid: clientUuid } = isLogined;
-      const { uuid: likedUuid, isLiked } = await this.prisma.checkHackerNewsIsLiked(postUuid, clientUuid);
+      const isStarred = await this.prisma.checkHackerNewsIsLiked(postUuid, clientUuid);
 
-      if (isLiked) await this.prisma.updateHackerNewsLikedtoUnliked(likedUuid, postUuid, clientUuid);
+      if (isStarred === null) throw new HackerError('[HACKER] Get Star Info', 'No Star Info Found.');
+
+      const { hacker_news: isLiked } = isStarred;
+      const { uuid: likedUuid } = isLiked;
+      if (likedUuid) await this.prisma.deleteHackerNewsLiked(likedUuid, postUuid, clientUuid);
 
       NewsLogger.info('[Hackers] Unstar Hacker News Finished');
     } catch (error) {

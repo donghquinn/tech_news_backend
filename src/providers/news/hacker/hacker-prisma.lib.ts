@@ -8,7 +8,17 @@ export class HackerPrismaLibrary extends PrismaClient {
   async bringHackerNews(startDate: Date, endDate: Date, page: number, size: number) {
     try {
       const result = await this.hackers.findMany({
-        select: { uuid: true, post: true, link: true, founded: true, liked: true },
+        select: {
+          uuid: true,
+          post: true,
+          link: true,
+          founded: true,
+          _count: {
+            select: {
+              liked_model: true,
+            },
+          },
+        },
         where: {
           founded: {
             gte: startDate,
@@ -66,23 +76,21 @@ export class HackerPrismaLibrary extends PrismaClient {
           uuid: true,
           hacker_news: {
             select: {
-              liked: true,
+              uuid: true,
             },
           },
         },
         where: {
-          userUuid: clientUuid,
           postUuid,
+          userUuid: clientUuid,
         },
       });
 
-      if (isStarred === null) throw new HackerError('[HACKER] Get Star Info', 'No Star Info Found.');
+      // NewsLogger.debug('[HACKER] Found Is Starred Info: %o', {
+      //   isLiked: isStarred.hacker_news.liked,
+      // });
 
-      NewsLogger.debug('[HACKER] Found Is Starred Info: %o', {
-        isLiked: isStarred.hacker_news.liked,
-      });
-
-      return { uuid: isStarred.uuid, isLiked: isStarred.hacker_news.liked };
+      return isStarred;
     } catch (error) {
       NewsLogger.error('[HACKER] Check Hacker News Liked Info Error: %o', {
         error,
@@ -96,7 +104,7 @@ export class HackerPrismaLibrary extends PrismaClient {
     }
   }
 
-  async updateHackerNewsLikedtoUnliked(likedUuid: string, postUuid: string, clientUuid: string): Promise<void> {
+  async deleteHackerNewsLiked(likedUuid: string, postUuid: string, clientUuid: string): Promise<void> {
     try {
       NewsLogger.debug('[HACKER] Give Hacker News unStar Request: %o', {
         likedUuid,
@@ -104,20 +112,14 @@ export class HackerPrismaLibrary extends PrismaClient {
         clientUuid,
       });
 
-      await this.hacker_Liked.update({
-        data: {
-          hacker_news: {
-            update: {
-              liked: 0,
-            },
-          },
-        },
+      await this.hacker_Liked.delete({
         where: {
           uuid: likedUuid,
           postUuid,
           userUuid: clientUuid,
         },
       });
+
       NewsLogger.info('[HACKER] Unstarred Updated');
     } catch (error) {
       NewsLogger.error('[HACKER] Update Liked to UnLiked Error: %o', {
@@ -132,26 +134,18 @@ export class HackerPrismaLibrary extends PrismaClient {
     }
   }
 
-  async updateHackerNewsLiked(likedUuid: string, postUuid: string, clientUuid: string): Promise<void> {
+  async createHackerNewsLiked(postUuid: string, clientUuid: string): Promise<void> {
     try {
       NewsLogger.debug('[HACKER] Give Hacker News Star Request: %o', {
-        likedUuid,
         postUuid,
         clientUuid,
       });
 
-      await this.hacker_Liked.update({
+      await this.hacker_Liked.create({
         data: {
-          hacker_news: {
-            update: {
-              liked: 1,
-            },
-          },
-        },
-        where: {
-          uuid: likedUuid,
           postUuid,
           userUuid: clientUuid,
+          newsPlatform: 'Hacker',
         },
       });
 
@@ -171,7 +165,11 @@ export class HackerPrismaLibrary extends PrismaClient {
 
   async getStarredHackerNewsPagination(page: number, size: number, userUuid: string) {
     try {
-      const totalPosts = await this.hackers.count({ where: { liked: 1 } });
+      const totalPosts = await this.hacker_Liked.count({
+        where: {
+          userUuid,
+        },
+      });
 
       const starredNews = await this.hacker_Liked.findMany({
         select: {
@@ -184,28 +182,17 @@ export class HackerPrismaLibrary extends PrismaClient {
             },
           },
         },
+        orderBy: {
+          hacker_news: {
+            founded: 'desc',
+          },
+        },
         where: {
           userUuid,
         },
         take: size,
         skip: (page - 1) * size,
       });
-      // const starredNews = await this.hackers.findMany({
-      //   select: {
-      //     uuid: true,
-      //     post: true,
-      //     link: true,
-      //     founded: true,
-      //   },
-      //   orderBy: {
-      //     founded: 'desc',
-      //   },
-      //   where: {
-      //     liked: 1,
-      //   },
-      //   take: size,
-      //   skip: (page - 1) * size,
-      // });
 
       NewsLogger.debug('[HACKER] Founded Starred News: %o', {
         totalPosts,

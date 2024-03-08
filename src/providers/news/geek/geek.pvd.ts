@@ -57,6 +57,8 @@ export class GeekProvider {
             uuid: result[i].uuid,
             descLink: result[i].link,
             founded: result[i].founded,
+            // eslint-disable-next-line no-underscore-dangle
+            liked: result[i]._count.liked_model,
           });
         } else {
           this.resultNewsArray.push({
@@ -64,6 +66,8 @@ export class GeekProvider {
             uuid: result[i].uuid,
             descLink: result[i].descLink,
             founded: result[i].founded,
+            // eslint-disable-next-line no-underscore-dangle
+            liked: result[i]._count.liked_model,
           });
         }
       }
@@ -95,9 +99,11 @@ export class GeekProvider {
       if (isLogined === null) throw new GeekError('[GEEK] Give Star on the Stars', 'No Logined User Found.');
 
       const { uuid: clientUuid } = isLogined;
-      const { uuid: likedUuid, liked } = await this.prisma.checkGeekNewsIsLiked(postUuid, clientUuid);
 
-      if (!liked) await this.prisma.updateGeekNewsLiked(likedUuid, postUuid, clientUuid);
+      const isStarred = await this.prisma.checkGeekNewsIsLiked(postUuid, clientUuid);
+      const { geek_news: isLiked } = isStarred;
+
+      if (isLiked === undefined) await this.prisma.createGeekNewsLiked(postUuid, clientUuid);
     } catch (error) {
       NewsLogger.error('[GEEK] Star Update Error: %o', {
         error,
@@ -118,9 +124,12 @@ export class GeekProvider {
       if (isLogined === null) throw new GeekError('[GEEK] Give Star on the Stars', 'No Logined User Found.');
 
       const { uuid: clientUuid } = isLogined;
-      const { uuid: likedUuid, liked } = await this.prisma.checkGeekNewsIsLiked(postUuid, clientUuid);
+      const isStarred = await this.prisma.checkGeekNewsIsLiked(postUuid, clientUuid);
 
-      if (liked) await this.prisma.updateGeekNewsLikedtoUnliked(likedUuid, postUuid, clientUuid);
+      const { geek_news: isLiked } = isStarred;
+
+      const { uuid: likedUuid } = isLiked;
+      if (likedUuid) await this.prisma.deleteGeekNewsLiked(likedUuid, postUuid, clientUuid);
 
       NewsLogger.info('[GEEK] Finished UnStar Geek News');
     } catch (error) {
