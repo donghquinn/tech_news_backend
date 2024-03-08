@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { GeekError } from '@errors/geek.error';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
@@ -42,6 +43,7 @@ export class GeekProvider {
             title: result[i].post,
             descUrl: result[i].descLink,
             uuid: result[i].uuid,
+            likedCount: result[i]._count.liked_model,
             isUrlUndefined,
           });
 
@@ -50,6 +52,7 @@ export class GeekProvider {
             uuid: result[i].uuid,
             desc: result[i].descLink,
             originalLink: result[i].link,
+            likedCount: result[i]._count.liked_model,
           });
 
           this.resultNewsArray.push({
@@ -57,8 +60,7 @@ export class GeekProvider {
             uuid: result[i].uuid,
             descLink: result[i].link,
             founded: result[i].founded,
-            // eslint-disable-next-line no-underscore-dangle
-            liked: result[i]._count.liked_model,
+            likedCount: result[i]._count.liked_model,
           });
         } else {
           this.resultNewsArray.push({
@@ -66,8 +68,7 @@ export class GeekProvider {
             uuid: result[i].uuid,
             descLink: result[i].descLink,
             founded: result[i].founded,
-            // eslint-disable-next-line no-underscore-dangle
-            liked: result[i]._count.liked_model,
+            likedCount: result[i]._count.liked_model,
           });
         }
       }
@@ -78,7 +79,7 @@ export class GeekProvider {
         total,
       });
 
-      return { result, total };
+      return { result: this.resultNewsArray, total };
     } catch (error) {
       NewsLogger.error('[GEEK] Bring Hada News Error: %o', {
         error,

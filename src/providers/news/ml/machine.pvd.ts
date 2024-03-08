@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { MachineLearningError } from '@errors/machine.error';
 import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
@@ -28,13 +29,28 @@ export class MachineLearningProvider {
       });
 
       const result = await this.prisma.bringMlNews(startDate, endDate, page, size);
+
+      const returnData = result.map((item) => {
+        const { uuid, link, title, founded, _count, category } = item;
+        const { liked_model: count } = _count;
+
+        return {
+          uuid,
+          title,
+          category,
+          link,
+          likedCount: count,
+          founded,
+        };
+      });
+
       const total = await this.prisma.mlTotalCount(startDate, endDate, size);
 
       NewsLogger.info('[ML] Get Total Count: %o', {
         total,
       });
 
-      return { result, total };
+      return { result: returnData, total };
     } catch (error) {
       NewsLogger.error('[ML] Get Latest Machine Learning News Error: %o', {
         error,
