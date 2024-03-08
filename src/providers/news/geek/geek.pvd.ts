@@ -97,9 +97,9 @@ export class GeekProvider {
       const { uuid: clientUuid } = isLogined;
       const { uuid: likedUuid, liked } = await this.prisma.checkGeekNewsIsLiked(postUuid, clientUuid);
 
-      if (!liked) {
-        await this.prisma.updateGeekNewsLiked(likedUuid, postUuid, clientUuid);
-      }
+      if (!liked)
+        await this.prisma.updateGeekNewsLiked( likedUuid, postUuid, clientUuid );
+      
     } catch (error) {
       NewsLogger.error('[GEEK] Star Update Error: %o', {
         error,
