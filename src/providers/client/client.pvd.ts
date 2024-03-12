@@ -23,7 +23,7 @@ export class ClientProvider {
 
       // if (result) throw new ClientError('[SIGNUP] Check Exist User Info', 'Found Already Exist User. Reject.');
 
-      ClientLogger.info('[Signup] Start to create user: %o', {
+      ClientLogger.debug('[Signup] Start to create user: %o', {
         email,
       });
 
@@ -189,9 +189,7 @@ export class ClientProvider {
 
       const result = await this.prisma.getMyPageInfo(email, uuid);
 
-      ClientLogger.info('[MYPAGE] My Starred News: %o', {
-        result,
-      });
+      ClientLogger.info('[MYPAGE] Got My Starred News');
 
       return result;
     } catch (error) {
@@ -238,7 +236,7 @@ export class ClientProvider {
 
       await this.prisma.updateNewPassword(uuid, encodedPassword, passwordToken);
 
-      ClientLogger.debug('[CHANGE_PASS] Changing Password Complete');
+      ClientLogger.info('[CHANGE_PASS] Changing Password Complete');
 
       return 'success';
     } catch (error) {

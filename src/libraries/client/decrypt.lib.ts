@@ -1,11 +1,11 @@
 import { CryptoError } from '@errors/crypto.error';
-import { ClientLogger, Logger } from '@utils/logger.util';
+import { Logger } from '@utils/logger.util';
 import { createDecipheriv } from 'crypto';
 import CryptoJS from 'crypto-js';
 
 /**
  * 복호화
- * 
+ *
  * @param encryptedString 복호화 할 암호화 된 문자열
  * @param token 복화에 사용할 비대칭 키(토큰)
  * @returns 복호화 된 문자열
@@ -24,7 +24,6 @@ export const decrypt = (encryptedString: string, token: string): string => {
   return decryptedString;
 };
 
-
 /**
  * 비밀번호 암호화 된 문자열과 복호화 된 문자열 비교 함수
  * @param receivedPassword 수신된 패스워드
@@ -34,11 +33,6 @@ export const decrypt = (encryptedString: string, token: string): string => {
  */
 export const comparePassword = (receivedPassword: string, encodedPassword: string, passwordToken: string): boolean => {
   const decryptedPassword = decrypt(encodedPassword, passwordToken);
-
-  ClientLogger.debug('[COMPARE] Compare Decrypted Password: %o', {
-    receivedPassword,
-    decryptedPassword,
-  });
 
   return receivedPassword === decryptedPassword;
 };

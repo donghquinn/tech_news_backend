@@ -42,11 +42,10 @@ export class AccountManager {
     }
   }
 
-
-/**
- * REDIS 에 등록된 회원 정보(로그인 상태 정보) 삭제
- * @param encodedEmail 암호화된 유저 이메일(REDIS 키)
- */
+  /**
+   * REDIS 에 등록된 회원 정보(로그인 상태 정보) 삭제
+   * @param encodedEmail 암호화된 유저 이메일(REDIS 키)
+   */
   public async deleteItem(encodedEmail: string) {
     try {
       const index = this.keyList.findIndex((item) => item === encodedEmail);

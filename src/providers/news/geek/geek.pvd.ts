@@ -23,7 +23,7 @@ export class GeekProvider {
       const startDate = startOfDay(new Date(yesterday));
       const endDate = endOfDay(new Date(yesterday));
 
-      NewsLogger.info('[GEEK] YesterDay: %o', {
+      NewsLogger.debug('[GEEK] YesterDay: %o', {
         start: startDate,
         end: endDate,
         page,

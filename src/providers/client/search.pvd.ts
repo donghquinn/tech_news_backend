@@ -43,7 +43,7 @@ export class ClientSearchProvider {
 
       await this.mailer.sendMail(email, 'Search Password', mailContent);
 
-      ClientLogger.debug('[SEARCH_PASS] Sent New Password Complete');
+      ClientLogger.info('[SEARCH_PASS] Sending New Password Complete');
 
       return 'Sent';
     } catch (error) {
@@ -78,7 +78,7 @@ export class ClientSearchProvider {
 
       const encryptedPassword = encryptOriginalPassword(rawPassword);
 
-      ClientLogger.debug('[VALIDATE_KEY] Validate Password Searching Key Complete');
+      ClientLogger.info('[VALIDATE_KEY] Validate Password Searching Key Complete');
 
       return encryptedPassword;
     } catch (error) {
@@ -130,7 +130,7 @@ export class ClientSearchProvider {
 
       await this.prisma.updateNewPassword(uuid, encodedNewPassword, passwordNewToken);
 
-      ClientLogger.debug('[CHANGE_PASS] Changing Password Complete');
+      ClientLogger.info('[CHANGE_PASS] Changing Password Complete');
 
       return 'success';
     } catch (error) {
@@ -185,7 +185,7 @@ export class ClientSearchProvider {
 
       await this.prisma.updateNewPassword(uuid, encodedPassword, passwordToken);
 
-      ClientLogger.debug('[CHANGE_PASS] Changing Password Complete');
+      ClientLogger.info('[CHANGE_PASS] Changing Password Complete');
 
       return 'success';
     } catch (error) {
@@ -203,7 +203,7 @@ export class ClientSearchProvider {
 
   /**
    * 이메일 찾기
-   * @param name 유저 이름 
+   * @param name 유저 이름
    * @returns 유저 이메일
    */
   async searchEmail(name: string) {
