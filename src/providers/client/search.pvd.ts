@@ -18,6 +18,13 @@ export class ClientSearchProvider {
     private readonly mailer: MailerProvider,
   ) {}
 
+  /**
+   * 유저 패스워드 찾기 함수. 받은 유저 정보를 DB에서 찾고 인증키를 메일로 전송.
+   * 메일 전송 후 인증키를 REDIS에 등록하고, 유저는 메일에서 검증키 전송
+   * @param email 유저 이메일
+   * @param name 유저 이름
+   * @returns 전송 성공 메세지
+   */
   async searchPassword(email: string, name: string) {
     try {
       // 찾기
@@ -52,6 +59,11 @@ export class ClientSearchProvider {
     }
   }
 
+  /**
+   * 비밀번호 찾기에서 전송된 검증키를 전달 받아, 유저 검증
+   * @param tempKey 메일로 전송된 검증키
+   * @returns 암호화 된 패스워드 전송. 프론트단에서 복호화 실시
+   */
   async validateSearchingPasswordKey(tempKey: string) {
     try {
       // 찾기
@@ -82,6 +94,14 @@ export class ClientSearchProvider {
     }
   }
 
+  /**
+   * 비밀번호 변경
+   * @param email 유저 이메일
+   * @param name 유저 이름
+   * @param password 이전 패스워드
+   * @param newPassword 새로운 패스워드
+   * @returns 성공 여부 메세지
+   */
   async changeSearchingPassword(email: string, name: string, password: string, newPassword: string) {
     try {
       // 찾기
@@ -126,6 +146,14 @@ export class ClientSearchProvider {
     }
   }
 
+  /**
+   * 로그인한 유저가 패스워드 변경 요청할 때 호출되는 함수.
+   * REDIS에서 로그인 유저 찾고, 패스워드 변경
+   * @param encodedEmail 인코딩 된 유저 이메일
+   * @param password 이전 패스워드
+   * @param newPassword 새로운 패스워드
+   * @returns 성공 여부 메세지
+   */
   async changePassword(encodedEmail: string, password: string, newPassword: string) {
     try {
       const loginInfo = await this.accountManager.getItem(encodedEmail);
@@ -173,6 +201,11 @@ export class ClientSearchProvider {
     }
   }
 
+  /**
+   * 이메일 찾기
+   * @param name 유저 이름 
+   * @returns 유저 이메일
+   */
   async searchEmail(name: string) {
     try {
       const result = await this.prisma.findEmail(name);
