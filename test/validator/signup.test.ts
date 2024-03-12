@@ -49,7 +49,7 @@ describe('Signup Request Validator Test', () => {
       password: '132',
       name: '',
     };
-      
+
     try {
       await clientSignupValidator(request3);
     } catch (error) {

@@ -8,8 +8,6 @@ import { AccountManager } from 'providers/auth/account-manager.pvd';
 import { shutdown } from 'utils/shutdown.utils';
 
 export const bootstrap = async () => {
-  const date = new Date().toLocaleTimeString();
-
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: ['log', 'debug', 'warn', 'error'],
   });
@@ -33,6 +31,7 @@ export const bootstrap = async () => {
   app.enableShutdownHooks();
 
   await app.listen(port, '0.0.0.0', () => {
+    const date = new Date().toLocaleTimeString();
     const message = `Listening On ${port}`;
     const wrapper = '@'.repeat(message.length);
 
