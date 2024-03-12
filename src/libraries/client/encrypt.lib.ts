@@ -4,8 +4,9 @@ import { createCipheriv, randomBytes } from 'crypto';
 import CryptoJS from 'crypto-js';
 
 /**
+ * 문자열 암호화 함수
  * @param certKey 고객 인증키. 임의의 16파이트 키
- * @returns hashToken - token 필드에 들어갈 값, uuid - 고객 uuid
+ * @returns { hashToken - token 필드에 들어갈 값, uuid - 고객 uuid}
  */
 export const cryptData = (data: string) => {
   const secretKey = process.env.SECRET_KEY!;

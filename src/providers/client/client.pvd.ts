@@ -79,7 +79,7 @@ export class ClientProvider {
       const isLogined = await this.accountManager.getItem(encodedEmail);
 
       if (isLogined === null) {
-        await this.accountManager.setItem(encodedEmail, encodedEmailToken, uuid, password);
+        await this.accountManager.setItem(encodedEmail, encodedEmailToken, uuid, foundPassword);
 
         ClientLogger.info('[ACCOUNT] Set Finished');
 
