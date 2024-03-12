@@ -3,6 +3,13 @@ import { ClientLogger, Logger } from '@utils/logger.util';
 import { createDecipheriv } from 'crypto';
 import CryptoJS from 'crypto-js';
 
+/**
+ * 복호화
+ * 
+ * @param encryptedString 복호화 할 암호화 된 문자열
+ * @param token 복화에 사용할 비대칭 키(토큰)
+ * @returns 복호화 된 문자열
+ */
 export const decrypt = (encryptedString: string, token: string): string => {
   const secretKey = process.env.SECRET_KEY!;
 
@@ -17,6 +24,14 @@ export const decrypt = (encryptedString: string, token: string): string => {
   return decryptedString;
 };
 
+
+/**
+ * 비밀번호 암호화 된 문자열과 복호화 된 문자열 비교 함수
+ * @param receivedPassword 수신된 패스워드
+ * @param encodedPassword 회원가입 때 DB에 저장된 암호화 된 패스워드
+ * @param passwordToken 회원가입할 때 암호화하여 DB에 저장된 복호화 키(토큰)
+ * @returns boolean값
+ */
 export const comparePassword = (receivedPassword: string, encodedPassword: string, passwordToken: string): boolean => {
   const decryptedPassword = decrypt(encodedPassword, passwordToken);
 

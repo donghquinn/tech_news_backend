@@ -12,9 +12,6 @@ export class AccountManager {
   private keyList: Array<string>;
 
   constructor() {
-    // eslint-disable-next-line max-len
-    // this.redisUrl = `redis://${process.env.REDIS_USER}:${process.env.REDIS_PASS}@${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`;
-
     this.redis = createClient({
       url: process.env.REDIS_HOST,
       username: process.env.REDIS_USER,
@@ -24,6 +21,9 @@ export class AccountManager {
     this.keyList = [];
   }
 
+  /**
+   * REDIS 연결 체크
+   */
   public async start() {
     try {
       await this.redis.connect();
@@ -42,14 +42,11 @@ export class AccountManager {
     }
   }
 
-  /**
-   *
-   * @param clientUuid
-   * @param email
-   * @param password
-   * @returns
-   */
 
+/**
+ * REDIS 에 등록된 회원 정보(로그인 상태 정보) 삭제
+ * @param encodedEmail 암호화된 유저 이메일(REDIS 키)
+ */
   public async deleteItem(encodedEmail: string) {
     try {
       const index = this.keyList.findIndex((item) => item === encodedEmail);
@@ -74,6 +71,14 @@ export class AccountManager {
     }
   }
 
+  /**
+   * Redis에 로그인 유저 정보 저장
+   * @param encodedEmail 암호화 된 유저 이메일 (REDIS 키)
+   * @param encodedToken 이메일 복호화 토큰
+   * @param uuid 유저 UUID
+   * @param password 암호화된 유저 패스워드
+   * @returns booelan 값
+   */
   public async setItem(encodedEmail: string, encodedToken: string, uuid: string, password: string) {
     try {
       if (this.keyList.length >= 5000) {
@@ -114,6 +119,11 @@ export class AccountManager {
     }
   }
 
+  /**
+   * REDIS에서 유저 로그인 정보 가져오는 함수
+   * @param encodedEmail 암호화 된 유저 이메일 (REDIS 키)
+   * @returns 유저 정보 | NULL
+   */
   public async getItem(encodedEmail: string) {
     try {
       const key = this.keyList.find((item) => item === encodedEmail);
@@ -153,7 +163,6 @@ export class AccountManager {
 
   /**
    * 패스워드 찾기 위한 키 검증 용
-   *
    * 메일로 전송된 인증 키 검증 위해 임시적으로 REDIS에 세팅 - 제한시간 3분
    * @param tempKey 생성된 임의 난수 키
    * @param email 해당되는 이메일
@@ -193,7 +202,6 @@ export class AccountManager {
 
   /**
    * 패스워드 찾기 위한 키 검증용
-   *
    * 메일로 전송된 검증 키를 받아 찾기
    * @param tempKey 전송된 임의 난수 검증 키
    * @returns
