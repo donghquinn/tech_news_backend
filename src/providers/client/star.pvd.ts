@@ -1,7 +1,7 @@
 import { ClientError } from '@errors/client.error';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
-import { AccountManager } from 'providers/auth/account-manager.pvd';
+import { AccountManager } from 'providers/account-manager.pvd';
 import { GeekNewsReturn } from 'types/geek.type';
 import { ClientPrismaLibrary } from './client-prisma.pvd';
 

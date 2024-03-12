@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { NewsLogger } from '@utils/logger.util';
 import { endOfDay, startOfDay } from 'date-fns';
 import moment from 'moment-timezone';
-import { AccountManager } from 'providers/auth/account-manager.pvd';
+import { AccountManager } from 'providers/account-manager.pvd';
 import { MlPrismaLibrary } from './ml-prisma.lib';
 
 @Injectable()
