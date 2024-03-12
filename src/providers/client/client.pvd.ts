@@ -6,7 +6,7 @@ import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
 import { MailerProvider } from 'providers/mailer.pvd';
 import { clearIntervalAsync, setIntervalAsync } from 'set-interval-async';
-import { AccountManager } from '../auth/account-manager.pvd';
+import { AccountManager } from '../account-manager.pvd';
 import { ClientPrismaLibrary } from './client-prisma.pvd';
 
 @Injectable()

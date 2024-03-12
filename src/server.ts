@@ -4,7 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from 'app.module';
 import helmet from 'helmet';
-import { AccountManager } from 'providers/auth/account-manager.pvd';
+import { AccountManager } from 'providers/account-manager.pvd';
 import { shutdown } from 'utils/shutdown.utils';
 
 export const bootstrap = async () => {

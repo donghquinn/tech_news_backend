@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AccountManager } from 'providers/auth/account-manager.pvd';
+import { AccountManager } from 'providers/account-manager.pvd';
 
 @Module({
   providers: [AccountManager],
