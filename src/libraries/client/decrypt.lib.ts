@@ -1,5 +1,5 @@
 import { CryptoError } from '@errors/crypto.error';
-import { ClientLogger, Logger } from '@utils/logger.util';
+import { Logger } from '@utils/logger.util';
 import { createDecipheriv } from 'crypto';
 import CryptoJS from 'crypto-js';
 
@@ -33,11 +33,6 @@ export const decrypt = (encryptedString: string, token: string): string => {
  */
 export const comparePassword = (receivedPassword: string, encodedPassword: string, passwordToken: string): boolean => {
   const decryptedPassword = decrypt(encodedPassword, passwordToken);
-
-  ClientLogger.debug('[COMPARE] Compare Decrypted Password: %o', {
-    receivedPassword,
-    decryptedPassword,
-  });
 
   return receivedPassword === decryptedPassword;
 };
