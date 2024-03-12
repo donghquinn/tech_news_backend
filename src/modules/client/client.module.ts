@@ -6,7 +6,7 @@ import { Module } from '@nestjs/common';
 import { ClientProvider } from 'providers/client/client.pvd';
 import { ClientSearchProvider } from 'providers/client/search.pvd';
 import { ClientStarProvider } from 'providers/client/star.pvd';
-import { AccountManagerModule } from './account.module';
+import { AccountManagerModule } from '../account.module';
 import { ClientPrismaModule } from './client-prisma.module';
 
 @Module({
