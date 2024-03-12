@@ -4,7 +4,7 @@ import { comparePassword, decrypt, decryptPassword } from '@libraries/client/dec
 import { cryptData, encryptOriginalPassword } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
-import { createSearchPasswordMailcontent } from '@utils/mail.utils';
+import { createSearchPasswordMailcontent } from '@libraries/mailer/mail.utils';
 import { randomBytes } from 'crypto';
 import { AccountManager } from 'providers/auth/account-manager.pvd';
 import { MailerProvider } from 'providers/mailer.pvd';
