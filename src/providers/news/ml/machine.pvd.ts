@@ -84,7 +84,7 @@ export class MachineLearningProvider {
       });
 
       throw new MachineLearningError(
-        'Give Star on the ML news',
+        '[ML] Give Star on the ML news',
         'Failed to vie star ML news',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
@@ -113,7 +113,7 @@ export class MachineLearningProvider {
       });
 
       throw new MachineLearningError(
-        'Unstar ML News',
+        '[ML] Unstar ML News',
         'Failed to Unstar ML News',
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );

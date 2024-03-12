@@ -41,7 +41,7 @@ export class HackersNewsProvider {
       const startDate = startOfDay(new Date(yesterday));
       const endDate = endOfDay(new Date(yesterday));
 
-      NewsLogger.info('[Hackers] YesterDay: %o', {
+      NewsLogger.debug('[Hackers] YesterDay: %o', {
         start: startDate,
         end: endDate,
         page,
