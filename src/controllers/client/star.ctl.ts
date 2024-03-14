@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { clientMyPageStarNewsValidator } from '@validators/client/mypage.validator';
+import { clientMyPageStarNewsValidator } from '@validators/client/user.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { ClientStarProvider } from 'providers/client/star.pvd';
 import { ClientMyPageStarNewsRequest } from 'types/client.type';
