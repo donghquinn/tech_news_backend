@@ -1,8 +1,5 @@
-import { AuthError } from '@errors/auth.error';
 import { ClientError } from '@errors/client.error';
-import { GeekError } from '@errors/geek.error';
-import { HackerError } from '@errors/hacker.error';
-import { MachineLearningError } from '@errors/machine.error';
+import { GeekError, HackerError, MachineLearningError } from '@errors/news.error';
 import { PrismaError } from '@errors/prisma.error';
 import { ValidatorError } from '@errors/validator.error';
 
@@ -36,10 +33,7 @@ export class SetErrorResponse implements ResponseObject {
   constructor(error: unknown) {
     const errorArray = [];
 
-    if (error instanceof AuthError) {
-      this.resCode = '401';
-      errorArray.push(error.type, error.message);
-    } else if (error instanceof ClientError) {
+    if (error instanceof ClientError) {
       this.resCode = '402';
       errorArray.push(error.type, error.message);
     } else if (error instanceof HackerError) {

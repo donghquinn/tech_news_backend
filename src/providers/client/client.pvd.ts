@@ -46,207 +46,159 @@ export class ClientProvider {
   }
 
   async login(email: string, password: string) {
-    try {
-      const userInfo = await this.prisma.selectUserInfo(email);
+    const userInfo = await this.prisma.selectUserInfo(email);
 
-      if (userInfo === null) {
-        ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
-          email,
-        });
-
-        throw new ClientError('[LOGIN] Finding Matching User Info', 'No Matching User Found');
-      }
-
-      const { password: foundPassword, password_token: passwordToken, uuid } = userInfo;
-
-      const isMatch = this.crypto.comparePassword(password, foundPassword, passwordToken);
-
-      if (!isMatch) {
-        ClientLogger.error('[LOGIN] Password Matching Given Password is Not Match. Reject.');
-
-        throw new ClientError('[LOGIN] Password Matching ', ' Password Matching is Not Match. Reject.');
-      }
-
-      // Set User Info into REDIS
-      const { encodedData: encodedEmail, encodedToken: encodedEmailToken } = this.crypto.cryptData(email);
-
-      ClientLogger.debug('[ACCOUNT] Searching User Info: %o', {
-        encodedEmail,
+    if (userInfo === null) {
+      ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
+        email,
       });
 
-      const isLogined = await this.accountManager.getItem(encodedEmail);
+      throw new ClientError('[LOGIN] Finding Matching User Info', 'No Matching User Found');
+    }
 
-      if (isLogined === null) {
-        await this.accountManager.setItem(encodedEmail, encodedEmailToken, uuid, foundPassword);
+    const { password: foundPassword, password_token: passwordToken, uuid } = userInfo;
 
-        ClientLogger.info('[ACCOUNT] Set Finished');
+    const isMatch = this.crypto.comparePassword(password, foundPassword, passwordToken);
 
-        return encodedEmail;
-      }
+    if (!isMatch) {
+      ClientLogger.error('[LOGIN] Password Matching Given Password is Not Match. Reject.');
 
-      ClientLogger.debug('[ACCOUNT] Found User Key: %o', {
-        uuid,
-      });
+      throw new ClientError('[LOGIN] Password Matching ', ' Password Matching is Not Match. Reject.');
+    }
 
-      const interval = 1000 * 60 * 60;
+    // Set User Info into REDIS
+    const { encodedData: encodedEmail, encodedToken: encodedEmailToken } = this.crypto.cryptData(email);
 
-      const timer = setIntervalAsync(async () => {
-        const isExsit = await this.accountManager.getItem(encodedEmail);
+    ClientLogger.debug('[ACCOUNT] Searching User Info: %o', {
+      encodedEmail,
+    });
 
-        if (isExsit === null) {
-          ClientLogger.info('[ACCOUNT] It is not existing user. Clear Interval.');
+    const isLogined = await this.accountManager.getItem(encodedEmail);
 
-          ClientLogger.debug('[ACCOUNT] Client Map Inspection: %o', {
-            isExsit,
-            uuid,
-          });
+    if (isLogined === null) {
+      await this.accountManager.setItem(encodedEmail, encodedEmailToken, uuid, foundPassword);
 
-          clearIntervalAsync(timer);
-        } else {
-          ClientLogger.info('[ACCOUNT] Expiration time. Delete user.');
-
-          ClientLogger.debug('[ACCOUNT] Client Map Inspection: %o', {
-            uuid,
-          });
-
-          await this.accountManager.deleteItem(encodedEmail);
-        }
-      }, interval);
-
-      await this.prisma.updateClientLoginStatus(email, uuid, true);
+      ClientLogger.info('[ACCOUNT] Set Finished');
 
       return encodedEmail;
-    } catch (error) {
-      ClientLogger.error('[LOGIN] Login Error: %o', {
-        error,
-      });
-
-      throw new ClientError(
-        '[LOGIN] Login',
-        'Login Error. Please try again.',
-        error instanceof Error ? error : new Error(JSON.stringify(error)),
-      );
     }
+
+    ClientLogger.debug('[ACCOUNT] Found User Key: %o', {
+      uuid,
+    });
+
+    const interval = 1000 * 60 * 60;
+
+    const timer = setIntervalAsync(async () => {
+      const isExsit = await this.accountManager.getItem(encodedEmail);
+
+      if (isExsit === null) {
+        ClientLogger.info('[ACCOUNT] It is not existing user. Clear Interval.');
+
+        ClientLogger.debug('[ACCOUNT] Client Map Inspection: %o', {
+          isExsit,
+          uuid,
+        });
+
+        clearIntervalAsync(timer);
+      } else {
+        ClientLogger.info('[ACCOUNT] Expiration time. Delete user.');
+
+        ClientLogger.debug('[ACCOUNT] Client Map Inspection: %o', {
+          uuid,
+        });
+
+        await this.accountManager.deleteItem(encodedEmail);
+      }
+    }, interval);
+
+    await this.prisma.updateClientLoginStatus(email, uuid, true);
+
+    return encodedEmail;
   }
 
   async logout(encodedEmail: string) {
-    try {
-      const foundKey = await this.accountManager.getItem(encodedEmail);
+    const foundKey = await this.accountManager.getItem(encodedEmail);
 
-      if (foundKey === null) {
-        ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
-          encodedEmail,
-        });
-
-        throw new ClientError('[LOGIN] Finding Matching User Info', 'No Matching User Found');
-      }
-
-      const { token, uuid } = foundKey;
-
-      const email = this.crypto.decrypt(encodedEmail, token);
-
-      await this.prisma.updateClientLoginStatus(email, uuid, false);
-
-      const deleteItem = await this.accountManager.deleteItem(encodedEmail);
-
-      if (deleteItem === null) throw new ClientError('[LOGOUT] Logout', 'No Data Found. Ignore.');
-
-      return 'Logout';
-    } catch (error) {
-      ClientLogger.error('[LOGIN] Login Error: %o', {
-        error,
+    if (foundKey === false) {
+      ClientLogger.debug('[LOGIN] No Matching User Found: %o', {
+        encodedEmail,
       });
 
-      throw new ClientError(
-        '[LOGIN] Logout',
-        'Logout Error. Please try again.',
-        error instanceof Error ? error : new Error(JSON.stringify(error)),
-      );
+      throw new ClientError('[LOGIN] Finding Matching User Info', 'No Matching User Found');
     }
+
+    const { token, uuid } = foundKey;
+
+    const email = this.crypto.decrypt(encodedEmail, token);
+
+    await this.prisma.updateClientLoginStatus(email, uuid, false);
+
+    const deleteItem = await this.accountManager.deleteItem(encodedEmail);
+
+    if (deleteItem === false) throw new ClientError('[LOGOUT] Logout', 'No Data Found. Ignore.');
+
+    return 'Logout';
   }
 
   async myPage(encodedEmail: string) {
-    try {
-      const foundKey = await this.accountManager.getItem(encodedEmail);
+    const foundKey = await this.accountManager.getItem(encodedEmail);
 
-      if (foundKey === null) {
-        ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
-          encodedEmail,
-        });
-
-        throw new ClientError('[MYPAGE] Finding Matching User Info', 'No Matching User Found');
-      }
-
-      ClientLogger.debug('[MYPAGE] Found Key Item: %o', {
+    if (foundKey === false) {
+      ClientLogger.debug('[MYPAGE] No Matching User Found: %o', {
         encodedEmail,
-        foundKey,
       });
 
-      const { token, uuid } = foundKey;
-      const email = this.crypto.decrypt(encodedEmail, token);
-
-      const result = await this.prisma.getMyPageInfo(email, uuid);
-
-      ClientLogger.info('[MYPAGE] Got My Starred News');
-
-      return result;
-    } catch (error) {
-      ClientLogger.error('[MYPAGE] Get My Page Error: %o', {
-        error,
-      });
-
-      throw new ClientError(
-        '[MYPAGE] Get My Page',
-        'Get My Page Error. Please try again.',
-        error instanceof Error ? error : new Error(JSON.stringify(error)),
-      );
+      throw new ClientError('[MYPAGE] Finding Matching User Info', 'No Matching User Found');
     }
+
+    ClientLogger.debug('[MYPAGE] Found Key Item: %o', {
+      encodedEmail,
+      foundKey,
+    });
+
+    const { token, uuid } = foundKey;
+    const email = this.crypto.decrypt(encodedEmail, token);
+
+    const result = await this.prisma.getMyPageInfo(email, uuid);
+
+    ClientLogger.info('[MYPAGE] Got My Starred News');
+
+    return result;
   }
 
   async changePassword(encodedEmail: string, password: string, newPassword: string) {
-    try {
-      const loginInfo = await this.accountManager.getItem(encodedEmail);
+    const loginInfo = await this.accountManager.getItem(encodedEmail);
 
-      if (loginInfo === null) throw new NoUserError('[CHANGE_PASS] Change Password', 'No User Data Found');
+    if (loginInfo === false) throw new NoUserError('[CHANGE_PASS] Change Password', 'No User Data Found');
 
-      const { token: redisToken } = loginInfo;
+    const { token: redisToken } = loginInfo;
 
-      const email = this.crypto.decrypt(encodedEmail, redisToken);
+    const email = this.crypto.decrypt(encodedEmail, redisToken);
 
-      // 찾기
-      const result = await this.prisma.selectUserInfo(email);
+    // 찾기
+    const result = await this.prisma.selectUserInfo(email);
 
-      if (result === null) {
-        ClientLogger.error('[CHANGE_PASS] Error. No matching User Found.: %o', {
-          email,
-        });
-
-        throw new NoUserError('[CHANGE_PASS] Login', 'No Matching Info. Please Make sure you Logged Out Before.');
-      }
-
-      const { password: dbPassword, password_token: token, uuid } = result;
-
-      const isMatch = this.crypto.comparePassword(password, dbPassword, token);
-
-      if (!isMatch) throw new PasswordError('[CHANGE_PASS] Changing Password', 'Password Is Not Match');
-
-      const { encodedData: encodedPassword, encodedToken: passwordToken } = this.crypto.cryptData(newPassword);
-
-      await this.prisma.updateNewPassword(uuid, encodedPassword, passwordToken);
-
-      ClientLogger.info('[CHANGE_PASS] Changing Password Complete');
-
-      return 'success';
-    } catch (error) {
-      ClientLogger.error('[CHANGE_PASS] Change Password Error: %o', {
-        error,
+    if (result === null) {
+      ClientLogger.error('[CHANGE_PASS] Error. No matching User Found.: %o', {
+        email,
       });
 
-      throw new ClientError(
-        '[CHANGE_PASS] Change Password',
-        'Change Password Error',
-        error instanceof Error ? error : new Error(JSON.stringify(error)),
-      );
+      throw new NoUserError('[CHANGE_PASS] Login', 'No Matching Info. Please Make sure you Logged Out Before.');
     }
+
+    const { password: dbPassword, password_token: token, uuid } = result;
+
+    const isMatch = this.crypto.comparePassword(password, dbPassword, token);
+
+    if (!isMatch) throw new PasswordError('[CHANGE_PASS] Changing Password', 'Password Is Not Match');
+
+    const { encodedData: encodedPassword, encodedToken: passwordToken } = this.crypto.cryptData(newPassword);
+
+    await this.prisma.updateNewPassword(uuid, encodedPassword, passwordToken);
+
+    ClientLogger.info('[CHANGE_PASS] Changing Password Complete');
+
+    return 'success';
   }
 }

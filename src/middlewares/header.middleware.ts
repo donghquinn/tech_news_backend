@@ -14,7 +14,5 @@ export const globalMiddleware = (request: Request, res: Response, next: NextFunc
     Logger.debug('Auth Key Detected');
 
     next();
-  } else {
-    throw new HttpException('Authorize Key Not Match', HttpStatus.BAD_REQUEST);
-  }
+  } else throw new HttpException('Authorize Key Not Match', HttpStatus.BAD_REQUEST);
 };

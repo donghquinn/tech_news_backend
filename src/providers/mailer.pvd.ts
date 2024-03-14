@@ -1,6 +1,7 @@
 import { MailerError } from '@errors/mail.error';
 import { Injectable } from '@nestjs/common';
 import { MailerLogger } from '@utils/logger.util';
+import { randomBytes } from 'crypto';
 import * as nodemailer from 'nodemailer';
 
 @Injectable()
@@ -43,20 +44,24 @@ export class MailerProvider {
     }
   }
 
-  private static createSearchPasswordMailcontent(rawPassword: string): string {
+  private static createSearchPasswordMailcontent(authKey: string): string {
     return `
-    <div>
-        <fieldset>
-         <p>Validate Key: </p> ${rawPassword}
-        </fieldset>
-    </div>
-`;
+      <div>
+          <fieldset>
+          <p>Validate Key: </p> ${authKey}
+          </fieldset>
+      </div>
+  `;
   }
 
-  public async sendSearchPassword(to: string, subject: string, rawPassword: string) {
-    const content = MailerProvider.createSearchPasswordMailcontent(rawPassword);
+  public async sendSearchPassword(to: string, subject: string) {
+    const randomKey = randomBytes(8).toString('hex');
+
+    const content = MailerProvider.createSearchPasswordMailcontent(randomKey);
 
     await this.sendMail(to, subject, content);
+
+    return randomKey;
   }
 
   public static createNewsdMailcontent(newsData: string): string {

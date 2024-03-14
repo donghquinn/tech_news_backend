@@ -1,4 +1,5 @@
-import { HackerError } from '@errors/hacker.error';
+/* eslint-disable @typescript-eslint/naming-convention */
+import { HackerError } from '@errors/news.error';
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { NewsLogger } from '@utils/logger.util';
@@ -30,7 +31,20 @@ export class HackerPrismaLibrary extends PrismaClient {
         skip: (Number(page) - 1) * Number(size),
       });
 
-      return result;
+      const returnData = result.map((item) => {
+        const { uuid, post, link, founded, _count } = item;
+        const { liked_model: count } = _count;
+
+        return {
+          uuid,
+          post,
+          link,
+          likedCount: count,
+          founded,
+        };
+      });
+
+      return returnData;
     } catch (error) {
       NewsLogger.error('[HACKER] Bring Hacker News Error: %o', {
         error,
