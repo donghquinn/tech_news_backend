@@ -22,7 +22,7 @@ export class MailerProvider {
     });
   }
 
-  async sendMail(to: string, subject: string, content: string) {
+  private async sendMail(to: string, subject: string, content: string) {
     try {
       await this.transporter.sendMail({
         from: this.sender,
@@ -41,5 +41,37 @@ export class MailerProvider {
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
+  }
+
+  private static createSearchPasswordMailcontent(rawPassword: string): string {
+    return `
+    <div>
+        <fieldset>
+         <p>Validate Key: </p> ${rawPassword}
+        </fieldset>
+    </div>
+`;
+  }
+
+  public async sendSearchPassword(to: string, subject: string, rawPassword: string) {
+    const content = MailerProvider.createSearchPasswordMailcontent(rawPassword);
+
+    await this.sendMail(to, subject, content);
+  }
+
+  public static createNewsdMailcontent(newsData: string): string {
+    return `
+    <div>
+        <fieldset>
+         ${newsData}
+        </fieldset>
+    </div>
+`;
+  }
+
+  public async sendNewsMail(to: string, subject: string, newsData: string) {
+    const content = MailerProvider.createNewsdMailcontent(newsData);
+
+    await this.sendMail(to, subject, content);
   }
 }
