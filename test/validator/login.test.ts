@@ -1,5 +1,5 @@
 import { ValidatorError } from '@errors/validator.error';
-import { clientLoginValidator } from '@validators/client/login.validator';
+import { clientLoginValidator } from '@validators/client/user.validator';
 import { ClientLoginRequest } from 'types/client.type';
 
 describe('Login Request Validator Test', () => {

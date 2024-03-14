@@ -1,9 +1,11 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { clientLoginValidator } from '@validators/client/login.validator';
-import { clientLogoutValidator } from '@validators/client/logout.validator';
-import { clientMyPageValidator } from '@validators/client/mypage.validator';
-import { clientSignupValidator } from '@validators/client/signup.validator';
-import { changePasswordValidator } from '@validators/client/user.validator';
+import {
+  changePasswordValidator,
+  clientLoginValidator,
+  clientLogoutValidator,
+  clientMyPageValidator,
+  clientSignupValidator,
+} from '@validators/client/user.validator';
 import { SetErrorResponse, SetResponse } from 'dto/response.dto';
 import { ClientProvider } from 'providers/client/client.pvd';
 import { ClientLoginRequest, ClientLogoutRequest, ClientMyPageRequest, ClientSignupRequest } from 'types/client.type';
