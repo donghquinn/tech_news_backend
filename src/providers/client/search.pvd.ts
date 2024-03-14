@@ -2,7 +2,6 @@ import { ClientError, NoUserError } from '@errors/client.error';
 import { NoValidateKeyError, PasswordError } from '@errors/password.error';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
-import { randomBytes } from 'crypto';
 import { AccountManager } from 'providers/account-manager.pvd';
 import { CryptoProvider } from 'providers/crypto.pvd';
 import { MailerProvider } from 'providers/mailer.pvd';
@@ -30,15 +29,12 @@ export class ClientSearchProvider {
       const result = await this.prisma.selectUserInfo(email, name);
 
       if (result === null) throw new NoUserError('[SEARCH_PASS] Search Password', 'No User Found');
-
-      const randomKey = randomBytes(8).toString('hex');
       // const { encodedData: encodedPassword, dataToken: passwordToken } = cryptData(randomPassword);
 
       const { password, password_token: token } = result;
 
+      const randomKey = await this.mailer.sendSearchPassword(email, 'Search Password');
       await this.accountManager.setTempData(randomKey, email, password, token);
-
-      await this.mailer.sendSearchPassword(email, 'Search Password', randomKey);
 
       ClientLogger.info('[SEARCH_PASS] Sending New Password Complete');
 
