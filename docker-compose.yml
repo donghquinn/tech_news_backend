@@ -17,10 +17,10 @@ services:
   backend:
     depends_on:
       - redis
-    image: ${REGISTRY_URL}
-    # build:
-    #   context: .
-    #   dockerfile: ./Dockerfile-deploy
+    # image: ${REGISTRY_URL}
+    build:
+      context: .
+      dockerfile: ./Dockerfile-deploy
     container_name: news_miner
     restart: unless-stopped
     volumes:
