@@ -1,5 +1,5 @@
-import { decrypt } from '@libraries/crypto/decrypt.lib';
-import { cryptData } from '@libraries/crypto/encrypt.lib';
+import { CryptoProvider } from "providers/crypto.pvd";
+
 
 describe('Encrypt Password', () => {
   describe('Check ENV', () => {
@@ -11,9 +11,11 @@ describe('Encrypt Password', () => {
   describe('Encrypt Password and Decrypt it', () => {
     const password = '12345asdc';
 
-    const { encodedData, encodedToken } = cryptData(password);
+    const crypto = new CryptoProvider();
 
-    const decryptPassword = decrypt(encodedData, encodedToken);
+    const { encodedData, encodedToken } = crypto.cryptData(password);
+
+    const decryptPassword = crypto.decrypt(encodedData, encodedToken);
 
     test('Encoded Password should be decripted', () => {
       expect(decryptPassword).toEqual(password);
