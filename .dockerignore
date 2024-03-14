@@ -17,7 +17,7 @@ npm-debug.log
 
 example.env
 
-migrations
+prisma/migrations
 
 newsData
 
@@ -31,3 +31,5 @@ Dockerfile
 example*
 LICENSE
 README.md
+
+logs
