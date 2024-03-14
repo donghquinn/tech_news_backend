@@ -89,7 +89,12 @@ export class CryptoProvider {
 
     const encryptedString = Buffer.concat([encrypted, cipher.final()]).toString('hex');
 
-    return { encodedToken: iv.toString('hex'), encodedData: encryptedString };
+    const returnData = {
+      encodedToken: iv.toString('hex'),
+      encodedData: encryptedString,
+    };
+
+    return returnData;
   }
 
   /**
