@@ -1,4 +1,4 @@
-import { MachineLearningError } from '@errors/machine.error';
+import { MachineLearningError } from '@errors/news.error';
 import { PrismaError } from '@errors/prisma.error';
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';

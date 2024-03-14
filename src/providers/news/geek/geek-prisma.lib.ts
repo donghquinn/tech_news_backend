@@ -1,4 +1,4 @@
-import { GeekError } from '@errors/geek.error';
+import { GeekError } from '@errors/news.error';
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { NewsLogger } from '@utils/logger.util';
