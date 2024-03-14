@@ -1,10 +1,8 @@
 import { ClientError, NoUserError } from '@errors/client.error';
 import { PasswordError } from '@errors/password.error';
-import { comparePassword, decrypt } from '@libraries/client/decrypt.lib';
-import { cryptData } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
-import { MailerProvider } from 'providers/mailer.pvd';
+import { CryptoProvider } from 'providers/crypto.pvd';
 import { clearIntervalAsync, setIntervalAsync } from 'set-interval-async';
 import { AccountManager } from '../account-manager.pvd';
 import { ClientPrismaLibrary } from './client-prisma.pvd';
@@ -14,7 +12,7 @@ export class ClientProvider {
   constructor(
     private readonly prisma: ClientPrismaLibrary,
     private readonly accountManager: AccountManager,
-    private readonly mailer: MailerProvider,
+    private readonly crypto: CryptoProvider,
   ) {}
 
   async checkEmailandSignup(email: string, password: string, name: string) {
@@ -27,7 +25,7 @@ export class ClientProvider {
         email,
       });
 
-      const { encodedData: encodedPassword, encodedToken: passwordToken } = cryptData(password);
+      const { encodedData: encodedPassword, encodedToken: passwordToken } = this.crypto.cryptData(password);
 
       const uuid = await this.prisma.insertNewClient(email, name, encodedPassword, passwordToken);
 
@@ -61,7 +59,7 @@ export class ClientProvider {
 
       const { password: foundPassword, password_token: passwordToken, uuid } = userInfo;
 
-      const isMatch = comparePassword(password, foundPassword, passwordToken);
+      const isMatch = this.crypto.comparePassword(password, foundPassword, passwordToken);
 
       if (!isMatch) {
         ClientLogger.error('[LOGIN] Password Matching Given Password is Not Match. Reject.');
@@ -70,7 +68,7 @@ export class ClientProvider {
       }
 
       // Set User Info into REDIS
-      const { encodedData: encodedEmail, encodedToken: encodedEmailToken } = cryptData(email);
+      const { encodedData: encodedEmail, encodedToken: encodedEmailToken } = this.crypto.cryptData(email);
 
       ClientLogger.debug('[ACCOUNT] Searching User Info: %o', {
         encodedEmail,
@@ -145,7 +143,7 @@ export class ClientProvider {
 
       const { token, uuid } = foundKey;
 
-      const email = decrypt(encodedEmail, token);
+      const email = this.crypto.decrypt(encodedEmail, token);
 
       await this.prisma.updateClientLoginStatus(email, uuid, false);
 
@@ -185,7 +183,7 @@ export class ClientProvider {
       });
 
       const { token, uuid } = foundKey;
-      const email = decrypt(encodedEmail, token);
+      const email = this.crypto.decrypt(encodedEmail, token);
 
       const result = await this.prisma.getMyPageInfo(email, uuid);
 
@@ -213,7 +211,7 @@ export class ClientProvider {
 
       const { token: redisToken } = loginInfo;
 
-      const email = decrypt(encodedEmail, redisToken);
+      const email = this.crypto.decrypt(encodedEmail, redisToken);
 
       // 찾기
       const result = await this.prisma.selectUserInfo(email);
@@ -228,11 +226,11 @@ export class ClientProvider {
 
       const { password: dbPassword, password_token: token, uuid } = result;
 
-      const isMatch = comparePassword(password, dbPassword, token);
+      const isMatch = this.crypto.comparePassword(password, dbPassword, token);
 
       if (!isMatch) throw new PasswordError('[CHANGE_PASS] Changing Password', 'Password Is Not Match');
 
-      const { encodedData: encodedPassword, encodedToken: passwordToken } = cryptData(newPassword);
+      const { encodedData: encodedPassword, encodedToken: passwordToken } = this.crypto.cryptData(newPassword);
 
       await this.prisma.updateNewPassword(uuid, encodedPassword, passwordToken);
 

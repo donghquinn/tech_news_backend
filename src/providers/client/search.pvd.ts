@@ -1,12 +1,10 @@
 import { ClientError, NoUserError } from '@errors/client.error';
 import { NoValidateKeyError, PasswordError } from '@errors/password.error';
-import { comparePassword, decrypt, decryptPassword } from '@libraries/client/decrypt.lib';
-import { cryptData, encryptOriginalPassword } from '@libraries/client/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
-import { createSearchPasswordMailcontent } from '@libraries/mailer/mail.utils';
 import { randomBytes } from 'crypto';
 import { AccountManager } from 'providers/account-manager.pvd';
+import { CryptoProvider } from 'providers/crypto.pvd';
 import { MailerProvider } from 'providers/mailer.pvd';
 import { ClientPrismaLibrary } from './client-prisma.pvd';
 
@@ -15,6 +13,7 @@ export class ClientSearchProvider {
   constructor(
     private readonly prisma: ClientPrismaLibrary,
     private readonly accountManager: AccountManager,
+    private readonly crypto: CryptoProvider,
     private readonly mailer: MailerProvider,
   ) {}
 
@@ -35,13 +34,11 @@ export class ClientSearchProvider {
       const randomKey = randomBytes(8).toString('hex');
       // const { encodedData: encodedPassword, dataToken: passwordToken } = cryptData(randomPassword);
 
-      const mailContent = createSearchPasswordMailcontent(randomKey);
-
       const { password, password_token: token } = result;
 
       await this.accountManager.setTempData(randomKey, email, password, token);
 
-      await this.mailer.sendMail(email, 'Search Password', mailContent);
+      await this.mailer.sendSearchPassword(email, 'Search Password', randomKey);
 
       ClientLogger.info('[SEARCH_PASS] Sending New Password Complete');
 
@@ -74,9 +71,9 @@ export class ClientSearchProvider {
 
       const { password, token } = tempItem;
 
-      const rawPassword = decrypt(password, token);
+      const rawPassword = this.crypto.decrypt(password, token);
 
-      const encryptedPassword = encryptOriginalPassword(rawPassword);
+      const encryptedPassword = this.crypto.encryptOriginalPassword(rawPassword);
 
       ClientLogger.info('[VALIDATE_KEY] Validate Password Searching Key Complete');
 
@@ -115,18 +112,19 @@ export class ClientSearchProvider {
         throw new NoUserError('[CHANGE_PASS] Login', 'No Matching Info. Please Make sure you Logged Out Before.');
       }
 
-      const decryptedPassword = decryptPassword(password);
+      const decryptedPassword = this.crypto.decryptPassword(password);
 
       const { password: dbPassword, password_token: token, uuid } = result;
 
-      const dbRawPassword = decrypt(dbPassword, token);
+      const dbRawPassword = this.crypto.decrypt(dbPassword, token);
 
       if (decryptedPassword !== dbRawPassword)
         throw new PasswordError('[CHANGE_PASS] Changing Password', 'Password Is Not Match');
 
-      const decryptedNewPassword = decryptPassword(newPassword);
+      const decryptedNewPassword = this.crypto.decryptPassword(newPassword);
 
-      const { encodedData: encodedNewPassword, encodedToken: passwordNewToken } = cryptData(decryptedNewPassword);
+      const { encodedData: encodedNewPassword, encodedToken: passwordNewToken } =
+        this.crypto.cryptData(decryptedNewPassword);
 
       await this.prisma.updateNewPassword(uuid, encodedNewPassword, passwordNewToken);
 
@@ -162,7 +160,7 @@ export class ClientSearchProvider {
 
       const { token: emailToken } = loginInfo;
 
-      const email = decrypt(encodedEmail, emailToken);
+      const email = this.crypto.decrypt(encodedEmail, emailToken);
 
       // 찾기
       const result = await this.prisma.findUser(email);
@@ -177,11 +175,11 @@ export class ClientSearchProvider {
 
       const { password: dbPassword, password_token: token, uuid } = result;
 
-      const isMatch = comparePassword(password, dbPassword, token);
+      const isMatch = this.crypto.comparePassword(password, dbPassword, token);
 
       if (!isMatch) throw new PasswordError('[CHANGE_PASS] Changing Password', 'Password Is Not Match');
 
-      const { encodedData: encodedPassword, encodedToken: passwordToken } = cryptData(newPassword);
+      const { encodedData: encodedPassword, encodedToken: passwordToken } = this.crypto.cryptData(newPassword);
 
       await this.prisma.updateNewPassword(uuid, encodedPassword, passwordToken);
 
