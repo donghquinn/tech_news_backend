@@ -95,7 +95,7 @@ export class MachineLearningProvider {
     try {
       const isLogined = await this.account.getItem(email);
 
-      if (isLogined === null) throw new MachineLearningError('[ML] UnStar on the Stars', 'No Logined User Found.');
+      if (isLogined === false) throw new MachineLearningError('[ML] UnStar on the Stars', 'No Logined User Found.');
 
       const { uuid: clientUuid } = isLogined;
       const isStarred = await this.prisma.checkIsMlNewsLiked(postUuid, clientUuid);

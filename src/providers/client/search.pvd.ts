@@ -156,7 +156,7 @@ export class ClientSearchProvider {
     try {
       const loginInfo = await this.accountManager.getItem(encodedEmail);
 
-      if (loginInfo === null) throw new NoUserError('[CHANGE_PASS] Change Password', 'No User Data Found');
+      if (loginInfo === false) throw new NoUserError('[CHANGE_PASS] Change Password', 'No User Data Found');
 
       const { token: emailToken } = loginInfo;
 

@@ -46,7 +46,7 @@ export class AccountManager {
    * REDIS 에 등록된 회원 정보(로그인 상태 정보) 삭제
    * @param encodedEmail 암호화된 유저 이메일(REDIS 키)
    */
-  public async deleteItem(encodedEmail: string) {
+  public async deleteItem(encodedEmail: string): Promise<boolean> {
     try {
       const index = this.keyList.findIndex((item) => item === encodedEmail);
 
@@ -56,7 +56,11 @@ export class AccountManager {
         await this.redis.del(encodedEmail);
         await this.redis.disconnect();
         ManagerLogger.info('[DELETE] Deleted User Info from Key List and Cache Data');
+
+        return true;
       }
+
+      return false;
     } catch (error) {
       ManagerLogger.error('[DELETE] Delete User Item Error: %o', {
         error,
@@ -134,7 +138,7 @@ export class AccountManager {
         userKey: this.keyList,
       });
 
-      if (key === undefined) return null;
+      if (key === undefined) return false;
 
       ManagerLogger.info('[GET] Found key from keyList');
 
@@ -142,7 +146,7 @@ export class AccountManager {
       const gotItem = await this.redis.get(key);
       await this.redis.disconnect();
 
-      if (gotItem === null) return null;
+      if (gotItem === null) return false;
 
       const returnData = JSON.parse(gotItem) as ClientLoginItem;
 

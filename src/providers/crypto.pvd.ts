@@ -23,25 +23,48 @@ export class CryptoProvider {
    * @returns boolean값
    */
   public comparePassword(receivedPassword: string, encodedPassword: string, passwordToken: string): boolean {
-    const decryptedPassword = this.decrypt(encodedPassword, passwordToken);
+    try {
+      const decryptedPassword = this.decrypt(encodedPassword, passwordToken);
 
-    return receivedPassword === decryptedPassword;
+      return receivedPassword === decryptedPassword;
+    } catch (error) {
+      CryptoLogger.error('[COMPARE] Comparing Encrypted - Decrypted Password: %o', {
+        error,
+      });
+
+      throw new CryptoError(
+        '[COMPARE] Comparing Encrypted - Decrypted Password',
+        'Comparing Password got error',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
   }
 
   public decrypt(encryptedString: string, token: string): string {
-    if (this.secretKey === undefined || !this.secretKey) {
+    if (this.secretKey === undefined || !this.secretKey)
       throw new CryptoError('[ENCRYPT] Decrypt Data Key Validation', 'Secret key is undefined');
+
+    try {
+      const iv = Buffer.from(token, 'hex');
+      const encText = Buffer.from(encryptedString, 'hex');
+
+      const decipher = createDecipheriv('aes-256-cbc', Buffer.from(this.secretKey), iv);
+
+      const decrypted = decipher.update(encText);
+      const decryptedString = Buffer.concat([decrypted, decipher.final()]).toString();
+
+      return decryptedString;
+    } catch (error) {
+      CryptoLogger.error('[DECRYPT] Decrypt Data Error: %o', {
+        error,
+      });
+
+      throw new CryptoError(
+        '[DECRYPT] Decrypt Data',
+        'Decrypt Data Error.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
     }
-
-    const iv = Buffer.from(token, 'hex');
-    const encText = Buffer.from(encryptedString, 'hex');
-
-    const decipher = createDecipheriv('aes-256-cbc', Buffer.from(this.secretKey), iv);
-
-    const decrypted = decipher.update(encText);
-    const decryptedString = Buffer.concat([decrypted, decipher.final()]).toString();
-
-    return decryptedString;
   }
 
   /**
@@ -50,17 +73,16 @@ export class CryptoProvider {
    * @returns 원본 패스워드
    */
   public decryptPassword(encryptedData: string): string {
-    try {
-      if (this.cipherKey === undefined || !this.cipherKey) {
-        throw new CryptoError('[DECRYPT] Decrypt Password Key Validation', 'Cipher key is undefined');
-      }
+    if (this.cipherKey === undefined || !this.cipherKey)
+      throw new CryptoError('[DECRYPT] Decrypt Password Key Validation', 'Cipher key is undefined');
 
+    try {
       const bytes = CryptoJS.AES.decrypt(encryptedData, this.cipherKey);
       const originalText = bytes.toString(CryptoJS.enc.Utf8);
 
       return originalText;
     } catch (error) {
-      CryptoLogger.error('[DECRYPT] Decrypt Encrypted Data Error:', {
+      CryptoLogger.error('[DECRYPT] Decrypt Password Error:', {
         error,
       });
 
@@ -78,23 +100,34 @@ export class CryptoProvider {
    * @returns { hashToken - token 필드에 들어갈 값, uuid - 고객 uuid}
    */
   public cryptData(data: string) {
-    if (this.secretKey === undefined || !this.secretKey) {
+    if (this.secretKey === undefined || !this.secretKey)
       throw new CryptoError('[ENCRYPT] Encrypt Data Key Validation', 'Secret key is undefined');
+
+    try {
+      const iv = randomBytes(16); // Initialization vector
+      const cipher = createCipheriv('aes-256-cbc', Buffer.from(this.secretKey), iv);
+
+      const encrypted = cipher.update(data);
+
+      const encryptedString = Buffer.concat([encrypted, cipher.final()]).toString('hex');
+
+      const returnData = {
+        encodedToken: iv.toString('hex'),
+        encodedData: encryptedString,
+      };
+
+      return returnData;
+    } catch (error) {
+      CryptoLogger.error('[ENCRYPT] Encrypt Data Error: %o', {
+        error,
+      });
+
+      throw new CryptoError(
+        '[ENCRYPT] Encrypt Data',
+        'Encrypt Data Error.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
     }
-
-    const iv = randomBytes(16); // Initialization vector
-    const cipher = createCipheriv('aes-256-cbc', Buffer.from(this.secretKey), iv);
-
-    const encrypted = cipher.update(data);
-
-    const encryptedString = Buffer.concat([encrypted, cipher.final()]).toString('hex');
-
-    const returnData = {
-      encodedToken: iv.toString('hex'),
-      encodedData: encryptedString,
-    };
-
-    return returnData;
   }
 
   /**
@@ -114,7 +147,7 @@ export class CryptoProvider {
 
       return encryptedText;
     } catch (error) {
-      CryptoLogger.error('[ENCRYPT] Encrypt Encrypted Data Error:', {
+      CryptoLogger.error('[ENCRYPT] Encrypt Password Error:', {
         error,
       });
 
