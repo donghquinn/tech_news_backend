@@ -1,5 +1,4 @@
-import { CryptoProvider } from "providers/crypto.pvd";
-
+import { CryptoProvider } from 'providers/crypto.pvd';
 
 describe('Encrypt Password', () => {
   describe('Check ENV', () => {
