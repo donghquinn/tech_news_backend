@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { MachineLearningError } from '@errors/news.error';
 import { PrismaError } from '@errors/prisma.error';
 import { Injectable } from '@nestjs/common';
@@ -31,7 +32,21 @@ export class MlPrismaLibrary extends PrismaClient {
         skip: (Number(page) - 1) * Number(size),
       });
 
-      return result;
+      const returnData = result.map((item) => {
+        const { uuid, link, title, founded, _count, category } = item;
+        const { liked_model: count } = _count;
+
+        return {
+          uuid,
+          title,
+          category,
+          link,
+          likedCount: count,
+          founded,
+        };
+      });
+
+      return returnData;
     } catch (error) {
       NewsLogger.error('[ML] Bring Geek News Error: %o', {
         error,
