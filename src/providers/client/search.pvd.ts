@@ -1,7 +1,7 @@
 import { ClientError, NoUserError } from '@errors/client.error';
 import { NoValidateKeyError, PasswordError } from '@errors/password.error';
-import { comparePassword, decrypt, decryptPassword } from '@libraries/client/decrypt.lib';
-import { cryptData, encryptOriginalPassword } from '@libraries/client/encrypt.lib';
+import { comparePassword, decrypt, decryptPassword } from '@libraries/crypto/decrypt.lib';
+import { cryptData, encryptOriginalPassword } from '@libraries/crypto/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
 import { createSearchPasswordMailcontent } from '@libraries/mailer/mail.utils';

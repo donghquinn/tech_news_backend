@@ -1,7 +1,7 @@
 import { ClientError, NoUserError } from '@errors/client.error';
 import { PasswordError } from '@errors/password.error';
-import { comparePassword, decrypt } from '@libraries/client/decrypt.lib';
-import { cryptData } from '@libraries/client/encrypt.lib';
+import { comparePassword, decrypt } from '@libraries/crypto/decrypt.lib';
+import { cryptData } from '@libraries/crypto/encrypt.lib';
 import { Injectable } from '@nestjs/common';
 import { ClientLogger } from '@utils/logger.util';
 import { MailerProvider } from 'providers/mailer.pvd';

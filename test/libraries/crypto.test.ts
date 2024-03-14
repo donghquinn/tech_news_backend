@@ -1,5 +1,5 @@
-import { decrypt } from '@libraries/client/decrypt.lib';
-import { cryptData } from '@libraries/client/encrypt.lib';
+import { decrypt } from '@libraries/crypto/decrypt.lib';
+import { cryptData } from '@libraries/crypto/encrypt.lib';
 
 describe('Encrypt Password', () => {
   describe('Check ENV', () => {
