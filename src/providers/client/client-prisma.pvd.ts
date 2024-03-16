@@ -24,7 +24,7 @@ export class ClientPrismaLibrary extends PrismaClient {
       // return true;
     } catch (error) {
       ClientLogger.error('[Signup] Check is existing email: %o', {
-        error: error instanceof Error ? error : new Error(JSON.stringify(error)),
+        error,
       });
 
       throw new ClientError(

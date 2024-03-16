@@ -1,8 +1,8 @@
 import { ClientError, NoUserError } from '@errors/client.error';
 import { PasswordError } from '@errors/password.error';
 import { Injectable } from '@nestjs/common';
+import { CryptoProvider } from '@providers/crypto.pvd';
 import { ClientLogger } from '@utils/logger.util';
-import { CryptoProvider } from 'providers/crypto.pvd';
 import { clearIntervalAsync, setIntervalAsync } from 'set-interval-async';
 import { AccountManager } from '../account-manager.pvd';
 import { ClientPrismaLibrary } from './client-prisma.pvd';
@@ -16,33 +16,21 @@ export class ClientProvider {
   ) {}
 
   async checkEmailandSignup(email: string, password: string, name: string) {
-    try {
-      await this.prisma.checkIsEmailExist(email);
+    await this.prisma.checkIsEmailExist(email);
 
-      // if (result) throw new ClientError('[SIGNUP] Check Exist User Info', 'Found Already Exist User. Reject.');
+    // if (result) throw new ClientError('[SIGNUP] Check Exist User Info', 'Found Already Exist User. Reject.');
 
-      ClientLogger.debug('[Signup] Start to create user: %o', {
-        email,
-      });
+    ClientLogger.debug('[Signup] Start to create user: %o', {
+      email,
+    });
 
-      const { encodedData: encodedPassword, encodedToken: passwordToken } = this.crypto.cryptData(password);
+    const { encodedData: encodedPassword, encodedToken: passwordToken } = this.crypto.cryptData(password);
 
-      const uuid = await this.prisma.insertNewClient(email, name, encodedPassword, passwordToken);
+    const uuid = await this.prisma.insertNewClient(email, name, encodedPassword, passwordToken);
 
-      ClientLogger.info('[Signup] Data Insert Success');
+    ClientLogger.info('[Signup] Data Insert Success');
 
-      return uuid;
-    } catch (error) {
-      ClientLogger.error('[Signup] Singup New User Error: %o', {
-        error,
-      });
-
-      throw new ClientError(
-        '[Signup] Signup New User',
-        'Signup New User Error. Please Check request again.',
-        error instanceof Error ? error : new Error(JSON.stringify(error)),
-      );
-    }
+    return uuid;
   }
 
   async login(email: string, password: string) {

@@ -1,10 +1,10 @@
 import { NoUserError } from '@errors/client.error';
 import { NoValidateKeyError, PasswordError } from '@errors/password.error';
 import { Injectable } from '@nestjs/common';
+import { AccountManager } from '@providers/account-manager.pvd';
+import { CryptoProvider } from '@providers/crypto.pvd';
+import { MailerProvider } from '@providers/mailer.pvd';
 import { ClientLogger } from '@utils/logger.util';
-import { AccountManager } from 'providers/account-manager.pvd';
-import { CryptoProvider } from 'providers/crypto.pvd';
-import { MailerProvider } from 'providers/mailer.pvd';
 import { ClientPrismaLibrary } from './client-prisma.pvd';
 
 @Injectable()

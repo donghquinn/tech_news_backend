@@ -23,6 +23,7 @@
       "@utils/*": ["utils/*"],
       "@validators/*": ["validators/*"],
       "@modules/*": ["modules/*"],
+      "@providers/*": ["providers/*"],
       "@controllers/*": ["controllers/*"],
       "@errors/*": ["errors/*"]
     }
