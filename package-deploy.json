@@ -3,7 +3,6 @@
   "version": "2.0.0",
   "main": "main.js",
   "license": "ISC",
-  "packageManager": "yarn@4.1.0",
   "type": "module",
   "scripts": {
     "start": "NODE_ENV=production node --max-old-space-size=700 -r ts-node/register --loader ts-paths-esm-loader --experimental-specifier-resolution=node  ./src/main.js",
