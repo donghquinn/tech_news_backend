@@ -3,7 +3,6 @@
   "version": "2.0.0",
   "main": "main.ts",
   "license": "ISC",
-  "packageManager": "yarn@4.1.0",
   "type": "module",
   "scripts": {
     "format": "prettier --write \"**/*.{ts,json,md}\" \"!package*.json\" \"!tsconfig.json\" \"!.eslintrc.json\"",
@@ -43,6 +42,7 @@
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.24",
     "@types/nodemailer": "^6.4.14",
+    "@types/pg": "^8",
     "@typescript-eslint/eslint-plugin": "^7.1.0",
     "@typescript-eslint/parser": "^7.1.0",
     "dotenv": "^16.4.5",

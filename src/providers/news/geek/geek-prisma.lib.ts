@@ -7,6 +7,20 @@ import { NewsLogger } from '@utils/logger.util';
 export class GeekPrismaLibrary extends PrismaClient {
   async bringGeekNews(startDate: Date, endDate: Date, page: number, size: number) {
     try {
+      // const result = await this.client.query(
+      //   `SELECT G.uuid, G.post, G.link, G.descLink, G.founded, COUNT(G.)
+      //   FROM geek as G
+      //   LEFT JOIN Geek_Liked as GL ON G.uuid = GL.postUuid
+      //   WHERE
+      //     G.founded >= ? AND G.founded <= ?
+      //   ORDER BY G.rank DESC
+      //   LIMIT ?
+      //   OFFSET ?
+      //   `,
+      //   [startDate.toDateString(), endDate.toDateString(), size.toString(), ((1 - page) * size).toString()],
+      // );
+
+      // Logger.info('[QUERY] Got Query Result: %o', { result });
       const result = await this.geek.findMany({
         select: {
           uuid: true,

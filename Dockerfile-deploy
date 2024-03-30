@@ -2,11 +2,10 @@ FROM node:20.3-alpine3.17 AS base
 
 WORKDIR /usr/src/app
 
-COPY yarn.lock .yarnrc.yml  /usr/src/app/
+COPY pnpm-lock.yaml   /usr/src/app/pnpm-lock.yaml
 COPY package-deploy.json ./package.json
-COPY .yarn /usr/src/app/.yarn
-
-RUN yarn install
+RUN npm install -g pnpm
+RUN pnpm install
 
 # --- build ---
 FROM base as build
@@ -19,9 +18,9 @@ COPY src /usr/src/app/src
 COPY prisma /usr/src/app/prisma
 COPY tsconfig.json /usr/src/app/tsconfig.json
 
-RUN yarn run schema
+RUN pnpm run schema
 
-RUN yarn run build
+RUN pnpm run build
 
 
 # --- release ---
@@ -37,4 +36,4 @@ COPY tsconfig.json /home/node/tsconfig.json
 
 ENV NODE_ENV=production
 
-ENTRYPOINT ["yarn", "start"]
+ENTRYPOINT ["pnpm", "start"]
