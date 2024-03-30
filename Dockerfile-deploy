@@ -26,7 +26,12 @@ RUN pnpm run build
 # --- release ---
 FROM node:20.3-alpine3.17 AS release
 
+# ENV PNPM_HOME="/pnpm"
+# ENV PATH="$PNPM_HOME:$PATH"
+
 WORKDIR /home/node
+
+RUN npm install -g pnpm
 
 COPY package-deploy.json /home/node/package.json
 COPY --from=build /usr/src/app/prisma /home/node/prisma
