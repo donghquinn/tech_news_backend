@@ -5,7 +5,7 @@
   "license": "ISC",
   "type": "module",
   "scripts": {
-    "start": "NODE_ENV=production node --max-old-space-size=700 --experimental-specifier-resolution=node  ./src/main.js",
+    "start": "NODE_ENV=production node --max-old-space-size=700 -r ts-node/register --loader ts-paths-esm-loader --experimental-specifier-resolution=node  ./src/main.js",
     "build": "NODE_ENV=production tsc --project tsconfig.json --diagnostics  -p tsconfig.json",
     "schema": "prisma generate"
   },
