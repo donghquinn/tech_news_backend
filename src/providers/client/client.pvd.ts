@@ -2,6 +2,7 @@ import { ClientError, NoUserError } from '@errors/client.error';
 import { PasswordError } from '@errors/password.error';
 import { Injectable } from '@nestjs/common';
 import { CryptoProvider } from '@providers/crypto.pvd';
+import { jwtSign } from '@utils/auth/auth.util';
 import { ClientLogger } from '@utils/logger.util';
 import { clearIntervalAsync, setIntervalAsync } from 'set-interval-async';
 import { AccountManager } from '../account-manager.pvd';
@@ -102,7 +103,9 @@ export class ClientProvider {
 
     await this.prisma.updateClientLoginStatus(email, uuid, true);
 
-    return encodedEmail;
+    const jwt = jwtSign(uuid, 'NORMAL', encodedEmail, '3h');
+
+    return jwt;
   }
 
   async logout(encodedEmail: string) {
