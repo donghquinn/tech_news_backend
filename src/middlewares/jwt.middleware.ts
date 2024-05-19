@@ -16,6 +16,7 @@ export const jwtAuthMiddlewares = (request: Request, response: Response, next: N
     return next();
   } catch (error) {
     Logger.error('[AUTH] Validate JWT Error: %o', error);
+
     throw new Error('JWT Validate Error');
   }
 };
