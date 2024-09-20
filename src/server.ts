@@ -18,7 +18,7 @@ export const bootstrap = async () => {
   await accountManager.start();
 
   const corsOptions: CorsOptions = {
-    origin: 'https://scrape.donghyuns.com',
+    origin: '*',
     allowedHeaders: ['GET', 'POST', 'Content-Type', 'key'],
     optionsSuccessStatus: 204,
     preflightContinue: false,
