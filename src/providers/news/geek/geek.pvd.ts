@@ -29,9 +29,9 @@ export class GeekProvider {
       size,
     });
 
-    const result = await this.prisma.bringGeekNews(startDate, endDate, page, size);
+    const {totalCount, geekNews} = await this.prisma.geekNewsPagination(startDate, endDate, page, size);
 
-    const returnData: Array<GeekNewsReturn> = result.map((item) => {
+    const returnData: Array<GeekNewsReturn> = geekNews.map((item) => {
       const isUrlUndefined = item.descLink.split('.io/')[1];
 
       const { post, descLink, uuid, link, _count, founded } = item;
@@ -55,13 +55,7 @@ export class GeekProvider {
       };
     });
 
-    const total = await this.prisma.geekNewsCount(startDate, endDate, size);
-
-    NewsLogger.info('[GEEK] Get Total Count: %o', {
-      total,
-    });
-
-    return { result: returnData, total };
+    return { result: returnData, total: Math.ceil(totalCount/size) };
   }
 
   async giveStar(postUuid: string, email: string): Promise<void> {

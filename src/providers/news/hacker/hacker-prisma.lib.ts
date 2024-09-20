@@ -31,20 +31,9 @@ export class HackerPrismaLibrary extends PrismaClient {
         skip: (Number(page) - 1) * Number(size),
       });
 
-      const returnData = result.map((item) => {
-        const { uuid, post, link, founded, _count } = item;
-        const { liked_model: count } = _count;
+     
 
-        return {
-          uuid,
-          post,
-          link,
-          likedCount: count,
-          founded,
-        };
-      });
-
-      return returnData;
+      return result;
     } catch (error) {
       NewsLogger.error('[HACKER] Bring Hacker News Error: %o', {
         error,
@@ -81,6 +70,45 @@ export class HackerPrismaLibrary extends PrismaClient {
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
+  }
+  
+  async hackerNewsPagintaion(startDate: Date, endDate: Date, page: number, size: number) {
+    const [hackerNews, totalCount] = await this.$transaction([
+      this.hackers.findMany({
+        select: {
+          uuid: true,
+          post: true,
+          link: true,
+          founded: true,
+          _count: {
+            select: {
+              liked_model: true,
+            },
+          },
+        },
+        where: {
+          founded: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+        orderBy: { rank: 'desc' },
+        take: Number(size),
+        skip: (Number(page) - 1) * Number(size),
+      }),
+
+      this.hackers.count({
+        where: {
+          founded: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      })
+    ]);
+
+
+    return {totalCount, hackerNews}
   }
 
   async checkHackerNewsIsLiked(postUuid: string, clientUuid: string) {

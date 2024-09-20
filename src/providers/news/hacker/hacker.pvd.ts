@@ -27,15 +27,22 @@ export class HackersNewsProvider {
       size,
     });
 
-    const returnData = await this.prisma.bringHackerNews(startDate, endDate, page, size);
+    const {totalCount, hackerNews} = await this.prisma.hackerNewsPagintaion(startDate, endDate, page, size);
 
-    const total = await this.prisma.hackerNewsCount(startDate, endDate, size);
+    const returnData = hackerNews.map((item) => {
+      const { uuid, post, link, founded, _count } = item;
+      const { liked_model: count } = _count;
 
-    NewsLogger.info('[Hackers] Get Total Count: %o', {
-      total,
+      return {
+        uuid,
+        post,
+        link,
+        likedCount: count,
+        founded,
+      };
     });
 
-    return { result: returnData, total };
+    return { result: returnData, total: totalCount };
   }
 
   async giveStar(postUuid: string, email: string): Promise<void> {
