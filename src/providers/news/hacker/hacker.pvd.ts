@@ -42,7 +42,7 @@ export class HackersNewsProvider {
       };
     });
 
-    return { result: returnData, total: totalCount };
+    return { result: returnData, total: Math.ceil(totalCount/size) };
   }
 
   async giveStar(postUuid: string, email: string): Promise<void> {
