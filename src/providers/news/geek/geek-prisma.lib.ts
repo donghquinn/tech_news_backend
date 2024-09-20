@@ -5,22 +5,33 @@ import { NewsLogger } from '@utils/logger.util';
 
 @Injectable()
 export class GeekPrismaLibrary extends PrismaClient {
+  async bringTodayTotalNews(startDate: Date, endDate: Date) {
+    try {
+      const totalCount = await this.geek.count({
+        where: {
+          founded: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+
+      return totalCount;
+    } catch (error) {
+      NewsLogger.error('[GEEK] Bring Today Total Geek News Error: %o', {
+        error,
+      });
+
+      throw new GeekError(
+        '[GEEK] ring Today Total Geek News',
+        'ring Today Total Geek News. Please Try Again.',
+        error instanceof Error ? error : new Error(JSON.stringify(error)),
+      );
+    }
+  }
+
   async bringGeekNews(startDate: Date, endDate: Date, page: number, size: number) {
     try {
-      // const result = await this.client.query(
-      //   `SELECT G.uuid, G.post, G.link, G.descLink, G.founded, COUNT(G.)
-      //   FROM geek as G
-      //   LEFT JOIN Geek_Liked as GL ON G.uuid = GL.postUuid
-      //   WHERE
-      //     G.founded >= ? AND G.founded <= ?
-      //   ORDER BY G.rank DESC
-      //   LIMIT ?
-      //   OFFSET ?
-      //   `,
-      //   [startDate.toDateString(), endDate.toDateString(), size.toString(), ((1 - page) * size).toString()],
-      // );
-
-      // Logger.info('[QUERY] Got Query Result: %o', { result });
       const result = await this.geek.findMany({
         select: {
           uuid: true,
@@ -57,6 +68,45 @@ export class GeekPrismaLibrary extends PrismaClient {
         error instanceof Error ? error : new Error(JSON.stringify(error)),
       );
     }
+  }
+
+  async geekNewsPagination(startDate: Date, endDate: Date, page: number, size: number) {
+    const [totalCount, geekNews] = await this.$transaction([
+      this.geek.count({
+        where: {
+          founded: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      }),
+
+      this.geek.findMany({
+        select: {
+          uuid: true,
+          post: true,
+          link: true,
+          descLink: true,
+          founded: true,
+          _count: {
+            select: {
+              liked_model: true,
+            },
+          },
+        },
+        where: {
+          founded: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+        orderBy: { rank: 'desc' },
+        take: Number(size),
+        skip: (Number(page) - 1) * Number(size),
+      }),
+    ]);
+
+    return { totalCount, geekNews };
   }
 
   async geekNewsCount(startDate: Date, endDate: Date, size: number) {
