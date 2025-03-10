@@ -16,7 +16,7 @@ def getDeployTargets(envName) {
 // 브랜치별 환경 정보
 def getBuildBranch(branchName) {
   branches = [
-    'origin/master': 'master',
+    'origin/master': 'master'
   ]
 
   return branches[branchName]
@@ -27,7 +27,7 @@ pipeline {
 
   //환경변수
   environment {
-    APP_ENV_ID = 'reference-back-env'
+    APP_ENV_ID = 'news-app-env'
 
     //브랜치 선택
     BUILD_BRANCH = getBuildBranch(env.GIT_BRANCH)
@@ -53,10 +53,9 @@ pipeline {
       }
     }
 
-    stage('도커 이미지 빌드') {
+  stage('도커 이미지 빌드') {
       steps {
         script {
-          // 브랜치에 따라 이미지 이름 변경
           DOCKER_IMAGE = docker.build(DOCKER_IMAGE_NAME)
         }
 
@@ -80,6 +79,7 @@ pipeline {
       }
     }
 
+  
     stage('도커 컨테이너 배포') {
       steps {
         script {
@@ -102,6 +102,7 @@ pipeline {
                 withCredentials([
                   // DOTENV 파일과 SSH KEY를 가져옴
                   file(credentialsId: APP_ENV_ID, variable: 'DOTENV'),
+
                   string(credentialsId: SERVER_TARGET, variable: 'SSH_IP'),
 
                   sshUserPrivateKey(credentialsId: target.SSH_KEY_ID, keyFileVariable: 'SSH_PRIVATE_KEY', usernameVariable: 'USERNAME')
