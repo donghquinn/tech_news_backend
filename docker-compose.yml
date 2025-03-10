@@ -17,10 +17,7 @@ services:
   backend:
     depends_on:
       - redis
-    # image: ${REGISTRY_URL}
-    build:
-      context: .
-      dockerfile: ./Dockerfile-deploy
+    image: "sjc.vultrcr.com/dongregistry/scrape_back:latest"
     container_name: news_miner
     restart: unless-stopped
     volumes:
