@@ -1,22 +1,6 @@
----
-version: '3.7'
-services:
-  redis:
-    image: redis:7.0.15
-    container_name: news_redis
-    expose:
-      - ${REDIS_PORT}
-    volumes:
-      - ./redis.conf:/etc/redis/redis.conf
-      - ./redis_data:/data\
-    command: redis-server --requirepass ${REDIS_PASS}
-    restart: always
-    networks:
-      - proxy
 
+services:
   backend:
-    depends_on:
-      - redis
     image: "sjc.vultrcr.com/dongregistry/scrape_back:latest"
     container_name: news_miner
     restart: unless-stopped
