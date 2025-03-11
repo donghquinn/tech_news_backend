@@ -69,7 +69,7 @@ pipeline {
       steps {
         script {
           // 브랜치에 따라 이미지 이름 변경
-          RASP_DOCKER_IMAGE = docker.build("${DOCKER_IMAGE_NAME}-raspberry", "-f Dockerfile-raspberry")
+          RASP_DOCKER_IMAGE = docker.build("${DOCKER_IMAGE_NAME}-raspberry", "-f Dockerfile-raspberry .")
         }
 
         echo "Built: ${RASP_DOCKER_IMAGE}"
