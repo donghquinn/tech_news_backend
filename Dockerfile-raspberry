@@ -1,4 +1,4 @@
-FROM node:23.9.0-slim AS base
+FROM balenalib/raspberry-pi-node:16-bookworm AS base
 
 WORKDIR /usr/src/app
 
@@ -24,7 +24,7 @@ RUN pnpm run build
 
 
 # --- release ---
-FROM node:23.9.0-slim AS release
+FROM balenalib/raspberry-pi-node:16-bookworm AS release
 
 # ENV PNPM_HOME="/pnpm"
 # ENV PATH="$PNPM_HOME:$PATH"
