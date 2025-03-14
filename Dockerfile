@@ -1,9 +1,9 @@
-FROM node:23.9.0-slim AS base
+FROM node:20.3-alpine3.17 AS base
 
 WORKDIR /usr/src/app
 
 COPY pnpm-lock.yaml   /usr/src/app/pnpm-lock.yaml
-COPY package.json ./package.json
+COPY package-delpoy.json ./package.json
 RUN npm install -g pnpm
 RUN pnpm install
 
@@ -24,7 +24,7 @@ RUN pnpm run build
 
 
 # --- release ---
-FROM node:23.9.0-slim AS release
+FROM node:20.3-alpine3.17 AS release
 
 # ENV PNPM_HOME="/pnpm"
 # ENV PATH="$PNPM_HOME:$PATH"
