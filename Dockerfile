@@ -1,7 +1,7 @@
 FROM node:20.3-alpine3.17 AS base
 
 WORKDIR /usr/src/app
-
+RUN apk add --no-cache openssl
 COPY pnpm-lock.yaml   /usr/src/app/pnpm-lock.yaml
 COPY package-delpoy.json ./package.json
 RUN npm install -g pnpm
