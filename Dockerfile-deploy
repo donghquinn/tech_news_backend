@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 RUN apk add --no-cache openssl
 
 COPY pnpm-lock.yaml   /usr/src/app/pnpm-lock.yaml
-COPY package-delpoy.json ./package.json
+COPY package.json ./package.json
 RUN npm install -g pnpm
 RUN pnpm install
 
